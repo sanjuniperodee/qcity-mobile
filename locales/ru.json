@@ -1,0 +1,194 @@
+{
+    "tabs": {
+      "home": "Главная",
+      "feed": "Избранные",
+      "create_new": "Создать новое",
+      "messages": "Сообщения",
+      "profile": "Профиль"
+    },
+    "categories_main": {
+      "services": "Услуги",
+      "products": "Товары",
+      "findEmployee": "Найти работника",
+      "qorgauAi": "Qorgau AI",
+      "other": "Другое",
+      "securityAgencies": "Агентства безопасности",
+      "industrialSecurity": "Пром. Без",
+      "industrialSecurityEducation": "Обучение в \n пром. Без "
+    },
+    "stories": {
+      "create": "Как создать объявление",
+      "edit": "Изменить объявление",
+      "security": "Безопасность платформы"
+    },
+    "recommendation": "Рекомендации",
+    "recommendation_in_city": "Рекомендации для {{city}}",
+    "welcome": "Давайте начнем",
+    "welcome_desc": "Вы можете зарегистрировать аккаунт или войти в сущствующий",
+    "password": "Пароль",
+    "kaz":"Казахский",
+    "rus":"Русский",
+    "continue":"Продолжить",
+    "number_or_email": "Электронная почта",
+    "select_language": {
+      "select_language":"Выберите язык",
+      "you_could_change_language": "Вы можете изменить его в настройках вашего профиля"
+    },
+    "register": {
+      "register": "Регистрация",
+      "register_of_acc": "Регистрация аккаунта",
+      "create_acc": "Создайте аккаунт чтобы пользоваться всеми функциями приложения",
+      "profile_pic": "Фото профиля",
+      "write_name": "Введите ваше имя пользователя",
+      "error": {
+        "login_required": "Требуется ввести имя пользователя.",
+        "password_required": "Требуется ввести пароль.",
+        "email_required_or_invalid": "Введите действительный электронный адрес.",
+        "password_length": "Пароль должен быть не менее 6 символов.",
+        "passwords_do_not_match": "Пароли не совпадают.",
+        "name_required": "Заполните имя",
+        "image_required": "Фото профиля обязателен"
+      }
+    },
+    "login": {
+        "login": "Войти",
+        "login_to_acc": "Войдите в свой аккаунт",
+        "input_fields": "Поле для ввода"
+    },
+    "main":{
+      "hello":"Здравствуйте",
+      "lets":"Давайте посмотрим новые объявления",
+      "search_catalog":"Поиск по каталогу"
+    },
+    "categories":{
+      "transport": "Транспорт",
+      "work": "Работа",
+      "real_estate": "Недвижимость",
+      "exchange_free": "Обмен / Даром",
+      "electronics": "Электроника",
+      "hobbies_sports_recreation": "Хобби / Спорт / Отдых",
+      "childrens_world": "Детский мир",
+      "products": "Продукты",
+      "services": "Услуги",
+      "clothing_shoes": "Одежда / Обувь",
+      "animals": "Животные",
+      "home_furniture": "Дом / Мебель",
+      "buy": "Куплю",
+      "garden_plants": "Сад / Растения",
+      "construction_renovation": "Строительство и ремонт",
+      "design_interior": "Дизайн и интерьер"
+    },
+    "extra_info":"Дополнительная информация",
+    "product_statement":"Состояние товара",
+    "post":"Опубликовать",
+    "title": {
+      "header": "Заголовок",
+      "min_length_instruction": "Введите не менее 16 символов",
+      "length_display": "{title.length}/70",
+      "placeholder": "Заголовок объявления"
+    },
+    "price": {
+      "header": "Цена",
+      "placeholder": "Укажите цену"
+    },
+    "category": {
+      "header": "Категория",
+      "placeholder": "Выберите категорию"
+    },
+    "description": {
+      "header": "Описание",
+      "min_length_instruction": "Введите не менее 40 символов",
+      "length_display": "{content.length}/9000",
+      "placeholder": "Подробно описывайте ваш товар или услугу"
+    },
+    "location": {
+      "header": "Местоположение",
+      "placeholder": "Выберите город",
+      "options": ["Астана", "Алматы", "Шымкент", "Кызылорда"]
+    },
+    "additional_fields": {
+      "brand": {
+        "header": "Марка",
+        "placeholder": "Укажите марку"
+      },
+      "color": {
+        "header": "Цвет",
+        "placeholder": "Выберите цвет"
+      },
+      "fuel_type": {
+        "header": "Вид топлива",
+        "placeholder": "Выберите вид топлива",
+        "options": ["Бензин", "Дизель", "Электрический", "Гибридный"]
+      },
+      "engine_volume": {
+        "header": "Объём двигателя",
+        "placeholder": "Укажите объём двигателя"
+      },
+      "number_of_owners": {
+        "header": "Количество хозяев",
+        "placeholder": "Укажите количество предыдущих владельцев"
+      },
+      "number_of_rooms": {
+        "header": "Количество комнат",
+        "placeholder": "Укажите количество комнат"
+      },
+      "total_area": {
+        "header": "Общая площадь",
+        "placeholder": "Укажите общую площадь в кв. м"
+      },
+      "year_of_construction": {
+        "header": "Год постройки",
+        "placeholder": "Укажите год постройки"
+      },
+      "lease_term": {
+        "header": "Срок аренды",
+        "placeholder": "Укажите срок аренды"
+      },
+      "renovation": {
+        "header": "Ремонт",
+        "placeholder": "Выберите тип ремонта",
+        "options": ["Евроремонт", "Частичный ремонт", "Белый каркас", "Черный каркас"]
+      },
+      "heating": {
+        "header": "Отопление",
+        "placeholder": "Выберите тип отопления",
+        "options": ["Воздушное", "Электрическое", "Водяное", "Централизованное"]
+      },
+      "bathroom": {
+        "header": "Санузел",
+        "placeholder": "Выберите тип санузла",
+        "options": ["Раздельный", "Совместный"]
+      },
+      "property_type": {
+        "header": "Тип собственности",
+        "placeholder": "Выберите тип собственности",
+        "options": ["От хозяина", "Долевая собственность"]
+      },
+      "furniture": {
+        "header": "Мебелирование",
+        "placeholder": "Укажите уровень мебелировки",
+        "options": ["Полная", "Частичная", "Без мебели"]
+      },
+      "building_type": {
+        "header": "Тип строения",
+        "placeholder": "Выберите тип строения",
+        "options": ["Кирпичное", "Панельное"]
+      },
+      "statement": {
+        "header": "Состояние",
+        "placeholder": "Выберите состояние товара",
+        "options": ["Новое", "Б/у"]
+      },
+      "body": {
+        "header": "Тип кузова",
+        "placeholder": "Выберите тип кузова",
+        "options": ["Кроссовер", "Купе", "Седан", "Хэтчбэк", "Лифтбек", "Купе", "Родстер", "Тарга"]
+      },
+      "transmission": {
+        "header": "Коробка передач",
+        "placeholder": "Выберите тип коробки передач",
+        "options": ["Автомат", "Механика"]
+      }
+    }
+  }
+  

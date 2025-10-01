@@ -1,0 +1,193 @@
+{
+  "tabs": {
+    "home": "Басты",
+    "feed": "Избранные",
+    "create_new": "Жаңа жасау",
+    "messages": "Хабарламалар",
+    "profile": "Профиль"
+  },
+  "categories_main": {
+    "services": "Қызметтер",
+    "products": "Тауарлар",
+    "findEmployee": "Жұмысшы табу",
+    "qorgauAi": "Qorgau AI",
+    "other": "Өзге",
+    "securityAgencies": "Қауіпсіздік агенттіктері",
+    "industrialSecurity": "Өнеркәсіптік қауіпсіздік",
+    "industrialSecurityEducation": "Өнеркәсіптік қауіпсіздіктің білім алуы"
+  },
+  "stories": {
+    "create": "Хабарлама қалай жасалынады",
+    "edit": "Хабарламаны өзгерту",
+    "security": "Қауіпсіздік"
+  },
+  "recommendation": "Ұсынымдар",
+  "recommendation_in_city": "Ұсынымдар қаладағы",
+  "welcome": "Келіңіздер бастайық",
+  "welcome_desc": "Сіз тіркелгі жасай аласыз немесе бар тіркелгіге кіре аласыз",
+  "password": "Құпия сөз",
+  "kaz": "Қазақ тілі",
+  "rus": "Орыс тілі",
+  "continue": "Жалғастыру",
+  "number_or_email": "Email",
+  "select_language": {
+    "select_language": "Тілді таңдаңыз",
+    "you_could_change_language": "Сіз оны профиль параметрлерінде өзгерте аласыз"
+  },
+  "register": {
+    "register": "Тіркелу",
+    "register_of_acc": "Тіркелгіні тіркеу",
+    "create_acc": "Қосымшаның барлық мүмкіндіктерін пайдалану үшін тіркелгі жасаңыз",
+    "profile_pic": "Профиль суреті",
+    "write_name": "Атыңызды енгізіңіз",
+    "error": {
+      "login_required": "Имя пользователя енгізу қажет.",
+      "password_required": "Құпия сөзді енгізу қажет.",
+      "email_required_or_invalid": "Жарамды электрондық поштаны енгізіңіз",
+      "password_length": "Құпия сөз кемінде 6 таңбадан тұруы тиіс.",
+      "passwords_do_not_match": "Құпия сөздер сәйкес келмейді.",
+      "name_required": "Атын толтырыңыз",
+      "image_required": "Профиль суреті қажет."
+    }
+  },
+  "login": {
+    "login": "Кіру",
+    "login_to_acc": "Өз тіркелгіңізге кіріңіз",
+    "input_fields": "Енгізу өрістері"
+  },
+  "main": {
+    "hello": "Сәлеметсіз бе",
+    "lets": "Жаңа хабарландыруларды қарастырайық",
+    "search_catalog": "Каталог бойынша іздеу"
+  },
+  "extra_info": "Қосымша ақпарат",
+  "product_statement": "Тауардың күйі",
+  "post": "Жариялау",
+  "categories": {
+    "transport": "Көлік",
+    "work": "Жұмыс",
+    "real_estate": "Жылжымайтын мүлік",
+    "exchange_free": "Айырбастау / Тегін",
+    "electronics": "Электроника",
+    "hobbies_sports_recreation": "Хобби / Спорт / Демалыс",
+    "childrens_world": "Балалар әлемі",
+    "products": "Өнімдер",
+    "services": "Қызметтер",
+    "clothing_shoes": "Киім / Аяқ киім",
+    "animals": "Жануарлар",
+    "home_furniture": "Үй / Жиһаз",
+    "buy": "Сатып алу",
+    "garden_plants": "Бақша / Өсімдіктер",
+    "construction_renovation": "Құрылыс және жөндеу",
+    "design_interior": "Дизайн және интерьер"
+  },
+  "title": {
+    "header": "Тақырып",
+    "min_length_instruction": "Кемінде 16 таңба енгізіңіз",
+    "length_display": "{title.length}/70",
+    "placeholder": "Хабарландыру тақырыбы"
+  },
+  "price": {
+    "header": "Бағасы",
+    "placeholder": "Бағаны көрсетіңіз"
+  },
+  "category": {
+    "header": "Санат",
+    "placeholder": "Санатты таңдаңыз"
+  },
+  "description": {
+    "header": "Сипаттама",
+    "min_length_instruction": "Кемінде 40 таңба енгізіңіз",
+    "length_display": "{content.length}/9000",
+    "placeholder": "Өніміңіз немесе қызметіңіз туралы толығырақ жазыңыз. Сатып алушының білуі керек маңызды детальдар қандай?"
+  },
+  "location": {
+    "header": "Орналасқан жері",
+    "placeholder": "Қаланы таңдаңыз",
+    "options": ["Астана", "Алматы", "Шымкент", "Қызылорда"]
+  },
+  "additional_fields": {
+    "brand": {
+      "header": "Марка",
+      "placeholder": "Марканы көрсетіңіз"
+    },
+    "color": {
+      "header": "Түсі",
+      "placeholder": "Түсті таңдаңыз"
+    },
+    "fuel_type": {
+      "header": "Отын түрі",
+      "placeholder": "Отын түрін таңдаңыз",
+      "options": ["Бензин", "Дизель", "Электрлік", "Гибридті"]
+    },
+    "engine_volume": {
+      "header": "Қозғалтқыш көлемі",
+      "placeholder": "Қозғалтқыш көлемін енгізіңіз"
+    },
+    "number_of_owners": {
+      "header": "Иелер саны",
+      "placeholder": "Алдыңғы иелердің санын көрсетіңіз"
+    },
+    "number_of_rooms": {
+      "header": "Бөлмелер саны",
+      "placeholder": "Бөлмелер санын көрсетіңіз"
+    },
+    "total_area": {
+      "header": "Жалпы ауданы",
+      "placeholder": "Жалпы ауданын ш. м-де көрсетіңіз"
+    },
+    "year_of_construction": {
+      "header": "Құрылыс жылы",
+      "placeholder": "Құрылыс жылын көрсетіңіз"
+    },
+    "lease_term": {
+      "header": "Жалға алу мерзімі",
+      "placeholder": "Жалға алу мерзімін көрсетіңіз"
+    },
+    "renovation": {
+      "header": "Жөндеу",
+      "placeholder": "Жөндеу түрін таңдаңыз",
+      "options": ["Еуроремонт", "Жартылай ремонт", "Ақ каркас", "Қара каркас"]
+    },
+    "heating": {
+      "header": "Жылыту",
+      "placeholder": "Жылыту түрін таңдаңыз",
+      "options": ["Ауалы", "Электрлік", "Сулы", "Орталық"]
+    },
+    "bathroom": {
+      "header": "Дәретхана",
+      "placeholder": "Дәретхана түрін таңдаңыз",
+      "options": ["Бөлек", "Біріккен"]
+    },
+    "property_type": {
+      "header": "Меншік түрі",
+      "placeholder": "Меншік түрін таңдаңыз",
+      "options": ["Иесінен", "Үлестік меншік"]
+    },
+    "furniture": {
+      "header": "Жиһаз",
+      "placeholder": "Жиһаз деңгейін көрсетіңіз",
+      "options": ["Толық", "Жартылай", "Жоқ"]
+    },
+    "building_type": {
+      "header": "Құрылыс түрі",
+      "placeholder": "Құрылыс түрін таңдаңыз",
+      "options": ["Кірпіш", "Панель"]
+    },
+    "statement": {
+      "header": "Күйі",
+      "placeholder": "Тауар күйін таңдаңыз",
+      "options": ["Жаңа", "Қолданылған"]
+    },
+    "body": {
+      "header": "Кузов түрі",
+      "placeholder": "Кузов түрін таңдаңыз",
+      "options": ["Кроссовер", "Купе", "Седан", "Хэтчбек", "Лифтбек", "Купе", "Родстер", "Тарга"]
+    },
+    "transmission": {
+      "header": "Беріліс қорабы",
+      "placeholder": "Беріліс қорабы түрін таңдаңыз",
+      "options": ["Автомат", "Механика"]
+    }
+  }
+}
