@@ -15,7 +15,7 @@ export const MessagesMainScreen = () => {
 
   const fetchData = async () => {
     try {
-      const connection = await fetch('http://market.qorgau-city.kz/api/create_connection/', {
+      const connection = await fetch('https://market.qorgau-city.kz/api/create_connection/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const MessagesMainScreen = () => {
         }),
       });
 
-      const response = await fetch('http://market.qorgau-city.kz/api/income_messages/', {
+      const response = await fetch('https://market.qorgau-city.kz/api/income_messages/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -110,10 +110,10 @@ export const MessagesMainScreen = () => {
                   source={
                     item.receiver_info.username === auth.user.username
                       ? item.sender_info.profile_image
-                        ? { uri: `http://market.qorgau-city.kz${item.sender_info.profile_image}` }
+                        ? { uri: `https://market.qorgau-city.kz${item.sender_info.profile_image}` }
                         : require('../assets/profilePurple.png')
                       : item.receiver_info.profile_image
-                      ? { uri: `http://market.qorgau-city.kz${item.receiver_info.profile_image}` }
+                      ? { uri: `https://market.qorgau-city.kz${item.receiver_info.profile_image}` }
                       : require('../assets/profilePurple.png')
                   }
                 />

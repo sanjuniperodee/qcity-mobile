@@ -300,7 +300,7 @@ export const CreatePostScreen = () => {
     if (sent) return;
     setSent(true);
 
-    const apiUrl = 'http://market.qorgau-city.kz/api/posts/';
+    const apiUrl = 'https://market.qorgau-city.kz/api/posts/';
     const formData = new FormData();
 
     formData.append('title', title);

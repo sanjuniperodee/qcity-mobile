@@ -29,7 +29,7 @@ export const ProfileSettingsScreen = ({route}) => {
 
     useEffect(() => {
         if (user.profile_image) {
-            setImage(`http://market.qorgau-city.kz${user.profile_image}`)
+            setImage(`https://market.qorgau-city.kz${user.profile_image}`)
         }
       (async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -41,7 +41,7 @@ export const ProfileSettingsScreen = ({route}) => {
 
 
     // Базовый URL; поправь при необходимости
-const API_BASE = 'http://market.qorgau-city.kz/api';
+const API_BASE = 'https://market.qorgau-city.kz/api';
 
   const getAuthHeader = (token) => {
     if (!token) return {};

@@ -9,7 +9,7 @@ export const ProfileadminScreen = () => {
 
   const fetchStats = async () => {
       try {
-          const response = await fetch('http://market.qorgau-city.kz/api/stats/');
+          const response = await fetch('https://market.qorgau-city.kz/api/stats/');
           const data = await response.json();
           setStats(data);
       } catch (error) {

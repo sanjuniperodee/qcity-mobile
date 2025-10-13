@@ -6,7 +6,7 @@ export const api = createApi({
   reducerPath: 'api',
   refetchOnMountOrArgChange: true,
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://market.qorgau-city.kz/api/',
+    baseUrl: 'https://market.qorgau-city.kz/api/',
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {

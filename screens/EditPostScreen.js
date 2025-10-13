@@ -190,7 +190,7 @@ export const EditPostScreen = ({route}) => {
 
 
   const sendPostRequest = async () => {
-    const apiUrl = `http://market.qorgau-city.kz/api/posts/edit/${postData.id}/`; 
+    const apiUrl = `https://market.qorgau-city.kz/api/posts/edit/${postData.id}/`; 
     const formData = new FormData();
 
     formData.append('title', title);

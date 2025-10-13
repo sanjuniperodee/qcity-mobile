@@ -14,7 +14,7 @@ export default function ForgotPasswordScreen() {
     }
 
     try {
-      const response = await fetch('http://market.qorgau-city.kz/api/password-reset/request/', {
+      const response = await fetch('https://market.qorgau-city.kz/api/password-reset/request/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

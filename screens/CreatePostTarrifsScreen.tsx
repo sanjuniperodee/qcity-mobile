@@ -28,7 +28,7 @@ export const CreatePostTarrifsScreen = ({route}) => {
   }
 
   const sendPostRequest = async () => { 
-    const apiUrl = `http://market.qorgau-city.kz/api/posts/${id}/pay/`; 
+    const apiUrl = `https://market.qorgau-city.kz/api/posts/${id}/pay/`; 
     try {
       const response = await fetch(apiUrl, {
         method: 'PATCH',

@@ -24,13 +24,13 @@ export const ProfileDeletedScreen = () => {
                       ref={video}
                       style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}}
                       source={{
-                          uri: `http://market.qorgau-city.kz${item.images[0].image}`,
+                          uri: `https://market.qorgau-city.kz${item.images[0].image}`,
                       }}
                       resizeMode={ResizeMode.COVER}
                       isLooping
                       />
                   :
-                    <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`http://market.qorgau-city.kz${item.images[0].image}`}}/>
+                    <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`https://market.qorgau-city.kz${item.images[0].image}`}}/>
                   }
               <View style={{paddingHorizontal:7}}>
                   <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>

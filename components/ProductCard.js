@@ -101,7 +101,7 @@ export const ProductCard = (props) => {
                 staysActiveInBackground= {false}
                 style={{ width: '100%', height: 200,borderRadius:8 }}
                 source={{
-                    uri: `http://market.qorgau-city.kz${props.media[0].image}`,
+                    uri: `https://market.qorgau-city.kz${props.media[0].image}`,
                 }}
                 volume={0.0}
                 resizeMode={ResizeMode.COVER}
@@ -125,7 +125,7 @@ export const ProductCard = (props) => {
                 {isImageLoading && <ActivityIndicator style={{ position: 'absolute', width: '100%', height: 200 }} />}
                 <Image
                     style={{width:'100%', height:200, borderRadius:8}}
-                    source={props.image === '/media/defaults/post.png' ? require('../assets/post.png') : {uri: `http://market.qorgau-city.kz${props.image}`}}
+                    source={props.image === '/media/defaults/post.png' ? require('../assets/post.png') : {uri: `https://market.qorgau-city.kz${props.image}`}}
                     onLoadStart={() => setImageLoading(true)}
                     onLoadEnd={() => setImageLoading(false)}
                 />

@@ -126,7 +126,7 @@ export const PostViewScreen = ({ route }) => {
     }
     try {
       onChangeMessage('');
-      const response = await fetch('http://market.qorgau-city.kz/api/create_connection/', {
+      const response = await fetch('https://market.qorgau-city.kz/api/create_connection/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                     style={{ width: 50, height: 50, borderRadius: 100, marginRight: 10 }}
                     source={
                       data?.author?.profile_image
-                        ? { uri: `http://market.qorgau-city.kz${data.author.profile_image}` }
+                        ? { uri: `https://market.qorgau-city.kz${data.author.profile_image}` }
                         : require('../assets/profilePurple.png')
                     }
                   />

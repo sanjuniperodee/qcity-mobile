@@ -82,7 +82,7 @@ export const ProfileRegistrationScreen = ({route}) => {
         formData.append('profile.phone_number', ''); // add your phone number
     
         try {
-          const response = await fetch('http://market.qorgau-city.kz/api/register/', {
+          const response = await fetch('https://market.qorgau-city.kz/api/register/', {
             method: 'POST',
             body: formData,
             headers: {

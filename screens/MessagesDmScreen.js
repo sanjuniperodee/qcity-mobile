@@ -43,7 +43,7 @@ export const MessagesDmScreen = ({route}) => {
                 user: {
                     _id: msg.user._id,
                     name: msg.user.username,
-                    avatar: `http://market.qorgau-city.kz/${msg.user.profile_image}`
+                    avatar: `https://market.qorgau-city.kz/${msg.user.profile_image}`
                 }
             }));
             console.log(receivedMessages);
@@ -57,7 +57,7 @@ export const MessagesDmScreen = ({route}) => {
                 user: {
                     _id: msg.user._id,
                     name: msg.user.username,
-                    avatar: `http://market.qorgau-city.kz/${msg.user.profile_image}`
+                    avatar: `https://market.qorgau-city.kz/${msg.user.profile_image}`
                 }
             }));
 
@@ -81,7 +81,7 @@ export const MessagesDmScreen = ({route}) => {
             user: {
                 _id: user.user.id,
                 name: user.user.username,
-                avatar: `http://market.qorgau-city.kz/${user.user.profile_image}`
+                avatar: `https://market.qorgau-city.kz/${user.user.profile_image}`
             },
         };
 

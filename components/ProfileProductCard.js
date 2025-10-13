@@ -22,7 +22,7 @@ export const ProfileProductCard = (props) => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const isVideo = props.media?.[0]?.type === 'video';
-  const mediaUri = props.media?.[0]?.image ? `http://market.qorgau-city.kz${props.media[0].image}` : undefined;
+  const mediaUri = props.media?.[0]?.image ? `https://market.qorgau-city.kz${props.media[0].image}` : undefined;
 
   const isSmall = SCREEN_WIDTH < 360;     // компактные телефоны
   const isNarrow = SCREEN_WIDTH < 410;    // узкие телефоны → кнопки в столбец
