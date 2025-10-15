@@ -14,7 +14,7 @@ export const MessagesDmScreen = ({route}) => {
     const user = useSelector(state => state.auth);
     const [messages, setMessages] = useState([]);
     const video = useRef(null);
-    const socket = new WebSocket(`ws://market.qorgau-city.kz/chat/?token=${user.token}`);
+    const socket = new WebSocket(`wss://market.qorgau-city.kz/chat/?token=${user.token}`);
     const {height, width} = Dimensions.get('window')
 
     useEffect(() => {
@@ -33,7 +33,6 @@ export const MessagesDmScreen = ({route}) => {
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(user.user.username,data?.data?.messages);
 
         if (data.source === 'message.list' && data.data && data.data.messages) {
             const receivedMessages = data.data.messages.map(msg => ({
@@ -46,7 +45,6 @@ export const MessagesDmScreen = ({route}) => {
                     avatar: `https://market.qorgau-city.kz/${msg.user.profile_image}`
                 }
             }));
-            console.log(receivedMessages);
             setMessages(receivedMessages);
 
         } else if (data.source === 'message.send' && data.data && data.data.messages) {
@@ -106,7 +104,7 @@ export const MessagesDmScreen = ({route}) => {
     socket.addEventListener('disconnect', handleSocketDisconnect);
 
     return (
-        <View style={{ height:height - 180, marginBottom: 0 }}>
+        <View style={{ height:height - 180, marginBottom: 0, flex: 1 }}>
             {data ? 
                 <View style={{marginTop:20,width:'90%',alignSelf:'center'}}>
                     <View style={{marginBottom:10}}>

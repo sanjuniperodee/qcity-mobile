@@ -2,7 +2,7 @@
   "expo": {
     "name": "Qorgau Marketplace",
     "slug": "qorgau-marketplace",
-    "version": "1.8.3",
+    "version": "1.9.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,7 +21,7 @@
       "config": {
         "googleMapsApiKey": "AIzaSyBsasFM_cSM1v5WD3TjMt9ioLgzijOgxxY"
       },
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
@@ -57,7 +57,7 @@
       },
       "jsEngine": "hermes",
       "package": "com.verozroke.qorgaucity",
-      "versionCode": 183
+      "versionCode": 190
     },
     "web": {
       "favicon": "./assets/favicon.png"

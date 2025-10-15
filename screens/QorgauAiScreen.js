@@ -57,10 +57,18 @@ export const QorgauAiScreen = () => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 100);
 
-      const prompt = `Вы - эксперт по пожарной безопасности в Республике Казахстан. Ваши ответы должны быть профессиональными и содержать информацию о правилах пожарной безопасности. Не представляйся если не просят. Вот вопрос: ${inputText}`;
+      const prompt = `Вы - профессиональный консультант маркетплейса Qorgau по пожарной безопасности в Республике Казахстан. 
+Ваша задача:
+1. Помогать пользователям с вопросами о товарах и услугах в сфере пожарной безопасности
+2. Консультировать по нормам и правилам пожарной безопасности РК
+3. Рекомендовать категории товаров/услуг для их нужд
+4. Отвечать на вопросы о промышленной безопасности
+5. Давать компетентные советы по выбору оборудования и услуг
+
+Отвечайте кратко, профессионально и по делу. Не представляйтесь если не просят.
+Вот вопрос: ${inputText}`;
       model.generateContent(prompt).then(result => {
         const responseText = result.response.text();
-        console.log(responseText);
 
         const formattedResponse = responseText
           .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
@@ -85,13 +93,20 @@ export const QorgauAiScreen = () => {
       <View style={styles.container}>
         {messages.length === 0 && (
           <View style={{ alignItems: 'center', marginTop: 100, width: '90%', marginHorizontal: '5%' }}>
-            <Text style={[styles.header, { fontSize: 14, color: '#F09235' }]}>
-              Знакомьтесь
+            <Text style={[styles.header, { fontSize: 16, color: '#F09235', fontWeight: 'bold' }]}>
+              Добро пожаловать в Qorgau AI
             </Text>
-            <Text style={styles.header}>
-              Qorgau AI - это эксперт по пожарной безопасности в Республике Казахстан. Он может
-              ответить на ваши вопросы о правилах пожарной безопасности и дать вам
-              профессиональные консультации.
+            <Text style={[styles.header, { fontSize: 14, marginTop: 10 }]}>
+              Ваш персональный консультант по пожарной и промышленной безопасности
+            </Text>
+            <Text style={[styles.header, { fontSize: 12, marginTop: 15, color: '#666' }]}>
+              Примеры вопросов:
+            </Text>
+            <Text style={[styles.header, { fontSize: 11, marginTop: 5, color: '#888', textAlign: 'left' }]}>
+              • "Какие огнетушители нужны для офиса?"{'\n'}
+              • "Как выбрать пожарную сигнализацию?"{'\n'}
+              • "Нормы пожарной безопасности для склада"{'\n'}
+              • "Обучение по промышленной безопасности"
             </Text>
           </View>
         )}

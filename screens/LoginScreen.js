@@ -17,18 +17,46 @@ export const LoginScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const {width} = Dimensions.get('window');
 
-
-    const [showPassword, setShowPassword] = useState(false); 
+    const [showPassword, setShowPassword] = useState(false);
+    const [inputType, setInputType] = useState(''); // 'email' or 'phone' 
 
     const toggleShowPassword = () => { 
         setShowPassword(!showPassword); 
     }; 
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePhone = (phone) => {
+        const phoneRegex = /^\+7\s?\d{3}\s?\d{3}\s?\d{2}\s?\d{2}$/;
+        return phoneRegex.test(phone);
+    };
+
+    const detectInputType = (input) => {
+        if (validateEmail(input)) {
+            setInputType('email');
+            return 'email';
+        } else if (validatePhone(input)) {
+            setInputType('phone');
+            return 'phone';
+        }
+        return null;
+    };
 
     const validateForm = () => {
         if (!login.trim() || !password.trim()) {
             setError('Пожалуйста заполните пустые поля');
             return false;
         }
+        
+        const detectedType = detectInputType(login);
+        if (!detectedType) {
+            setError('Введите корректный email или номер телефона (+7 XXX XXX XX XX)');
+            return false;
+        }
+        
         setError('');
         return true;
     };
@@ -47,14 +75,13 @@ export const LoginScreen = () => {
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                  username: login,
+                  [inputType === 'email' ? 'email' : 'phone']: login,
                   password: password,
               }),
           });
   
           if (response.ok) {
               const data = await response.json();
-              console.log(data);
               const { id, username, email, profile, profile_image } = data.user;
               dispatch(loginSuccess({ id, username, email, profile, profile_image }, data.token));
               const parent = navigation.getParent();
@@ -70,7 +97,6 @@ export const LoginScreen = () => {
                 });
                 }
           } else {
-              console.log('Login failed');
               setIsLoading(false); 
               Alert.alert('Имя пользователя или пароль не правильный', '')
           }
@@ -109,21 +135,25 @@ export const LoginScreen = () => {
                     <View style={{marginTop:40}}>
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('register.write_name')}</Text>
                         <TextInput
-                            style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
+                            style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',fontSize:16}}
                             onChangeText={onChangeLogin}
                             value={login}
-                            placeholder={t('login.input_fields')}
+                            placeholder="Email или номер телефона"
+                            autoCapitalize="none"
+                            autoCorrect={false}
                         />
                     </View>
                     <View style={{marginTop:15,width: width - 40}}>
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('password')}</Text>
                         <View style={{flexDirection:'row',alignItems:'center',width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}>
                             <TextInput
-                                style={{width:'90%'}}
+                                style={{width:'90%',fontSize:16}}
                                 onChangeText={onChangePassword}
                                 value={password}
                                 placeholder={t('password')}
                                 secureTextEntry={!showPassword}
+                                autoCapitalize="none"
+                                autoCorrect={false}
                             />
                             <MaterialCommunityIcons 
                                 name={showPassword ? 'eye-off' : 'eye'} 

@@ -8,7 +8,7 @@ export default function ResetPasswordScreen() {
   const { width } = Dimensions.get('window');
   const route = useRoute();
   const navigation = useNavigation();
-  const { email } = route.params as { email: string };
+  const { email, type } = route.params as { email: string; type?: string };
 
   const handleResetPassword = async () => {
     if (!code.trim() || !newPassword.trim()) {
@@ -20,7 +20,11 @@ export default function ResetPasswordScreen() {
       const response = await fetch('https://market.qorgau-city.kz/api/password-reset/confirm/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code, new_password: newPassword }),
+        body: JSON.stringify({ 
+          [type === 'phone' ? 'phone' : 'email']: email, 
+          code, 
+          new_password: newPassword 
+        }),
       });
 
       if (response.ok) {

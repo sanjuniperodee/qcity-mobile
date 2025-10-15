@@ -84,32 +84,39 @@ export const CreatePostScreen = () => {
 
   const validateFields = () => {
     const fieldsToCheck = [
-      { value: title, ref: titleRef },
-      { value: cost, ref: costRef },
-      { value: content, ref: contentRef },
-      { value: phone, ref: phoneRef },
-      { value: city, ref: cityRef }
+      { value: title, ref: titleRef, name: 'Название', placeholder: 'Введите название' },
+      { value: cost, ref: costRef, name: 'Цена', placeholder: 'Введите цену' },
+      { value: content, ref: contentRef, name: 'Описание', placeholder: 'Введите описание' },
+      { value: phone, ref: phoneRef, name: 'Телефон', placeholder: '+7 777 777 777' },
+      { value: city, ref: cityRef, name: 'Город', placeholder: 'Выберите город' }
     ];
 
     let hasError = false;
+    let firstErrorField = null;
 
+    // Проверка обязательных полей
     for (const field of fieldsToCheck) {
-      const hasValue = !!field.value;
+      const hasValue = !!field.value?.trim();
       if (!hasValue) {
-        if (field.ref?.current?.props?.placeholder === '+7 777 777 777') {
+        if (!firstErrorField) firstErrorField = field;
+        
+        if (field.name === 'Телефон') {
           setPhoneError(true);
-          Alert.alert('Ошибка', 'Введите номер телефона');
         }
         hasError = true;
-        field.ref.current?.focus?.();
-        field.ref.current?.setNativeProps?.({ style: { borderColor: 'red', borderWidth: 1 } });
+        field.ref.current?.setNativeProps?.({ style: { borderColor: 'red', borderWidth: 2 } });
       } else {
-        field.ref.current?.setNativeProps?.({ style: { borderColor: '#ccc', borderWidth: 1 } });
+        field.ref.current?.setNativeProps?.({ style: { borderColor: '#D6D6D6', borderWidth: 1 } });
+        if (field.name === 'Телефон') {
+          setPhoneError(false);
+        }
       }
     }
 
+    // Проверка медиафайлов
     if (categoryIdParam !== 3 && images.length === 0) {
       setMediaError(true);
+      Alert.alert('Ошибка', 'Добавьте хотя бы одно фото или видео');
       mediaRef.current?.measureLayout(
         scrollViewRef.current,
         (x, y) => {
@@ -117,33 +124,47 @@ export const CreatePostScreen = () => {
         }
       );
       return false;
+    } else {
+      setMediaError(false);
     }
 
+    // Проверка города
     if (!city) {
       setCityError('Выберите город');
-      mediaRef.current?.measureLayout(
-        scrollViewRef.current,
-        (x, y) => {
-          scrollViewRef.current.scrollTo({ y, animated: true });
-        }
-      );
+      Alert.alert('Ошибка', 'Выберите город');
       hasError = true;
     } else {
       setCityError(false);
     }
 
+    // Проверка категории
     if (!category) {
       hasError = true;
+      setCategoryError(true);
+      Alert.alert('Ошибка', 'Выберите подкатегорию');
       scrollViewRef.current?.scrollTo({
         y: categoryLayoutY - 40,
         animated: true,
       });
-      setCategoryError(true);
     } else {
       setCategoryError(false);
     }
 
-    if (hasError) return false;
+    // Скролл к первому полю с ошибкой
+    if (hasError && firstErrorField) {
+      firstErrorField.ref.current?.measureLayout(
+        scrollViewRef.current,
+        (x, y) => {
+          scrollViewRef.current.scrollTo({ y: y - 100, animated: true });
+        }
+      );
+      firstErrorField.ref.current?.focus?.();
+    }
+
+    if (hasError) {
+      Alert.alert('Ошибка валидации', 'Пожалуйста, заполните все обязательные поля');
+      return false;
+    }
     return true;
   };
 

@@ -31,7 +31,6 @@ export const ProductCard = (props) => {
       setIsFavourite(true);
     }
   };
-  console.log(props.image);
   
 
   useEffect(() => {
