@@ -172,7 +172,7 @@ export const LoginScreen = () => {
                             <Text style={{color:'#FFF',fontSize:16,}}>{t('login.login')}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
                             <Text style={{marginTop:30, color:'#96949D',fontSize:15, textAlign:'center'}}>
                                 Забыли пароль?
                             </Text>
