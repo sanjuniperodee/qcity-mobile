@@ -87,7 +87,7 @@ export const ProfileRegistrationScreen = ({route}) => {
             body: formData,
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'multipart/form-data',
+              // НЕ устанавливаем Content-Type для FormData - браузер сделает это автоматически с boundary
             },
           });
     
