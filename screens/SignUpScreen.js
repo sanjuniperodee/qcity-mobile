@@ -211,7 +211,7 @@ export const SignUpScreen = () => {
                     <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => (navigation as any).navigate('Login', { prefill: method==='phone' ? normalizeKzPhone(`+77${phoneDigits}`) : login })}
+                    onPress={() => navigation.navigate('Login', { prefill: method==='phone' ? normalizeKzPhone(`+77${phoneDigits}`) : login })}
                     style={{alignItems:'center', marginTop:14}}
                     activeOpacity={0.7}
                 >
