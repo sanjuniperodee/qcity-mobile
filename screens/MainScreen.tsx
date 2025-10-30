@@ -76,6 +76,7 @@ const NotificationDebug = React.memo(() => {
 });
 const UpdateWatcher = React.memo(() => {
   const { isUpdatePending } = Updates.useUpdates();
+  const { t } = useTranslation();
   useEffect(() => { if (isUpdatePending) Updates.reloadAsync().catch(() => Alert.alert(t('common.error'))); }, [isUpdatePending, t]);
   return null;
 });
