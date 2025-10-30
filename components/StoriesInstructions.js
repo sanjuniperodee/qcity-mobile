@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Animated,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import { PanResponder } from 'react-native';
 
@@ -111,6 +112,9 @@ export const StoriesInstructions = ({ visible, onClose, story }) => {
   return (
     <Modal visible={visible} animationType="fade" transparent>
       <View {...panResponder.panHandlers}>
+        <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.8}>
+          <Text style={styles.closeTxt}>✕</Text>
+        </TouchableOpacity>
         <TouchableWithoutFeedback
           onPress={handlePress}
           onPressIn={handlePressIn}
@@ -163,6 +167,19 @@ const styles = StyleSheet.create({
     height,
     justifyContent: 'space-between',
   },
+  closeBtn: {
+    position: 'absolute',
+    right: 12,
+    top: 28,
+    zIndex: 5,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  closeTxt: { color: '#fff', fontSize: 18, lineHeight: 18 },
   progressContainer: {
     flexDirection: 'row',
     paddingTop: 50,
