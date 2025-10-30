@@ -47,6 +47,8 @@
     "create_acc": "Қосымшаның барлық мүмкіндіктерін пайдалану үшін тіркелгі жасаңыз",
     "profile_pic": "Профиль суреті",
     "write_name": "Атыңызды енгізіңіз",
+    "no_spaces_special_chars": "Пайдаланушы атын бос орынсыз және арнайы белгілерсіз енгізіңіз",
+    "account_creation": "Тіркелгі жасау",
     "error": {
       "login_required": "Имя пользователя енгізу қажет.",
       "password_required": "Құпия сөзді енгізу қажет.",
@@ -60,7 +62,10 @@
   "login": {
     "login": "Кіру",
     "login_to_acc": "Өз тіркелгіңізге кіріңіз",
-    "input_fields": "Енгізу өрістері"
+    "input_fields": "Енгізу өрістері",
+    "forgot_password": "Құпия сөзді ұмыттыңыз ба?",
+    "already_have_account": "Тіркелгіңіз бар ма?",
+    "login_link": "Кіру"
   },
   "main": {
     "hello": "Сәлеметсіз бе",
@@ -103,7 +108,33 @@
     "error": "Қате",
     "access_denied": "Қол жеткізу тыйым салынған",
     "network": "Желі",
-    "error_code": "Код {{code}}"
+    "error_code": "Код {{code}}",
+    "success": "Сәтті",
+    "done": "Дайын"
+  },
+  "alerts": {
+    "error": {
+      "empty_fields": "Бос өрістерді толтырыңыз",
+      "invalid_contact": "Жарамды электрондық пошта немесе телефон нөмірін енгізіңіз (+7 XXX XXX XX XX)",
+      "invalid_email_phone": "Электрондық пошта немесе телефон нөмірін енгізіңіз",
+      "password_changed": "Құпия сөз өзгертілді",
+      "phone_number_unavailable": "Телефон нөмірі қолжетімді емес",
+      "wrong_url": "Жарамсыз URL",
+      "validation_error": "Тексеру қатесі",
+      "fill_required_fields": "Барлық міндетті өрістерді толтырыңыз"
+    },
+    "success": {
+      "password_reset": "Құпия сөз өзгертілді",
+      "post_edited": "Пост сәтті өңделді"
+    },
+    "permission": {
+      "media_access": "Файлдарды таңдау үшін медиаға қол жеткізу қажет",
+      "camera_access": "Фото/бейне түсіру үшін камераға қол жеткізу қажет"
+    },
+    "media": {
+      "upload_media": "Медиа жүктеу",
+      "choose_source": "Дереккөзді таңдаңыз"
+    }
   },
   "extra_info": "Қосымша ақпарат",
   "product_statement": "Тауардың күйі",

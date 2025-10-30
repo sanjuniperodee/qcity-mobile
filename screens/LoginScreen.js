@@ -99,14 +99,14 @@ export const LoginScreen = () => {
 
     const validateForm = () => {
         if (!login.trim() || !password.trim()) {
-            setError('Пожалуйста заполните пустые поля');
+            setError(t('alerts.error.empty_fields'));
             return false;
         }
         
         const detectedType = method === 'email' ? 'email' : (validatePhone(login) ? 'phone' : null);
         setInputType(detectedType || '');
         if (!detectedType) {
-            setError('Введите корректный email или номер телефона (+7 XXX XXX XX XX)');
+            setError(t('alerts.error.invalid_contact'));
             return false;
         }
         
@@ -160,7 +160,7 @@ export const LoginScreen = () => {
               setError(parsed.message);
           }
       } catch (error) {
-          Alert.alert('Ошибка', error)
+          Alert.alert(t('common.error'), error)
       }
   };
 
@@ -182,7 +182,7 @@ export const LoginScreen = () => {
                 <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <ActivityIndicator size="large" color="#0000ff" />
-                    <Text style={styles.modalText}>Вход в аккаунт</Text>
+                    <Text style={styles.modalText}>{t('login.login_to_acc')}</Text>
                 </View>
                 </View>
             </Modal>
@@ -238,7 +238,7 @@ export const LoginScreen = () => {
 
                         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                             <Text style={{marginTop:30, color:colors.textMuted,fontSize:15, textAlign:'center'}}>
-                                Забыли пароль?
+                                {t('login.forgot_password')}
                             </Text>
                         </TouchableOpacity>
                     </View>

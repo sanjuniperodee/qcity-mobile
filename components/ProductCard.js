@@ -47,8 +47,22 @@ export const ProductCard = (props) => {
 
 
     return (
-        <TouchableOpacity onPress={()=>{navigation.push('ViewPost',{id:props.id})}} style={{width:'100%',height:320,marginBottom:spacing.md,borderRadius:radius.md,borderWidth: props.tariff === 2 ? 2 : 0, 
-            borderColor: props.tariff === 2 ? colors.primary : 'transparent' }}>
+        <TouchableOpacity 
+          onPress={()=>{navigation.push('ViewPost',{id:props.id})}} 
+          style={{
+            width: '100%',
+            height: 320,
+            marginBottom: spacing.md,
+            borderRadius: radius.md,
+            borderWidth: props.tariff === 2 ? 2 : 0, 
+            borderColor: props.tariff === 2 ? colors.primary : 'transparent',
+            backgroundColor: '#FFFFFF',
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 2,
+            elevation: 2
+          }}>
           <View>
             <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',bottom:10,zIndex:2,left:10,position:'absolute'}}>
               <View style={{flexDirection:'row',marginTop:4}}>

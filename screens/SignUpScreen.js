@@ -211,7 +211,7 @@ export const SignUpScreen = () => {
                     style={{alignItems:'center', marginTop:14}}
                     activeOpacity={0.7}
                 >
-                    <Text style={{ color:colors.textMuted }}>Уже есть аккаунт? <Text style={{ color:colors.primary }}>Войти</Text></Text>
+                    <Text style={{ color:colors.textMuted }}>{t('login.already_have_account')} <Text style={{ color:colors.primary }}>{t('login.login_link')}</Text></Text>
                 </TouchableOpacity>
             </View>
             </View>

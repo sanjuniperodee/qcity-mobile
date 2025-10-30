@@ -1,15 +1,15 @@
 {
   "tabs": {
     "home": "Home",
-    "feed": "Favourites",
-    "create_new": "Create",
+    "feed": "Favorites",
+    "create_new": "New Listing",
     "messages": "Messages",
-    "profile": "Profile"
+    "profile": "Your Profile"
   },
   "categories_main": {
     "services": "Services",
     "products": "Products",
-    "findEmployee": "Find employee",
+    "findEmployee": "Find Specialist",
     "qorgauAi": "Qorgau AI",
     "other": "Other",
     "securityAgencies": "Security Agencies",
@@ -48,6 +48,8 @@
     "create_acc": "Create an account to use all features",
     "profile_pic": "Profile photo",
     "write_name": "Enter your username",
+    "no_spaces_special_chars": "Enter a username without spaces or special characters",
+    "account_creation": "Account creation",
     "error": {
       "login_required": "Username is required.",
       "password_required": "Password is required.",
@@ -61,7 +63,10 @@
   "login": {
     "login": "Login",
     "login_to_acc": "Login to your account",
-    "input_fields": "Input fields"
+    "input_fields": "Input fields",
+    "forgot_password": "Forgot password?",
+    "already_have_account": "Already have an account?",
+    "login_link": "Login"
   },
   "main": {
     "hello": "Hello",
@@ -104,7 +109,33 @@
     "error": "Error",
     "access_denied": "Access denied",
     "network": "Network",
-    "error_code": "Code {{code}}"
+    "error_code": "Code {{code}}",
+    "success": "Success",
+    "done": "Done"
+  },
+  "alerts": {
+    "error": {
+      "empty_fields": "Please fill in all empty fields",
+      "invalid_contact": "Enter a valid email or phone number (+7 XXX XXX XX XX)",
+      "invalid_email_phone": "Enter email or phone number",
+      "password_changed": "Password changed",
+      "phone_number_unavailable": "Phone number is not available",
+      "wrong_url": "Invalid URL",
+      "validation_error": "Validation error",
+      "fill_required_fields": "Please fill in all required fields"
+    },
+    "success": {
+      "password_reset": "Password has been changed",
+      "post_edited": "Post successfully edited"
+    },
+    "permission": {
+      "media_access": "Need media access to select files",
+      "camera_access": "Need camera access to take photos/videos"
+    },
+    "media": {
+      "upload_media": "Upload media",
+      "choose_source": "Choose source"
+    }
   },
   "categories": {
     "transport": "Transport",

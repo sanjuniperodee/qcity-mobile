@@ -31,7 +31,7 @@ export const ProfileRegistrationScreen = ({route}) => {
         isValid = false;
     } else if (/[\s_]/.test(name)) {
         // Проверяем наличие пробелов или символов подчеркивания
-        setNameError('Введите Имя пользователя без пробелов и специальных знаков');
+        setNameError(t('register.no_spaces_special_chars'));
         isValid = false;
     } else {
         setNameError('');
@@ -45,7 +45,7 @@ export const ProfileRegistrationScreen = ({route}) => {
       (async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
-          alert('Нам нужно разрешение на использование галереи, для того чтобы прикрепить фото');
+          alert(t('alerts.permission.media_access'));
         }
       })();
     }, []);
@@ -145,7 +145,7 @@ export const ProfileRegistrationScreen = ({route}) => {
           <View style={styles.centeredView}>
           <View style={styles.modalView}>
               <ActivityIndicator size="large" color="#0000ff" />
-              <Text style={styles.modalText}>Создание аккаунта</Text>
+              <Text style={styles.modalText}>{t('register.account_creation')}</Text>
           </View>
           </View>
       </Modal>

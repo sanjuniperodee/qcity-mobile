@@ -368,8 +368,14 @@ export const HomeScreen = () => {
         ref={listRef}
         data={posts}
         numColumns={2}
-        style={{ paddingHorizontal: 10 }}
-        contentContainerStyle={{ justifyContent: 'center', paddingBottom: 60 }}
+        style={{ paddingHorizontal: 5 }}
+        columnWrapperStyle={Dimensions.get('window').width >= 1024 ? { justifyContent: 'center' } : undefined}
+        contentContainerStyle={{ 
+          justifyContent: 'center', 
+          paddingBottom: 60,
+          maxWidth: Dimensions.get('window').width >= 1024 ? 1200 : '100%',
+          alignSelf: 'center'
+        }}
         keyExtractor={(item) => item.id.toString()}
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
@@ -386,7 +392,13 @@ export const HomeScreen = () => {
         }
         ListHeaderComponent={headerEl}
         renderItem={({ item }) => (
-          <View style={{ width: '50%', alignItems: 'center' }}>
+          <View style={{ 
+            width: '50%', 
+            alignItems: 'center',
+            paddingHorizontal: 5,
+            paddingVertical: 5,
+            maxWidth: Dimensions.get('window').width >= 1024 ? 300 : '50%'
+          }}>
             <MemoProductCard
               key={item.id}
               id={item.id}

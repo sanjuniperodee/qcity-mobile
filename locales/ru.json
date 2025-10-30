@@ -47,6 +47,8 @@
       "create_acc": "Создайте аккаунт чтобы пользоваться всеми функциями приложения",
       "profile_pic": "Фото профиля",
       "write_name": "Введите ваше имя пользователя",
+      "no_spaces_special_chars": "Введите Имя пользователя без пробелов и специальных знаков",
+      "account_creation": "Создание аккаунта",
       "error": {
         "login_required": "Требуется ввести имя пользователя.",
         "password_required": "Требуется ввести пароль.",
@@ -60,7 +62,10 @@
     "login": {
         "login": "Войти",
         "login_to_acc": "Войдите в свой аккаунт",
-        "input_fields": "Поле для ввода"
+        "input_fields": "Поле для ввода",
+        "forgot_password": "Забыли пароль?",
+        "already_have_account": "Уже есть аккаунт?",
+        "login_link": "Войти"
     },
     "main":{
       "hello":"Здравствуйте",
@@ -103,7 +108,33 @@
       "error": "Ошибка",
       "access_denied": "Доступ запрещён",
       "network": "Сеть",
-      "error_code": "Код {{code}}"
+      "error_code": "Код {{code}}",
+      "success": "Успех",
+      "done": "Готово"
+    },
+    "alerts": {
+      "error": {
+        "empty_fields": "Пожалуйста заполните пустые поля",
+        "invalid_contact": "Введите корректный email или номер телефона (+7 XXX XXX XX XX)",
+        "invalid_email_phone": "Введите email или номер телефона",
+        "password_changed": "Пароль изменён",
+        "phone_number_unavailable": "Телефонный номер не доступен",
+        "wrong_url": "Не правильный адрес",
+        "validation_error": "Ошибка валидации",
+        "fill_required_fields": "Пожалуйста, заполните все обязательные поля"
+      },
+      "success": {
+        "password_reset": "Пароль изменён",
+        "post_edited": "Пост успешно изменен"
+      },
+      "permission": {
+        "media_access": "Нужен доступ к медиа, чтобы выбирать файлы",
+        "camera_access": "Нужен доступ к камере, чтобы снимать фото/видео"
+      },
+      "media": {
+        "upload_media": "Загрузить медиа",
+        "choose_source": "Выберите источник"
+      }
     },
     "categories":{
       "transport": "Транспорт",
