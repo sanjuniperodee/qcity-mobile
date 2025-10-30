@@ -66,7 +66,15 @@
   "main": {
     "hello": "Hello",
     "lets": "Let's check out new listings",
-    "search_catalog": "Search the catalog"
+    "search_catalog": "Search the catalog",
+    "categories": "Categories",
+    "no_listings": "No listings"
+  },
+  "location": {
+    "all_kazakhstan": "All Kazakhstan",
+    "header": "Location",
+    "placeholder": "Select city",
+    "options": ["Astana", "Almaty", "Shymkent", "Kyzylorda"]
   },
   "profile_settings": {
     "editing_profile": "Editing profile",
@@ -138,11 +146,6 @@
     "min_length_instruction": "Enter at least 40 characters",
     "length_display": "{content.length}/9000",
     "placeholder": "Describe your product or service in detail"
-  },
-  "location": {
-    "header": "Location",
-    "placeholder": "Select city",
-    "options": ["Astana", "Almaty", "Shymkent", "Kyzylorda"]
   },
   "additional_fields": {
     "brand": {
