@@ -55,6 +55,9 @@ i18n
       },
       ru: {
         translation: require('./locales/ru.json')
+      },
+      en: {
+        translation: require('./locales/en.json')
       }
     }
   });

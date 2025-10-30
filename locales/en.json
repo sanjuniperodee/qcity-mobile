@@ -199,6 +199,46 @@
     "length_display": "{content.length}/9000",
     "placeholder": "Describe your product or service in detail"
   },
+  "common": {
+    "error": "Error",
+    "success": "Success",
+    "done": "Done",
+    "cancel": "Cancel",
+    "access_denied": "Access denied",
+    "network": "Network error",
+    "error_code": "Error code: {{code}}",
+    "validation_error": "Validation Error",
+    "phone_number_unavailable": "Phone number unavailable"
+  },
+  
+  "alerts": {
+    "error": {
+      "empty_fields": "Please fill all required fields",
+      "invalid_contact": "Enter a valid email or phone number",
+      "validation": "Please fill all required fields correctly",
+      "add_at_least_one_photo": "Add at least one photo or video",
+      "select_city": "Select a city",
+      "select_subcategory": "Select a subcategory"
+    },
+    "success": {
+      "post_edited": "Post successfully edited",
+      "password_changed": "Password changed",
+      "code_sent": "Code has been sent"
+    },
+    "permission": {
+      "media_access": "Media access permission is required to select files",
+      "camera_access": "Camera access permission is required to take photos/videos"
+    }
+  },
+  
+  "create_post": {
+    "upload_media": "Upload media",
+    "select_source": "Select source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "cancel": "Cancel"
+  },
+  
   "additional_fields": {
     "brand": {
       "header": "Brand",

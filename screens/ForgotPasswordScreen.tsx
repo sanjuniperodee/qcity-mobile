@@ -5,6 +5,7 @@ import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
 import { colors } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { parseApiError } from '../utils/apiError';
 
 export default function ForgotPasswordScreen() {
@@ -14,6 +15,7 @@ export default function ForgotPasswordScreen() {
   const [phoneDigits, setPhoneDigits] = useState('');
   const { width } = Dimensions.get('window');
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,13 +71,13 @@ export default function ForgotPasswordScreen() {
 
   const handleRequestCode = async () => {
     if (!email.trim()) {
-      Alert.alert('Ошибка', 'Введите email или номер телефона');
+      Alert.alert(t('common.error'), t('alerts.error.empty_fields'));
       return;
     }
 
     const detectedType = method === 'email' ? 'email' : (validatePhone(email) ? 'phone' : null);
     if (!detectedType) {
-      Alert.alert('Ошибка', 'Введите корректный email или номер телефона (+7 XXX XXX XX XX)');
+      Alert.alert(t('common.error'), t('alerts.error.invalid_contact'));
       return;
     }
 
@@ -92,14 +94,14 @@ export default function ForgotPasswordScreen() {
         const successMessage = detectedType === 'email' 
           ? 'Код отправлен на почту' 
           : 'Код отправлен на телефон';
-        Alert.alert('Успех', successMessage);
+        Alert.alert(t('common.success'), t('alerts.success.code_sent'));
         (navigation as any).navigate('ResetPassword', { email, type: detectedType });
       } else {
         const parsed = await parseApiError(response);
-        Alert.alert('Ошибка', parsed.message);
+        Alert.alert(t('common.error'), parsed.message);
       }
     } catch (error) {
-      Alert.alert('Ошибка', String(error));
+      Alert.alert(t('common.error'), String(error));
     }
   };
 

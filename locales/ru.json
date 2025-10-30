@@ -198,7 +198,47 @@
       "length_display": "{content.length}/9000",
       "placeholder": "Подробно описывайте ваш товар или услугу"
     },
-    "additional_fields": {
+    "common": {
+    "error": "Ошибка",
+    "success": "Успех",
+    "done": "Готово",
+    "cancel": "Отмена",
+    "access_denied": "Доступ запрещен",
+    "network": "Ошибка сети",
+    "error_code": "Код ошибки: {{code}}",
+    "validation_error": "Ошибка валидации",
+    "phone_number_unavailable": "Номер телефона недоступен"
+  },
+  
+  "alerts": {
+    "error": {
+      "empty_fields": "Пожалуйста, заполните все обязательные поля",
+      "invalid_contact": "Введите корректный email или номер телефона",
+      "validation": "Пожалуйста, заполните все обязательные поля правильно",
+      "add_at_least_one_photo": "Добавьте хотя бы одно фото или видео",
+      "select_city": "Выберите город",
+      "select_subcategory": "Выберите подкатегорию"
+    },
+    "success": {
+      "post_edited": "Пост успешно изменен",
+      "password_changed": "Пароль изменён",
+      "code_sent": "Код отправлен"
+    },
+    "permission": {
+      "media_access": "Нужен доступ к медиа, чтобы выбирать файлы",
+      "camera_access": "Нужен доступ к камере, чтобы снимать фото/видео"
+    }
+  },
+  
+  "create_post": {
+    "upload_media": "Загрузить медиа",
+    "select_source": "Выберите источник",
+    "camera": "Камера",
+    "gallery": "Галерея",
+    "cancel": "Отмена"
+  },
+  
+  "additional_fields": {
       "brand": {
         "header": "Марка",
         "placeholder": "Укажите марку"

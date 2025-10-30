@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect, useMemo } from 'react';
 import { View, Text, FlatList, ScrollView, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import { ProductCard } from '../components/ProductCard';
+import { ResponsiveProductGrid } from '../components/ResponsiveProductGrid';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import {
   useGetPostsByCategoryQuery,
   useGetPostsByCategoryAndCityQuery,
@@ -13,10 +15,11 @@ import { cities } from '../constants/cities';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCity } from '../actions/locationActions';
 
-const ALL_KZ = 'Весь Казахстан';
+const ALL_KZ = 'Весь Казахстан'; // Will be replaced by t('location.all_kazakhstan') in render
 
 export const GetPostsByCategoryScreen = ({ route }) => {
   const { categoryId } = route.params;
+  const { t } = useTranslation();
 
   const [page, setPage] = useState(1);
   const limit = 6;
@@ -146,20 +149,16 @@ export const GetPostsByCategoryScreen = ({ route }) => {
   };
 
   return (
-    <FlatList
+    <ResponsiveProductGrid
       data={posts}
-      numColumns={2}
-      style={{ paddingHorizontal: 10, marginBottom: 100 }}
-      contentContainerStyle={{ justifyContent: 'center' }}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
-      keyExtractor={item => item.id.toString()}
       ListHeaderComponent={() => (
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10 }}>
           {/* выбор города */}
           <View style={styles.filtersRow}>
             <TouchableOpacity style={styles.cityChip} onPress={() => setVisible(true)}>
-              <Text style={styles.cityChipText} numberOfLines={1}>{selectedCity || ALL_KZ}</Text>
+              <Text style={styles.cityChipText} numberOfLines={1}>{selectedCity || t('location.all_kazakhstan')}</Text>
               <Image style={{ width: 12, height: 12, marginLeft: 6 }} source={require('../assets/chevron-down.png')} />
             </TouchableOpacity>
           </View>
@@ -249,32 +248,13 @@ export const GetPostsByCategoryScreen = ({ route }) => {
           </Modal>
         </View>
       )}
-      renderItem={({ item }) => (
-        <View style={{ width: '50%', alignItems: 'center' }}>
-          <ProductCard
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            image={item.images?.[0]?.image || null}
-            cost={item.cost}
-            media={item.images}
-            condition={item.condition}
-            mortage={item.mortage}
-            delivery={item.delivery}
-            city={item.geolocation}
-            date={item.date}
-            tariff={item.tariff || 0}
-            isVisible={visibleItems.includes(item.id)}
-          />
-        </View>
-      )}
       onEndReached={loadMoreItems}
       onEndReachedThreshold={0.5}
       ListEmptyComponent={
         !isLoading && !isFetching ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
             <Text style={{ fontSize: 18, color: '#777' }}>
-              {isError ? (error?.data?.detail || 'Нет постов') : 'Нет постов'}
+              {isError ? (error?.data?.detail || t('main.no_listings')) : t('main.no_listings')}
             </Text>
           </View>
         ) : null

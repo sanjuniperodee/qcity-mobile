@@ -10,8 +10,16 @@ export const SelectLanguageScreen = () => {
     
     const handleLanguage = (language) => {
         i18n.changeLanguage(language)
-        try { if (typeof window !== 'undefined') window.localStorage.setItem('lng', language); } catch {}
-        navigation.navigate('LoginOrRegistration')
+        try { 
+            if (typeof window !== 'undefined') window.localStorage.setItem('lng', language); 
+        } catch (e) {
+            console.error("Error saving language to localStorage:", e);
+        }
+        
+        // Force reload of all translations
+        setTimeout(() => {
+            navigation.navigate('LoginOrRegistration')
+        }, 100);
     }
     return (
         <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:80}}>

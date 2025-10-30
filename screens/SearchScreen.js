@@ -87,10 +87,8 @@ export const SearchScreen = () => {
   return (
     <View style={{ width: '100%', alignItems: 'center', justifyContent: 'space-between'}}>
       <View style={{ width: '85%', alignItems: 'center', justifyContent: 'space-between',flexDirection: 'row'}}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('SearchScreen')}
+        <View
           style={styles.searchBox}
-          activeOpacity={1}
         >
           <Image style={{ width: 17, height: 17,marginRight: 10 }} source={require('../assets/search.png')} />
           <TextInput

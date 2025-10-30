@@ -6,6 +6,7 @@ import { logout } from '../actions/authActions';
 import { persistor } from '../store/index';
 import * as Device from 'expo-device';
 import { ProductCard } from '../components/ProductCard';
+import { ResponsiveProductGrid } from '../components/ResponsiveProductGrid';
 import { useGetPostListQuery, useGetPostListCityQuery } from '../api';
 import { useTranslation } from 'react-i18next';
 import * as Notifications from 'expo-notifications';
@@ -75,7 +76,7 @@ const NotificationDebug = React.memo(() => {
 });
 const UpdateWatcher = React.memo(() => {
   const { isUpdatePending } = Updates.useUpdates();
-  useEffect(() => { if (isUpdatePending) Updates.reloadAsync().catch(() => Alert.alert('Error')); }, [isUpdatePending]);
+  useEffect(() => { if (isUpdatePending) Updates.reloadAsync().catch(() => Alert.alert(t('common.error'))); }, [isUpdatePending, t]);
   return null;
 });
 
@@ -334,7 +335,13 @@ export const HomeScreen = () => {
                 if (category.id === 99) {
                   (navigation as any).navigate('QorgauAi', { selectedCity });
                 } else {
-                  (navigation as any).navigate('GetPostsByCategory', { categoryId: category, selectedCity });
+                  (navigation as any).navigate('GetPostsByCategory', { 
+                    categoryId: {
+                      id: category.id,
+                      name: category.name
+                    }, 
+                    selectedCity 
+                  });
                 }
               }}
             />
@@ -364,25 +371,10 @@ export const HomeScreen = () => {
       <NotificationDebug />
       <UpdateWatcher />
 
-      <FlatList
-        ref={listRef}
+      <ResponsiveProductGrid
         data={posts}
-        numColumns={2}
-        style={{ paddingHorizontal: 5 }}
-        columnWrapperStyle={Dimensions.get('window').width >= 1024 ? { justifyContent: 'center' } : undefined}
-        contentContainerStyle={{ 
-          justifyContent: 'center', 
-          paddingBottom: 60,
-          maxWidth: Dimensions.get('window').width >= 1024 ? 1200 : '100%',
-          alignSelf: 'center'
-        }}
-        keyExtractor={(item) => item.id.toString()}
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
-        initialNumToRender={6}
-        windowSize={7}
-        maxToRenderPerBatch={8}
-        removeClippedSubviews
         ListEmptyComponent={
           isLoading ? null : (
             <View style={{ padding: 40, alignItems: 'center' }}>
@@ -391,36 +383,11 @@ export const HomeScreen = () => {
           )
         }
         ListHeaderComponent={headerEl}
-        renderItem={({ item }) => (
-          <View style={{ 
-            width: '50%', 
-            alignItems: 'center',
-            paddingHorizontal: 5,
-            paddingVertical: 5,
-            maxWidth: Dimensions.get('window').width >= 1024 ? 300 : '50%'
-          }}>
-            <MemoProductCard
-              key={item.id}
-              id={item.id}
-              title={item.title}
-              image={item.images?.[0]?.image || null}
-              cost={item.cost}
-              media={item.images}
-              condition={item.condition}
-              mortage={item.mortage}
-              delivery={item.delivery}
-              city={item.geolocation}
-              date={item.date}
-              extra_fields={item.extra_fields}
-              tariff={item.tariff || 0}
-              isVisible={visibleItems.includes(item.id)}
-            />
-          </View>
-        )}
         onEndReached={loadMoreItems}
         onEndReachedThreshold={0.5}
         refreshing={refreshing}
         onRefresh={onRefresh}
+        ProductCardComponent={MemoProductCard}
         ListFooterComponent={
           <View style={{ marginBottom: 10 }}>
             {isLoading && <ActivityIndicator size="large" color={ORANGE} />}

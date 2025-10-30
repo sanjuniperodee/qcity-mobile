@@ -4,6 +4,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ProductCard } from '../components/ProductCard';
+import { ResponsiveProductGrid } from '../components/ResponsiveProductGrid';
 import { useListFavouritesQuery } from '../api';
 
 export const FavouriteScreen = () => {
@@ -97,33 +98,10 @@ export const FavouriteScreen = () => {
     : [];
 
   return (
-    <FlatList
+    <ResponsiveProductGrid
       data={items}
-      numColumns={2}
-      style={{ paddingHorizontal: 10, marginBottom: 100 }}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
-      contentContainerStyle={{ justifyContent: 'center' }}
-      keyExtractor={(item: any) => String(item.id)}
-      renderItem={({ item }) => (
-        <View style={{ width: '50%', alignItems: 'center' }}>
-          <ProductCard
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            image={item.images?.[0]?.image}
-            cost={item.cost}
-            media={item.images}
-            condition={item.condition}
-            mortage={item.mortage}
-            delivery={item.delivery}
-            city={item.geolocation}
-            date={item.date}
-            tariff={item.tariff || 0}
-            isVisible={visibleItems.includes(item.id)}
-          />
-        </View>
-      )}
       onEndReached={loadMoreItems}
       onEndReachedThreshold={0.5}
       ListEmptyComponent={

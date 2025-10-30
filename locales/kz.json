@@ -198,6 +198,46 @@
     "length_display": "{content.length}/9000",
     "placeholder": "Өніміңіз немесе қызметіңіз туралы толығырақ жазыңыз. Сатып алушының білуі керек маңызды детальдар қандай?"
   },
+  "common": {
+    "error": "Қате",
+    "success": "Сәтті",
+    "done": "Дайын",
+    "cancel": "Бас тарту",
+    "access_denied": "Рұқсат жоқ",
+    "network": "Желі қатесі",
+    "error_code": "Қате коды: {{code}}",
+    "validation_error": "Тексеру қатесі",
+    "phone_number_unavailable": "Телефон нөмірі қолжетімсіз"
+  },
+  
+  "alerts": {
+    "error": {
+      "empty_fields": "Барлық міндетті өрістерді толтырыңыз",
+      "invalid_contact": "Жарамды электрондық пошта немесе телефон нөмірін енгізіңіз",
+      "validation": "Барлық міндетті өрістерді дұрыс толтырыңыз",
+      "add_at_least_one_photo": "Кем дегенде бір фото немесе бейне қосыңыз",
+      "select_city": "Қаланы таңдаңыз",
+      "select_subcategory": "Субкатегорияны таңдаңыз"
+    },
+    "success": {
+      "post_edited": "Пост сәтті өзгертілді",
+      "password_changed": "Құпия сөз өзгертілді",
+      "code_sent": "Код жіберілді"
+    },
+    "permission": {
+      "media_access": "Файлдарды таңдау үшін медиа рұқсаты қажет",
+      "camera_access": "Фото/бейне түсіру үшін камера рұқсаты қажет"
+    }
+  },
+  
+  "create_post": {
+    "upload_media": "Медиа жүктеу",
+    "select_source": "Көзді таңдаңыз",
+    "camera": "Камера",
+    "gallery": "Галерея",
+    "cancel": "Бас тарту"
+  },
+  
   "additional_fields": {
     "brand": {
       "header": "Марка",

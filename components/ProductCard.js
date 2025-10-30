@@ -58,10 +58,12 @@ export const ProductCard = (props) => {
             borderColor: props.tariff === 2 ? colors.primary : 'transparent',
             backgroundColor: '#FFFFFF',
             shadowColor: "#000",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.1,
-            shadowRadius: 2,
-            elevation: 2
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.15,
+            shadowRadius: 4,
+            elevation: 3,
+            margin: 5,
+            padding: 5
           }}>
           <View>
             <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',bottom:10,zIndex:2,left:10,position:'absolute'}}>
