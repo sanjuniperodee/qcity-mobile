@@ -22,6 +22,7 @@
   "recommendation": "Recommendations",
   "welcome": "Let's start",
   "password": "Password",
+  "email": "Email",
   "kaz": "Kazakh",
   "rus": "Russian",
   "eng": "English",
@@ -36,6 +37,12 @@
   "select_language": {
     "select_language": "Select language",
     "you_could_change_language": "You can change it in profile settings"
+  },
+  "register": {
+    "register": "Register",
+    "register_of_acc": "Create account",
+    "create_acc": "Create an account to use all features",
+    "write_name": "Enter your username"
   },
   "login": {
     "login": "Login",
