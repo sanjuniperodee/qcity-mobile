@@ -8,6 +8,8 @@ import en from './locales/en.json';
 i18n
   .use(initReactI18next)
   .init({
+    load: 'languageOnly',
+    supportedLngs: ['ru', 'kz', 'en'],
     resources: {
       ru: {
         translation: ru,
@@ -20,7 +22,7 @@ i18n
       },
     },
     lng: "ru",
-    fallbackLng: ["ru", "kz"],
+    fallbackLng: 'ru',
     interpolation: {
       escapeValue: false,
     },

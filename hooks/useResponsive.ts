@@ -11,7 +11,8 @@ export function useResponsive() {
     const isWeb = width >= breakpoints.desktop;
 
     // Give more width per tile on phones for long RU labels
-    const columns = isPhone ? 2 : isTablet ? 3 : 4;
+    // Desktop: 3 колонки для категорий (даёт 3+3 вместо 4+2)
+    const columns = isPhone ? 2 : isTablet ? 3 : 3;
 
     return { width, isPhone, isTablet, isWeb, columns };
   }, [width]);

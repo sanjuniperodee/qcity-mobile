@@ -11,7 +11,6 @@ export const LoginOrRegistrationScreen = () => {
 
     return (
         <View style={{flex:1,alignItems:'center', justifyContent:'center',width:'90%',marginHorizontal:'5%'}}>
-            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
             <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
             <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('welcome')}</Text>
             <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:253,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('welcome_desc')}</Text>
@@ -27,19 +26,3 @@ export const LoginOrRegistrationScreen = () => {
         </View>
     );
   }
-
-function HeaderIcon(props) {
-    return (
-    <TouchableOpacity style={{position:'absolute',left:0, top:0}} onPress={props.onPress}>
-        <Image source={props.source}
-        style={styles.Icon}/>
-    </TouchableOpacity>
-    )
-}
-const styles = StyleSheet.create({
-    Icon: {
-        width: 16,
-        height: 32,
-        resizeMode: 'contain'
-    },
-});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ViewStyle, Platform } from 'react-native';
 import { colors, radius, spacing } from '../../theme/tokens';
 import { fontSizes, lineHeights } from '../../theme/typography';
 
@@ -11,8 +11,8 @@ type Props = {
   height?: number;
 };
 
-export default function CategoryTile({ icon, label, onPress, style, height = 120 }: Props) {
-  const fontSize = fontSizes.sm(12);
+export default function CategoryTile({ icon, label, onPress, style, height = Platform.select({ web: 96, default: 112 }) as number }: Props) {
+  const fontSize = Platform.select({ web: 12, default: 13 }) as number;
   const lh = lineHeights.md(fontSize);
 
   return (
@@ -28,7 +28,7 @@ export default function CategoryTile({ icon, label, onPress, style, height = 120
           numberOfLines={3}
           ellipsizeMode="tail"
           adjustsFontSizeToFit
-          minimumFontScale={0.75}
+          minimumFontScale={0.7}
         >
           {label}
         </Text>
@@ -43,19 +43,19 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconWrap: {
-    height: 36,
+    height: Platform.select({ web: 28, default: 32 }) as number,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.xs,
   },
   labelWrap: {
-    minHeight: 54, // резерв под 3 строки на небольших экранах
+    minHeight: 42, // резерв под 3 строки на небольших экранах
     width: '100%',
     justifyContent: 'center',
   },

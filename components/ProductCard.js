@@ -1,5 +1,6 @@
 import React, { useRef,useState,useEffect } from 'react';
 import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator } from 'react-native';
+import { colors, spacing, radius } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { Video, InterruptionModeAndroid, InterruptionModeIOS, ResizeMode } from 'expo-av';
 import { Image } from 'expo-image';
@@ -46,8 +47,8 @@ export const ProductCard = (props) => {
 
 
     return (
-        <TouchableOpacity onPress={()=>{navigation.push('ViewPost',{id:props.id})}} style={{width:windowWidth * .45,height:320,marginHorizontal: 5,borderRadius:7,marginBottom:15,borderWidth: props.tariff === 2 ? 2 : 0, 
-            borderColor: props.tariff === 2 ? '#F09235' : 'transparent' }}>
+        <TouchableOpacity onPress={()=>{navigation.push('ViewPost',{id:props.id})}} style={{width:'100%',height:320,marginBottom:spacing.md,borderRadius:radius.md,borderWidth: props.tariff === 2 ? 2 : 0, 
+            borderColor: props.tariff === 2 ? colors.primary : 'transparent' }}>
           <View>
             <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',bottom:10,zIndex:2,left:10,position:'absolute'}}>
               <View style={{flexDirection:'row',marginTop:4}}>
@@ -64,9 +65,9 @@ export const ProductCard = (props) => {
                     <Text
                       style={{
                         fontFamily: 'bold',
-                        backgroundColor: '#F09235',
+                        backgroundColor: colors.primary,
                         fontSize: 11,
-                        color: '#fff',
+                        color: colors.primaryText,
                         paddingHorizontal: 5,
                         paddingVertical: 3,
                       }}
@@ -80,7 +81,7 @@ export const ProductCard = (props) => {
             {props.media[0]?.type === 'video' ? 
               <View style={{position:'relative'}}>
                 {props.tariff === 1 && (
-                  <View style={{backgroundColor:'#F09235',paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
+                  <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
                     <Text style={{fontFamily: 'bold', fontSize: 12, color: '#fff'}}>ТОП</Text>
                   </View>  
                 )}
@@ -111,7 +112,7 @@ export const ProductCard = (props) => {
             :
             <View style={{position:'relative'}}>
                 {props.tariff === 1 && (
-                  <View style={{backgroundColor:'#F09235',paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
+                  <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
                     <Text style={{fontFamily: 'bold', fontSize: 12, color: '#fff'}}>ТОП</Text>
                   </View>  
                 )}
@@ -132,14 +133,14 @@ export const ProductCard = (props) => {
             }
           </View>
 
-          <View style={{paddingHorizontal:7}}>
-            <Text numberOfLines={2} ellipsizeMode="tail" style={{opacity:.8,fontSize:15,minHeight:20,marginTop:10,fontFamily:'medium',maxWidth:'100%'}}>{props.title}</Text>
-            <Text style={{fontFamily:'medium',marginTop:5,fontSize:18,color:'#000', textAlign:'left'}}>
+          <View style={{paddingHorizontal:spacing.sm}}>
+            <Text numberOfLines={2} ellipsizeMode="tail" style={{opacity:.9,fontSize:15,minHeight:20,marginTop:10,fontFamily:'medium',maxWidth:'100%'}}>{props.title}</Text>
+            <Text style={{fontFamily:'medium',marginTop:5,fontSize:18,color:colors.text, textAlign:'left'}}>
               {props.cost} ₸
             </Text>
             <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
-              <Text style={{fontFamily:'regular',fontSize:12,color:'#96949D',marginTop:5}}>{props.city}</Text>
-              <Text style={{fontFamily:'regular',fontSize:12,color:'#96949D',marginTop:5}}>{props.date}</Text>
+              <Text numberOfLines={1} style={{fontFamily:'regular',fontSize:12,color:colors.textMuted,marginTop:5, maxWidth:'55%'}}>{props.city}</Text>
+              <Text numberOfLines={1} style={{fontFamily:'regular',fontSize:12,color:colors.textMuted,marginTop:5, maxWidth:'40%', textAlign:'right'}}>{props.date}</Text>
             </View>
           </View>
         </TouchableOpacity>

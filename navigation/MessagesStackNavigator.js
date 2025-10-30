@@ -3,63 +3,26 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {View,StyleSheet,Text, TouchableOpacity, Image} from 'react-native';
 import { MessagesMainScreen } from '../screens/MessagesMainScreen';
 import { MessagesDmScreen } from '../screens/MessagesDmScreen';
+import BackButton from '../components/ui/BackButton';
 
 const Stack = createNativeStackNavigator();
 
 const MessagesStackNavigator = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Messages"
-        component={MessagesMainScreen}
-        options={({ navigation }) => ({
-          headerShadowVisible:false,
-          title: null,
-          headerLeft: () => (
-              <View style={styles.HeaderRight}>
-                  <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Сообщения</Text>
-              </View>
-          ),
-          })}/>
-      <Stack.Screen name="MessagesDm"
-        component={MessagesDmScreen}
-        options={({ navigation }) => ({
-          headerShadowVisible:false,
-          tabBarVisible: false,
-          title: null,
-          headerLeft: () => (
-              <View style={styles.HeaderRight}>
-                  <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                  <Text style={{fontFamily:'bold',fontSize:24,marginLeft:15}}>Сообщения</Text>
-              </View>
-          ),
-          })}/>
+    <Stack.Navigator
+      screenOptions={({ navigation }) => ({
+        headerShadowVisible:false,
+        headerTitle: 'Сообщения',
+        headerBackTitleVisible:false,
+        headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+      })}
+    >
+      <Stack.Screen name="Messages" component={MessagesMainScreen} />
+      <Stack.Screen name="MessagesDm" component={MessagesDmScreen} />
     </Stack.Navigator>
   );
 };
 
-function HeaderIcon(props) {
-  return (
-  <TouchableOpacity onPress={props.onPress}>
-      <Image source={props.source}
-      style={styles.Icon}/>
-  </TouchableOpacity>
-  )
-}
-const styles = StyleSheet.create({
-  Icon: {
-      width: 16,
-      height: 32,
-      resizeMode: 'contain'
-  },
-  HeaderRight: {
-      flexDirection: 'row',
-      alignItems: 'center'
-  },
-  HeaderTitle: {
-      fontFamily: 'bold',
-      fontSize: 18
-  },
-});
+const styles = StyleSheet.create({});
 
 export default MessagesStackNavigator;

@@ -11,88 +11,44 @@ import { SearchScreen } from '../screens/SearchScreen';
 import { GetPostsByCityScreen } from '../screens/GetPostsByCityScreen';
 import { QorgauAiScreen } from '../screens/QorgauAiScreen';
 
+import BackButton from '../components/ui/BackButton';
+
 const Main = createNativeStackNavigator();
 
 export default function MainStackNavigator({ route, navigation }) {
 
     return (
-        <Main.Navigator>
+        <Main.Navigator
+            screenOptions={({ navigation }) => ({
+                headerShadowVisible: false,
+                headerTitle: '',
+                headerBackTitleVisible: false,
+                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                contentStyle:{ backgroundColor:'#FFFFFF' }
+            })}
+        >
             <Main.Screen 
                 name='Home' 
                 component={HomeScreen}
-                options={() => ({
-                    headerShown:false,
-                    title: null,
-                    contentStyle:{
-                        backgroundColor:'#FFFFFF'
-                      }
-                    })}/>
+                options={() => ({ headerShown: false })}/>
             <Main.Screen 
                 name='ViewPost' 
                 component={PostViewScreen}
-                screenOptions={{
-                    headerShown: false,
-                  }}
-                options={({ navigation }) => ({
-                    contentStyle:{
-                        backgroundColor:'#FFFFFF'
-                      },
-                    headerShadowVisible:false,
-                    title: null,
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
-                    })}/>
+                options={() => ({})}/>
             <Main.Screen 
                 name='ViewUser' 
                 component={UserViewScreen}
-                screenOptions={{
-                    headerShown: false,
-                  }}
-                options={({ navigation }) => ({
-                    contentStyle:{
-                        backgroundColor:'#FFFFFF'
-                      },
-                    headerShadowVisible:false,
-                    title: null,
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
-                    })}/>
+                options={() => ({})}/>
             <Main.Screen 
                 name='GetPostsByCity' 
                 component={GetPostsByCityScreen}
-                options={({ route, navigation }) => ({
-                    contentStyle:{
-                        backgroundColor:'#FFFFFF'
-                      },
-                    headerShadowVisible:false,
-                    title: route.params.categoryName || 'Поиск по городу',
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
-                    })}/>
+                options={({ route }) => ({
+                    headerTitle: route.params.categoryName || 'Поиск по городу',
+                })}/>
             <Main.Screen 
                 name='ResultsSearchScreen' 
                 component={ResultsSearchScreen}
-                options={({ navigation }) => ({
-                    contentStyle:{
-                        backgroundColor:'#FFFFFF'
-                      },
-                    headerShadowVisible:false,
-                    title: 'Поиск',
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
-                    })}/>
+                options={() => ({ headerTitle: 'Поиск' })}/>
             <Main.Screen 
                 name='SearchScreen' 
                 component={SearchScreen}
@@ -111,64 +67,12 @@ export default function MainStackNavigator({ route, navigation }) {
             <Main.Screen 
                 name='GetPostsByCategory' 
                 component={GetPostsByCategoryScreen}
-                options={({ route, navigation }) => ({
-                    contentStyle:{
-                        backgroundColor:'#FFFFFF'
-                      },
-                    headerShadowVisible:false,
-                    title: route.params.categoryName || 'Услуги',
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
-                    })}/>
+                options={({ route }) => ({ headerTitle: route.params.categoryName || 'Услуги' })}/>
             <Main.Screen 
                 name='QorgauAi' 
                 component={QorgauAiScreen}
-                options={({ route, navigation }) => ({
-                    contentStyle:{
-                        backgroundColor:'#FFFFFF'
-                      },
-                    headerShadowVisible:false,
-                    title: 'Qorgau AI',
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
-                    })}/>
+                options={() => ({ headerTitle: 'Qorgau AI' })}/>
         
         </Main.Navigator>
     )
 }
-function HeaderIcon(props) {
-    return (
-    <TouchableOpacity onPress={props.onPress}>
-        <Image source={props.source}
-        style={props.side !== "right" ? styles.Icon : styles.rightIcon}/>
-    </TouchableOpacity>
-    )
-}
-const styles = StyleSheet.create({
-    Icon: {
-        marginLeft: 13,
-        width: 28,
-        height: 28,
-        resizeMode: 'contain'
-    },
-    rightIcon: {
-        marginLeft: 30,
-        width: 24,
-        height: 24,
-        resizeMode: 'contain'
-    },
-    HeaderRight: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    HeaderTitle: {
-        fontFamily: 'bold',
-        fontSize: 18
-    },
-});

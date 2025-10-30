@@ -1,12 +1,11 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity, Image } from 'react-native';
 import { hitSlop, colors } from '../../theme/tokens';
 
 export default function BackButton({ onPress }: { onPress: () => void }) {
   return (
     <TouchableOpacity onPress={onPress} hitSlop={hitSlop} style={{ paddingHorizontal: 8 }}>
-      <Ionicons name="chevron-back" size={24} color={colors.text} />
+      <Image source={require('../../assets/goback.png')} style={{ width: 22, height: 22, tintColor: colors.primary, resizeMode: 'contain' }} />
     </TouchableOpacity>
   );
 }

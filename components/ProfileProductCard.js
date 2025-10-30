@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { View, Text, Platform, Pressable, Animated, StyleSheet, Dimensions } from 'react-native';
+import { colors, spacing, radius } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
@@ -239,10 +240,10 @@ export const ProfileProductCard = (props) => {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 14,
-    backgroundColor: '#fff',
-    padding: 12,
-    marginBottom: 16,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    padding: spacing.md,
+    marginBottom: spacing.md,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -261,10 +262,10 @@ const styles = StyleSheet.create({
   mediaWrap: {
     width: 120,
     height: 120,
-    borderRadius: 10,
+    borderRadius: radius.md,
     overflow: 'hidden',
     backgroundColor: '#F1F2F4',
-    marginRight: 12,
+    marginRight: spacing.md,
     position: 'relative',
   },
   mediaInner: {
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontFamily: 'medium',
     fontSize: 13.5,
-    color: '#F09235',
+    color: colors.primary,
   },
   badgesRow: {
     flexDirection: 'row',
@@ -369,14 +370,14 @@ const styles = StyleSheet.create({
   outlineBtn: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#F09235',
-    borderRadius: 10,
+    borderColor: colors.primary,
+    borderRadius: radius.md,
     paddingVertical: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
   outlineBtnText: {
-    color: '#F09235',
+    color: colors.primary,
     fontSize: 15,
     fontFamily: 'medium',
   },
@@ -386,7 +387,7 @@ const styles = StyleSheet.create({
 
   ctaWrap: {
     marginTop: 10,
-    borderRadius: 10,
+    borderRadius: radius.md,
     overflow: 'hidden',
   },
   ctaBtn: {

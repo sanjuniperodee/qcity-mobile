@@ -20,13 +20,7 @@ export default function BottomTabNavigation () {
                 initialRouteName={'HomeTab'}
                 screenOptions={({ route }) => ({
                     headerShown: false,
-                    tabBarLabel: ({ color }) => {
-                        if (isTablet) {
-                          return null;
-                        } else {
-                          return <Text style={{ fontSize: 10, fontFamily: 'regular', color: '#9C9C9C' }}>{route.name}</Text>;
-                        }
-                      },
+                    tabBarShowLabel: false,
                     tabBarStyle: {
                         backgroundColor: '#FFF',
                         borderTopWidth: 0,
@@ -51,7 +45,6 @@ export default function BottomTabNavigation () {
                         },
                       }}
                     options={{
-                        tabBarLabel: t('tabs.home'),
                         tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/mainIconActive.png')}/> : 
                         <TabIcon image={require('../assets/mainIcon.png')}/>,
