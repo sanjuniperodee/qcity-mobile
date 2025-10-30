@@ -18,7 +18,8 @@ export const LoginScreen = () => {
     const {width} = Dimensions.get('window');
 
     const [showPassword, setShowPassword] = useState(false);
-    const [inputType, setInputType] = useState(''); // 'email' or 'phone' 
+    const [inputType, setInputType] = useState(''); // detected type
+    const [method, setMethod] = useState('email'); // explicit toggle
 
     const toggleShowPassword = () => { 
         setShowPassword(!showPassword); 
@@ -51,7 +52,8 @@ export const LoginScreen = () => {
             return false;
         }
         
-        const detectedType = detectInputType(login);
+        const detectedType = method === 'email' ? 'email' : (validatePhone(login) ? 'phone' : null);
+        setInputType(detectedType || '');
         if (!detectedType) {
             setError('Введите корректный email или номер телефона (+7 XXX XXX XX XX)');
             return false;
@@ -132,13 +134,23 @@ export const LoginScreen = () => {
                     <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
                     <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('login.login_to_acc')}</Text>
                     <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:253,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
-                    <View style={{marginTop:40}}>
+                    {/* Toggle Email/Phone */}
+                    <View style={{marginTop:20, flexDirection:'row', gap:10}}>
+                        <TouchableOpacity onPress={() => setMethod('email')} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', backgroundColor: method==='email' ? '#FFF4EA' : '#FFF' }}>
+                            <Text style={{ color: '#F09235' }}>{t('auth.email')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setMethod('phone')} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', backgroundColor: method==='phone' ? '#FFF4EA' : '#FFF' }}>
+                            <Text style={{ color: '#F09235' }}>{t('auth.phone')}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{marginTop:20}}>
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('register.write_name')}</Text>
                         <TextInput
                             style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',fontSize:16}}
                             onChangeText={setLogin}
                             value={login}
-                            placeholder={t('number_or_email')}
+                            placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('number_or_email')}
                             autoCapitalize="none"
                             autoCorrect={false}
                         />

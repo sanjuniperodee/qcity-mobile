@@ -29,7 +29,13 @@
   "kaz": "Қазақ тілі",
   "rus": "Орыс тілі",
   "continue": "Жалғастыру",
-  "number_or_email": "Email",
+  "number_or_email": "Эл. пошта / телефон",
+  "auth": {
+    "email": "Пошта",
+    "phone": "Телефон",
+    "get_code": "Код алу",
+    "enter_code": "Кодты енгізіңіз"
+  },
   "select_language": {
     "select_language": "Тілді таңдаңыз",
     "you_could_change_language": "Сіз оны профиль параметрлерінде өзгерте аласыз"

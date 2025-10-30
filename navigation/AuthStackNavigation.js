@@ -8,6 +8,7 @@ import {SelectLanguageScreen} from '../screens/SelectLanguageScreen';
 import {View} from 'react-native';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
+import PhoneOtpScreen from '../screens/PhoneOtpScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +74,15 @@ const AuthStackNavigator = () => {
             <View></View>
           ),
           })}/>
+      <Stack.Screen name="PhoneOtp" component={PhoneOtpScreen}
+        options={() => ({
+          headerShadowVisible: false,
+          title: null,
+          headerLeft: () => (
+            <View></View>
+          ),
+        })}
+      />
     </Stack.Navigator>
   );
 };

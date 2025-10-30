@@ -29,7 +29,13 @@
     "kaz":"Казахский",
     "rus":"Русский",
     "continue":"Продолжить",
-    "number_or_email": "Электронная почта",
+    "number_or_email": "Эл. почта / телефон",
+    "auth": {
+      "email": "Почта",
+      "phone": "Телефон",
+      "get_code": "Получить код",
+      "enter_code": "Введите код"
+    },
     "select_language": {
       "select_language":"Выберите язык",
       "you_could_change_language": "Вы можете изменить его в настройках вашего профиля"

@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
   const [inputType, setInputType] = useState(''); // 'email' or 'phone'
+  const [method, setMethod] = useState<'email' | 'phone'>('email');
   const { width } = Dimensions.get('window');
   const navigation = useNavigation();
 
@@ -42,7 +43,7 @@ export default function ForgotPasswordScreen() {
       return;
     }
 
-    const detectedType = detectInputType(email);
+    const detectedType = method === 'email' ? 'email' : (validatePhone(email) ? 'phone' : null);
     if (!detectedType) {
       Alert.alert('Ошибка', 'Введите корректный email или номер телефона (+7 XXX XXX XX XX)');
       return;
@@ -74,11 +75,19 @@ export default function ForgotPasswordScreen() {
   return (
     <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
       <Text style={{ fontSize:20, marginBottom:20 }}>Восстановление пароля</Text>
+      <View style={{marginBottom:10, flexDirection:'row'}}>
+        <TouchableOpacity onPress={() => setMethod('email')} style={{ marginRight:10, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
+          <Text style={{ color:'#F09235' }}>Почта</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setMethod('phone')} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
+          <Text style={{ color:'#F09235' }}>Телефон</Text>
+        </TouchableOpacity>
+      </View>
       <TextInput
         style={{width: width-40, height:50, borderWidth:1, borderRadius:10, paddingHorizontal:10}}
         value={email}
         onChangeText={setEmail}
-        placeholder="Email или номер телефона"
+        placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : 'Email'}
         keyboardType="default"
       />
       <TouchableOpacity onPress={handleRequestCode} style={{marginTop:20, backgroundColor:'#F09235', padding:15, borderRadius:10, width:width-40, alignItems:'center'}}>
