@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { parseApiError } from '../utils/apiError';
 
 export default function ResetPasswordScreen() {
   const [code, setCode] = useState('');
@@ -31,7 +32,8 @@ export default function ResetPasswordScreen() {
         Alert.alert('Успех', 'Пароль изменён');
         navigation.navigate('Login');
       } else {
-        Alert.alert('Ошибка', 'Код неверный или истёк');
+        const parsed = await parseApiError(response);
+        Alert.alert('Ошибка', parsed.message);
       }
     } catch (error) {
       Alert.alert('Ошибка', String(error));

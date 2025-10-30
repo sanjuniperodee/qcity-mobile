@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Dimensions, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { parseApiError } from '../utils/apiError';
 
 export default function PhoneOtpScreen() {
   const { width } = Dimensions.get('window');
@@ -21,7 +22,8 @@ export default function PhoneOtpScreen() {
         body: JSON.stringify({ phone, code }),
       });
       if (!resp.ok) {
-        Alert.alert('Ошибка', 'Код неверный или истёк');
+        const parsed = await parseApiError(resp);
+        Alert.alert('Ошибка', parsed.message);
         return;
       }
       // После успешного подтверждения идём на профиль для завершения регистрации

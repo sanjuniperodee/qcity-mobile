@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { loginSuccess } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
+import { parseApiError } from '../utils/apiError';
 
 export const ProfileRegistrationScreen = ({route}) => {
     const { login, password, type } = route.params;
@@ -112,9 +113,16 @@ export const ProfileRegistrationScreen = ({route}) => {
             });
             }
           } else {
-            alert('Пользователь с таким Имя пользователяом уже существует','');
+            const parsed = await parseApiError(response);
+            // map field errors
+            if (parsed.fieldErrors.username?.length) setNameError(parsed.fieldErrors.username[0]);
+            if (parsed.fieldErrors.phone?.length || parsed.fieldErrors.phone_number?.length) {
+              alert((parsed.fieldErrors.phone?.[0] || parsed.fieldErrors.phone_number?.[0]));
+            }
+            if (!Object.keys(parsed.fieldErrors).length) {
+              alert(parsed.message);
+            }
             setIsLoading(false)
-            console.error('Registration failed:', response.status);
           }
         } catch (error) {
           console.error('Error during registration:', error);

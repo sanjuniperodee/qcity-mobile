@@ -6,6 +6,7 @@ import { loginSuccess } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
 import { useNavigation } from '@react-navigation/native';
+import { parseApiError } from '../utils/apiError';
 
 export const LoginScreen = () => {
     const navigation = useNavigation();
@@ -130,8 +131,9 @@ export const LoginScreen = () => {
                 });
                 }
           } else {
-              setIsLoading(false); 
-              Alert.alert('Имя пользователя или пароль не правильный', '')
+              const parsed = await parseApiError(response);
+              setIsLoading(false);
+              setError(parsed.message);
           }
       } catch (error) {
           Alert.alert('Ошибка', error)

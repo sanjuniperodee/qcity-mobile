@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { parseApiError } from '../utils/apiError';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -90,7 +91,8 @@ export default function ForgotPasswordScreen() {
         Alert.alert('Успех', successMessage);
         navigation.navigate('ResetPassword', { email, type: detectedType });
       } else {
-        Alert.alert('Ошибка', `${detectedType === 'email' ? 'Email' : 'Телефон'} не найден`);
+        const parsed = await parseApiError(response);
+        Alert.alert('Ошибка', parsed.message);
       }
     } catch (error) {
       Alert.alert('Ошибка', String(error));

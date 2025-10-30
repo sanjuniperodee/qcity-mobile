@@ -114,7 +114,12 @@ export const SignUpScreen = () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phone }),
                 });
-                if (!resp.ok) throw new Error('failed to send code');
+                if (!resp.ok) {
+                    const { parseApiError } = await import('../utils/apiError');
+                    const parsed = await parseApiError(resp);
+                    setLoginError(parsed.message);
+                    return;
+                }
             } catch (e) {
                 setLoginError(t('register.error.email_required_or_invalid'));
                 return;
