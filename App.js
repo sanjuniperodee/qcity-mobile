@@ -4,11 +4,10 @@ import { StyleSheet,Platform, NativeModules } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import * as Font from 'expo-font';
-import i18n from 'i18next';
+import i18n from './i18n';
 import { store, persistor } from './store/index'; 
 import { enableScreens } from 'react-native-screens';
 import * as SplashScreen from 'expo-splash-screen';
-import { initReactI18next } from 'react-i18next';
 import { I18nextProvider } from 'react-i18next';
 import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
@@ -44,31 +43,12 @@ SplashScreen.preventAutoHideAsync();
 
 enableScreens();
 
-i18n
-  .use(initReactI18next)
-  .init({
-    compatibilityJSON: 'v3',
-    lng: 'ru',
-    resources: {
-      kz: {
-        translation: require('./locales/kz.json')
-      },
-      ru: {
-        translation: require('./locales/ru.json')
-      },
-      en: {
-        translation: require('./locales/en.json')
-      }
-    }
-  });
+// i18n is already initialized in the i18n.js file
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('ru');
 
-  useEffect(() => {
-    i18n.changeLanguage(selectedLanguage);
-  }, [selectedLanguage]);
+  // Using the language from i18n directly, which already handles localStorage
 
   useEffect(() => {
     if (Platform.OS === "ios") {

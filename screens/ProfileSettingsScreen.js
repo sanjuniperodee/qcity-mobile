@@ -142,7 +142,14 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
 
   const handleLanguage = (language) => {
       i18n.changeLanguage(language)
-      try { if (typeof window !== 'undefined') window.localStorage.setItem('lng', language); } catch {}
+      try { 
+        if (typeof window !== 'undefined') window.localStorage.setItem('lng', language); 
+      } catch (e) {
+        console.error("Error setting language:", e);
+      }
+      
+      // Force re-render after language change
+      onChangeName(name);
   }
 
     const handleProfileEdit = async () => {

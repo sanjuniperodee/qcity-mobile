@@ -98,7 +98,7 @@ export const SearchScreen = () => {
             value={search}
             returnKeyType="search"
           />
-        </TouchableOpacity>
+        </View>
         <View style={styles.filtersRow}>
           <TouchableOpacity style={styles.cityChip} onPress={() => setVisible(true)}>
             <Text style={styles.cityChipText} numberOfLines={1}>
