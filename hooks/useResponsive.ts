@@ -10,7 +10,8 @@ export function useResponsive() {
     const isTablet = width >= breakpoints.tablet && width < breakpoints.desktop;
     const isWeb = width >= breakpoints.desktop;
 
-    const columns = isPhone ? 1 : isTablet ? 2 : 3;
+    // Give more width per tile on phones for long RU labels
+    const columns = isPhone ? 2 : isTablet ? 3 : 4;
 
     return { width, isPhone, isTablet, isWeb, columns };
   }, [width]);

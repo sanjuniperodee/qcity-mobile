@@ -10,6 +10,8 @@ import { useGetPostListQuery, useGetPostListCityQuery } from '../api';
 import { useTranslation } from 'react-i18next';
 import * as Notifications from 'expo-notifications';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Grid } from '../components/ui/Grid';
+import CategoryTile from '../components/ui/CategoryTile';
 import { StoriesInstructions } from '../components/StoriesInstructions.js';
 import { useNotification } from '../context/NotificationContext';
 import { setCity } from '../actions/locationActions';
@@ -317,11 +319,12 @@ export const HomeScreen = () => {
           <Text style={styles.sectionTitle}>Категории</Text>
         </View>
 
-        <View style={styles.categoryGrid}>
+        <Grid gap={12} style={{ width: '95%', alignSelf: 'center', marginTop: 8, marginBottom: 15 }}>
           {categories.map((category) => (
-            <TouchableOpacity
+            <CategoryTile
               key={category.id}
-              style={styles.categoryTile}
+              icon={category.icon}
+              label={category.name}
               onPress={() => {
                 if (category.id === 99) {
                   (navigation as any).navigate('QorgauAi', { selectedCity });
@@ -329,15 +332,9 @@ export const HomeScreen = () => {
                   (navigation as any).navigate('GetPostsByCategory', { categoryId: category, selectedCity });
                 }
               }}
-              activeOpacity={0.85}
-            >
-              <View style={styles.categoryIconWrap}>
-                {category.icon}
-              </View>
-              <Text style={styles.categoryText} numberOfLines={2}>{category.name}</Text>
-            </TouchableOpacity>
+            />
           ))}
-        </View>
+        </Grid>
 
         {/* Рекомендации + выбор города */}
         <View style={[styles.sectionRow, { marginTop: 8, marginBottom: 8 }]}>
@@ -459,18 +456,7 @@ const styles = StyleSheet.create({
   sectionRow: { width: '95%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 30 },
   sectionTitle: { fontFamily: 'semibold', fontSize: 20, color: '#141517' },
 
-  categoryGrid: {
-    flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between',
-    width: '95%', alignSelf: 'center', marginTop: 8, marginBottom: 15 
-  },
-  categoryTile: {
-    width: '31.8%', backgroundColor: LIGHT_ORANGE, borderRadius: 16, height: 95, paddingHorizontal: 20, marginBottom: 12,
-    borderWidth: 1, borderColor: ORANGE + '33', justifyContent: 'center'
-  },
-  categoryIconWrap: {
-    borderRadius: 12, marginBottom: 6,
-  },
-  categoryText: { fontSize: 14, fontFamily: 'medium', color: '#333', textAlign: 'left' },
+  // category grid moved to Grid + CategoryTile
 
   cityChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, height: 34,
