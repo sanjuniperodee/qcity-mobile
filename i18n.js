@@ -10,6 +10,7 @@ i18n
   .init({
     load: 'languageOnly',
     supportedLngs: ['ru', 'kz', 'en'],
+    lng: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('lng')) || 'ru',
     resources: {
       ru: {
         translation: ru,
@@ -21,7 +22,6 @@ i18n
         translation: en,
       },
     },
-    lng: "ru",
     fallbackLng: 'ru',
     interpolation: {
       escapeValue: false,

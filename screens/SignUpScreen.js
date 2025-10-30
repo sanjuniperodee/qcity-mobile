@@ -18,6 +18,7 @@ export const SignUpScreen = () => {
     const [password2Error, setPassword2Error] = useState('');
 
     const {width} = Dimensions.get('window');
+    const isDesktop = width >= 1024;
 
 
     const [login, setLogin] = React.useState('');
@@ -142,9 +143,10 @@ export const SignUpScreen = () => {
         >
          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Container style={{ alignItems:'center', marginTop:80 }}>
+            <View style={{ width:'100%', maxWidth: isDesktop ? 480 : undefined, alignItems:'center' }}>
             <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
-            <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
-            <Text style={{ fontFamily: 'regular',fontSize:15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
+            <Text style={{ fontFamily: 'bold',fontSize: isDesktop ? 18 : 25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
+            <Text style={{ fontFamily: 'regular',fontSize: isDesktop ? 14 : 15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
 
             {/* Toggle Email/Phone */}
             <View style={{marginTop:30, flexDirection:'row', columnGap:10}}>
@@ -163,6 +165,7 @@ export const SignUpScreen = () => {
                     placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('email')}
                     keyboardType={method==='phone' ? 'phone-pad' : 'default'}
                     maxLength={method==='phone' ? 18 : 100}
+                    dense={isDesktop}
                 />
             </View>
             <View style={{ width: '100%' }}>
@@ -173,6 +176,7 @@ export const SignUpScreen = () => {
                         placeholder={t('password')}
                         secureTextEntry={!showPassword}
                         accessoryRight={<MaterialCommunityIcons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#D6D6D6" onPress={toggleShowPassword} />}
+                        dense={isDesktop}
                     />
                 </View>
                 <View style={{marginTop:10}}>
@@ -182,6 +186,7 @@ export const SignUpScreen = () => {
                         placeholder={t('password')}
                         secureTextEntry={!showPassword2}
                         accessoryRight={<MaterialCommunityIcons name={showPassword2 ? 'eye-off' : 'eye'} size={24} color="#D6D6D6" onPress={toggleShowPassword2} />}
+                        dense={isDesktop}
                     />
                 </View>
             </View>
@@ -197,7 +202,7 @@ export const SignUpScreen = () => {
                         {password2Error ? <Text style={{color: 'red'}}>{password2Error}</Text> : null}
                     </View>
                 </View>
-                <Button fullWidth onPress={handleRegistration}>
+                <Button size={isDesktop ? 'sm' : 'md'} fullWidth onPress={handleRegistration}>
                     {t('continue')}
                 </Button>
                 <Spacer size={spacing.sm} />
@@ -208,6 +213,7 @@ export const SignUpScreen = () => {
                 >
                     <Text style={{ color:colors.textMuted }}>Уже есть аккаунт? <Text style={{ color:colors.primary }}>Войти</Text></Text>
                 </TouchableOpacity>
+            </View>
             </View>
         </Container>
         </ScrollView>

@@ -23,6 +23,7 @@ export const LoginScreen = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const {width} = Dimensions.get('window');
+    const isDesktop = width >= 1024;
 
     const [showPassword, setShowPassword] = useState(false);
     const [inputType, setInputType] = useState(''); // detected type
@@ -187,9 +188,10 @@ export const LoginScreen = () => {
             </Modal>
             <ScrollView contentContainerStyle={{ flex: 1 }}>
                 <Container style={{ alignItems: 'center', marginTop: 80 }}>
+                    <View style={{ width: '100%', maxWidth: isDesktop ? 480 : undefined, alignItems: 'center' }}>
                     <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
-                    <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('login.login_to_acc')}</Text>
-                    <Text style={{ fontFamily: 'regular',fontSize:15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
+                    <Text style={{ fontFamily: 'bold',fontSize:isDesktop ? 18 : 25, textAlign:'center',marginTop:20}} >{t('login.login_to_acc')}</Text>
+                    <Text style={{ fontFamily: 'regular',fontSize:isDesktop ? 14 : 15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
                     {/* Toggle Email/Phone */}
                     <View style={{marginTop:20, flexDirection:'row', gap:10}}>
                         <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', backgroundColor: method==='email' ? colors.mutedBg : '#FFF' }}>
@@ -210,9 +212,10 @@ export const LoginScreen = () => {
                             maxLength={method==='phone' ? 18 : 100}
                             autoCapitalize="none"
                             autoCorrect={false}
+                            dense={isDesktop}
                         />
                     </View>
-                    <View style={{marginTop:15,width: width - 40}}>
+                    <View style={{marginTop:15, width: '100%'}}>
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('password')}</Text>
                         <View style={{width: '100%'}}>
                             <FormField
@@ -223,6 +226,7 @@ export const LoginScreen = () => {
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 accessoryRight={<MaterialCommunityIcons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#D6D6D6" onPress={toggleShowPassword} />}
+                                dense={isDesktop}
                             />
                         </View>
                     </View>
@@ -230,13 +234,14 @@ export const LoginScreen = () => {
                     <View style={{marginTop:20,justifyContent:'center'}}>
 
                         {error ? <Text style={{color: 'red', textAlign: 'center', marginBottom: 15}}>{error}</Text> : null}
-                        <Button fullWidth onPress={handleLogin}>{t('login.login')}</Button>
+                        <Button size={isDesktop ? 'sm' : 'md'} fullWidth onPress={handleLogin}>{t('login.login')}</Button>
 
                         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                             <Text style={{marginTop:30, color:colors.textMuted,fontSize:15, textAlign:'center'}}>
                                 Забыли пароль?
                             </Text>
                         </TouchableOpacity>
+                    </View>
                     </View>
                 </Container>
             </ScrollView>

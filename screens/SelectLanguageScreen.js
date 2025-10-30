@@ -10,6 +10,7 @@ export const SelectLanguageScreen = () => {
     
     const handleLanguage = (language) => {
         i18n.changeLanguage(language)
+        try { if (typeof window !== 'undefined') window.localStorage.setItem('lng', language); } catch {}
         navigation.navigate('LoginOrRegistration')
     }
     return (

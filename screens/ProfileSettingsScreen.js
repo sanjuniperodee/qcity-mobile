@@ -119,7 +119,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
   };  
   
 
-    const handleLogout = () => {
+  const handleLogout = () => {
       dispatch(logout());
       persistor.purge();
       navigation.navigate('HomeTab');
@@ -140,9 +140,10 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
       }
     };
 
-    const handleLanguage = (language) => {
+  const handleLanguage = (language) => {
       i18n.changeLanguage(language)
-    }
+      try { if (typeof window !== 'undefined') window.localStorage.setItem('lng', language); } catch {}
+  }
 
     const handleProfileEdit = async () => {
         try {

@@ -8,15 +8,16 @@ type Props = {
   errorText?: string;
   containerStyle?: ViewStyle;
   accessoryRight?: React.ReactNode;
+  dense?: boolean;
 } & TextInputProps;
 
-export default function FormField({ label, errorText, containerStyle, style, accessoryRight, ...rest }: Props) {
+export default function FormField({ label, errorText, containerStyle, style, accessoryRight, dense, ...rest }: Props) {
   return (
     <View style={[styles.container, containerStyle]}>
       {label ? <Text style={styles.label}>{label}</Text> : null}
-      <View style={styles.inputWrapper}>
+      <View style={[styles.inputWrapper, dense && { height: 44 }] }>
         <TextInput
-          style={[styles.input, style]}
+          style={[styles.input, dense && { fontSize: fontSizes.xs() }, style]}
           placeholderTextColor={colors.textMuted}
           {...rest}
         />
