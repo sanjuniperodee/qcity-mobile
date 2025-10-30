@@ -103,13 +103,18 @@ export const LoginScreen = () => {
         }
         setIsLoading(true); 
       try {
+          // Определяем тип локально, не полагаясь на setState
+          const kind = method === 'email' ? 'email' : 'phone';
+          const key = kind === 'email' ? 'email' : 'phone';
+          const val = kind === 'phone' ? normalizeKzPhone(login) : login;
+
           const response = await fetch('https://market.qorgau-city.kz/api/login/', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                  [inputType === 'email' ? 'email' : 'phone']: inputType === 'phone' ? normalizeKzPhone(login) : login,
+                  [key]: val,
                   password: password,
               }),
           });

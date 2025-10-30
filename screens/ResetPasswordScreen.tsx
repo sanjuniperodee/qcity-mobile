@@ -18,11 +18,16 @@ export default function ResetPasswordScreen() {
     }
 
     try {
+      const normalizeKzPhone = (value: string) => {
+        const digits = (value || '').replace(/\D/g, '');
+        if (digits.length === 11 && digits.startsWith('77')) return `+${digits}`;
+        return value;
+      };
       const response = await fetch('https://market.qorgau-city.kz/api/password-reset/confirm/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          [type === 'phone' ? 'phone' : 'email']: email, 
+          [type === 'phone' ? 'phone' : 'email']: type === 'phone' ? normalizeKzPhone(email) : email, 
           code, 
           new_password: newPassword 
         }),

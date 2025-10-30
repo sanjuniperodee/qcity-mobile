@@ -30,8 +30,25 @@ export async function parseApiError(res: Response): Promise<ParsedApiError> {
     });
   }
 
+  // Приводим известные backend-фразы к локализованным вариантам
+  const norm = (s: string) => (s || '').toLowerCase();
+  const mapKnown = (s: string): string => {
+    const n = norm(s);
+    if (n.includes('invalid credentials')) return 'Неверный логин или пароль';
+    if (n.includes('user not found')) return 'Пользователь не найден';
+    if (n.includes('code not found') || n.includes('expired')) return 'Код не найден или истёк';
+    if (n.includes('invalid code')) return 'Неверный код';
+    if (n.includes('phone must be in +77')) return 'Телефон должен быть в формате +77XXXXXXXXX';
+    if (n.includes('too many requests')) return 'Слишком много запросов. Повторите позже';
+    if (n.includes('sms send failed') || n.includes('failed to send code')) return 'Не удалось отправить SMS. Повторите позже';
+    if (n.includes('verification code sent')) return 'Код отправлен';
+    return s;
+  };
+
+  if (message) message = mapKnown(message);
+
   if (!message) {
-    if (status === 401) message = 'Неверные учетные данные';
+    if (status === 401) message = 'Неверный логин или пароль';
     else if (status === 404) message = 'Не найдено';
     else if (status === 429) message = 'Слишком много запросов. Повторите позже';
     else if (status >= 500) message = 'Сервис временно недоступен';
