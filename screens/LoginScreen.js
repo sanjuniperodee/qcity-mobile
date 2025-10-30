@@ -31,9 +31,15 @@ export const LoginScreen = () => {
         return emailRegex.test(email);
     };
 
-    const validatePhone = (phone) => {
-        const phoneRegex = /^\+7\s?\d{3}\s?\d{3}\s?\d{2}\s?\d{2}$/;
-        return phoneRegex.test(phone);
+    const validatePhone = (value) => {
+        const digits = (value || '').replace(/\D/g, '');
+        return digits.length === 11 && digits.startsWith('77');
+    };
+
+    const normalizeKzPhone = (value) => {
+        const digits = (value || '').replace(/\D/g, '');
+        if (digits.length === 11 && digits.startsWith('77')) return `+${digits}`;
+        return value;
     };
 
     const formatKzPhoneFromDigits = (rest) => {
@@ -102,7 +108,7 @@ export const LoginScreen = () => {
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                  [inputType === 'email' ? 'email' : 'phone']: login,
+                  [inputType === 'email' ? 'email' : 'phone']: inputType === 'phone' ? normalizeKzPhone(login) : login,
                   password: password,
               }),
           });

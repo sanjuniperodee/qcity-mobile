@@ -15,9 +15,9 @@ export default function ForgotPasswordScreen() {
     return emailRegex.test(email);
   };
 
-  const validatePhone = (phone) => {
-    const phoneRegex = /^\+7\s?\d{3}\s?\d{3}\s?\d{2}\s?\d{2}$/;
-    return phoneRegex.test(phone);
+  const validatePhone = (value: string) => {
+    const digits = (value || '').replace(/\D/g, '');
+    return digits.length === 11 && digits.startsWith('77');
   };
 
   const detectInputType = (input) => {
