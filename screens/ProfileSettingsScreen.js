@@ -194,6 +194,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
         </Modal>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <Container style={{ alignItems:'center' }}>
+            <View style={{ width:'100%', maxWidth: (Dimensions.get('window').width >= 1024 ? 480 : undefined), alignItems:'center' }}>
             <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
                 {image ? (
                     <View >
@@ -209,16 +210,16 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
             </TouchableOpacity>
 
             <View style={{marginTop:25, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:16,marginBottom:10}}>Ваше имя</Text>
-                <FormField onChangeText={onChangeName} value={name} placeholder="Введите ваше имя" />
+                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>Ваше имя</Text>
+                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeName} value={name} placeholder="Введите ваше имя" />
             </View>
             <View style={{marginTop:20, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:16,marginBottom:10}}>Номер телефона</Text>
-                <FormField onChangeText={onChangePhone} value={phone} placeholder="Введите номер телефона" />
+                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>Номер телефона</Text>
+                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangePhone} value={phone} placeholder="Введите номер телефона" />
             </View>
             <View style={{marginTop:20, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:16,marginBottom:10}}>Почта для входа</Text>
-                <FormField onChangeText={onChangeEmail} value={email} placeholder="Введите почту" />
+                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>Почта для входа</Text>
+                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeEmail} value={email} placeholder="Введите почту" />
             </View>
 
             <View style={{marginTop:20,flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:10}}>
@@ -234,7 +235,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
             </View>
 
             <View style={{marginTop:20,justifyContent:'center', width:'100%'}}>
-                <Button fullWidth onPress={handleProfileEdit}>Изменить профиль</Button>
+                <Button size={Dimensions.get('window').width >= 1024 ? 'xs' : 'md'} fullWidth onPress={handleProfileEdit}>Изменить профиль</Button>
             </View>
             <TouchableOpacity onPress={handleLogout} style={{marginTop:20}}><Text style={{fontFamily:'medium',opacity:.4}}>Выйти из аккаунта</Text></TouchableOpacity>
             <TouchableOpacity
@@ -253,6 +254,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
                ? <ActivityIndicator color="#fff" />
                : <Text style={{color:'#ff3b30',fontSize:16,fontFamily:'medium'}}>Удалить аккаунт</Text>}
            </TouchableOpacity>
+            </View>
           </Container>
         </ScrollView>
         </KeyboardAvoidingView>
