@@ -74,6 +74,21 @@
       "categories": "Категории",
       "no_listings": "Нет объявлений"
     },
+    "search": {
+      "nothing_found": "Ничего не найдено",
+      "search_placeholder": "Поиск по каталогу"
+    },
+    "messages": {
+      "login_required": "Войдите в аккаунт",
+      "login_required_text": "Чтобы переписываться с другими пользователями и поддержкой, войдите или зарегистрируйтесь.",
+      "login_register": "Войти / Зарегистрироваться",
+      "no_messages": "Сообщений нет",
+      "start_dialogue": "Зайдите в публикацию и начните диалог",
+      "support": "Поддержка",
+      "write_app_questions": "Напишите вопросы по приложению",
+      "installment": "в рассрочку",
+      "delivery": "доставка"
+    },
     "location": {
       "all_kazakhstan": "Весь Казахстан",
       "header": "Местоположение",

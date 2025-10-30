@@ -2,20 +2,20 @@ import React, { useState, useRef, useEffect, use } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Image, Modal, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import { useSearchPostsByCityQuery, useSearchPostsQuery } from '../api';
 import { ProductCard } from '../components/ProductCard';
 import { setCity } from '../actions/locationActions';
 import { cities } from '../constants/cities';
 
-const ALL_KZ = 'Весь Казахстан';
-
 export const SearchScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const selectedCity = useSelector((s) => s.city.selectedCity);
-  const isAllKazakhstan = !selectedCity || selectedCity === ALL_KZ;
+  const isAllKazakhstan = !selectedCity || selectedCity === t('location.all_kazakhstan');
   const [visible, setVisible] = useState(false);
 
   const effectiveCity = selectedCity;
@@ -96,7 +96,7 @@ export const SearchScreen = () => {
           <TextInput
             style={{ width: '90%', fontSize: 16 }}
             onChangeText={onChangeSearch}
-            placeholder="Поиск по каталогу"
+            placeholder={t('search.search_placeholder')}
             value={search}
             returnKeyType="search"
           />
@@ -104,7 +104,7 @@ export const SearchScreen = () => {
         <View style={styles.filtersRow}>
           <TouchableOpacity style={styles.cityChip} onPress={() => setVisible(true)}>
             <Text style={styles.cityChipText} numberOfLines={1}>
-              {selectedCity || ALL_KZ}
+              {selectedCity || t('location.all_kazakhstan')}
             </Text>
             <Image style={{ width: 12, height: 12, marginLeft: 6 }} source={require('../assets/chevron-down.png')} />
           </TouchableOpacity>
@@ -147,8 +147,8 @@ export const SearchScreen = () => {
                 <Text>
                   {
                     (isAllKazakhstan ? isErrorAll : isErrorCity)
-                      ? (apiError?.data?.detail || 'Ничего не найдено')
-                      : 'Ничего не найдено'
+                      ? (apiError?.data?.detail || t('search.nothing_found'))
+                      : t('search.nothing_found')
                   }
                 </Text>
               </View>

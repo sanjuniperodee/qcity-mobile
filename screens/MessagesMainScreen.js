@@ -4,10 +4,12 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export const MessagesMainScreen = () => {
   const auth = useSelector((state) => state.auth);
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -64,9 +66,9 @@ export const MessagesMainScreen = () => {
     return (
       <View style={styles.authWrapper}>
         <Ionicons name="person-outline" size={40} color="#F09235" />
-        <Text style={styles.authTitle}>Войдите в аккаунт</Text>
+        <Text style={styles.authTitle}>{t('messages.login_required')}</Text>
         <Text style={styles.authText}>
-          Чтобы переписываться с другими пользователями и поддержкой, войдите или зарегистрируйтесь.
+          {t('messages.login_required_text')}
         </Text>
         <TouchableOpacity
           style={styles.authButton}
@@ -79,7 +81,7 @@ export const MessagesMainScreen = () => {
             }
           }}
         >
-          <Text style={styles.authButtonText}>Войти / Зарегистрироваться</Text>
+          <Text style={styles.authButtonText}>{t('messages.login_register')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -121,7 +123,7 @@ export const MessagesMainScreen = () => {
                   <Text style={{ fontFamily: 'medium', fontSize: 16 }}>
                     {(item.receiver_info.username === 'admin' && item.sender_info.username === auth.user.username) ||
                     (item.sender_info.username === 'admin' && item.receiver_info.username === auth.user.username)
-                      ? 'Поддержка'
+                      ? t('messages.support')
                       : item.receiver_info.username === auth.user.username
                       ? item.sender_info.username
                       : item.receiver_info.username}
@@ -129,7 +131,7 @@ export const MessagesMainScreen = () => {
                   <Text style={{ fontFamily: 'regular', fontSize: 14, color: '#9C9C9C' }}>
                     {item.last_message !== null
                       ? item.last_message.text
-                      : 'Напишите вопросы по приложению'}
+                      : t('messages.write_app_questions')}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -151,7 +153,7 @@ export const MessagesMainScreen = () => {
               color: '#6C6C6C',
             }}
           >
-            Сообщений нет
+            {t('messages.no_messages')}
           </Text>
           <Text
             style={{
@@ -162,7 +164,7 @@ export const MessagesMainScreen = () => {
               color: '#F09235',
             }}
           >
-            Зайдите в публикацию и начните диалог
+            {t('messages.start_dialogue')}
           </Text>
         </View>
       )}

@@ -75,6 +75,21 @@
     "categories": "Categories",
     "no_listings": "No listings"
   },
+  "search": {
+    "nothing_found": "Nothing found",
+    "search_placeholder": "Search the catalog"
+  },
+  "messages": {
+    "login_required": "Login to your account",
+    "login_required_text": "To chat with other users and support, please log in or register.",
+    "login_register": "Login / Register",
+    "no_messages": "No messages",
+    "start_dialogue": "Visit a listing and start a dialogue",
+    "support": "Support",
+    "write_app_questions": "Ask questions about the app",
+    "installment": "installment",
+    "delivery": "delivery"
+  },
   "location": {
     "all_kazakhstan": "All Kazakhstan",
     "header": "Location",

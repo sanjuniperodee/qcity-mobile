@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { View,Text, TextInput, TouchableOpacity, Platform, Image,Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import uuid from 'react-native-uuid';
 
 export const MessagesDmScreen = ({route}) => {
@@ -12,6 +13,7 @@ export const MessagesDmScreen = ({route}) => {
     const post_id = route.params.post_id
     const { data, error, isLoading,refetch } = useGetPostByIdQuery(post_id);
     const user = useSelector(state => state.auth);
+    const { t } = useTranslation();
     const [messages, setMessages] = useState([]);
     const video = useRef(null);
     const socket = new WebSocket(`wss://market.qorgau-city.kz/chat/?token=${user.token}`);
@@ -136,11 +138,11 @@ export const MessagesDmScreen = ({route}) => {
                                 </View>
                                 {data.mortage ?
                                 <View style={{borderRadius:2,overflow:'hidden',marginRight:4}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>в рассрочку</Text>
+                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{t('messages.installment')}</Text>
                                 </View> : null}
                                 {data.delivery ?
                                 <View style={{borderRadius:2,overflow:'hidden'}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>доставка</Text>
+                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>{t('messages.delivery')}</Text>
                                 </View> : null}
                             </View>
                         <Text style={{fontFamily:'regular',fontSize:10,color:'#96949D',marginTop:5}}>{data.geolocation}</Text>

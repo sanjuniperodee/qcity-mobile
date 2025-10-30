@@ -74,6 +74,21 @@
     "categories": "Категориялар",
     "no_listings": "Хабарландырулар жоқ"
   },
+  "search": {
+    "nothing_found": "Ештеңе табылмады",
+    "search_placeholder": "Каталог бойынша іздеу"
+  },
+  "messages": {
+    "login_required": "Тіркелгіге кіріңіз",
+    "login_required_text": "Басқа пайдаланушылармен және қолдаумен хат жазысу үшін кіріңіз немесе тіркеліңіз.",
+    "login_register": "Кіру / Тіркелу",
+    "no_messages": "Хабарлама жоқ",
+    "start_dialogue": "Жарияланымға кіріңіз және диалог бастаңыз",
+    "support": "Қолдау",
+    "write_app_questions": "Қосымша туралы сұрақтар қойыңыз",
+    "installment": "бөліп төлем",
+    "delivery": "жеткізу"
+  },
   "location": {
     "all_kazakhstan": "Бүкіл Қазақстан",
     "header": "Орналасқан жері",
