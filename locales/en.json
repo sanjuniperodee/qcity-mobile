@@ -1,0 +1,49 @@
+{
+  "tabs": {
+    "home": "Home",
+    "feed": "Favourites",
+    "create_new": "Create",
+    "messages": "Messages",
+    "profile": "Profile"
+  },
+  "categories_main": {
+    "services": "Services",
+    "products": "Products",
+    "findEmployee": "Find employee",
+    "qorgauAi": "Qorgau AI",
+    "other": "Other",
+    "industrialSecurityEducation": "Industrial safety training"
+  },
+  "stories": {
+    "create": "How to create an ad",
+    "edit": "Edit an ad",
+    "security": "Platform security"
+  },
+  "recommendation": "Recommendations",
+  "welcome": "Let's start",
+  "password": "Password",
+  "kaz": "Kazakh",
+  "rus": "Russian",
+  "eng": "English",
+  "continue": "Continue",
+  "number_or_email": "Email / phone",
+  "auth": {
+    "email": "Email",
+    "phone": "Phone",
+    "get_code": "Get code",
+    "enter_code": "Enter code"
+  },
+  "select_language": {
+    "select_language": "Select language",
+    "you_could_change_language": "You can change it in profile settings"
+  },
+  "login": {
+    "login": "Login",
+    "login_to_acc": "Login to your account"
+  },
+  "main": {
+    "search_catalog": "Search the catalog"
+  }
+}
+
+

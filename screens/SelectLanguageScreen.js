@@ -18,12 +18,15 @@ export const SelectLanguageScreen = () => {
             <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('select_language.select_language')}</Text>
             <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:253,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('select_language.you_could_change_language')}</Text>
 
-            <View style={{marginTop:220,flexDirection:'row',justifyContent:'center',width:'100%'}}>
-                <TouchableOpacity onPress={() => {handleLanguage('kz')}} style={{paddingVertical:15,width:'40%',backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
+            <View style={{marginTop:220,flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:10}}>
+                <TouchableOpacity onPress={() => {handleLanguage('kz')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
                     <Text style={{color:'#F09235',fontSize:16,}}>{t('kaz')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {handleLanguage('ru')}} style={{marginLeft:10,paddingVertical:15,width:'40%',backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
+                <TouchableOpacity onPress={() => {handleLanguage('ru')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
                     <Text style={{color:'#F09235',fontSize:16,}}>{t('rus')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {handleLanguage('en')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
+                    <Text style={{color:'#F09235',fontSize:16,}}>{t('eng')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

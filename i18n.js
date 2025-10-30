@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 
 import ru from './locales/ru.json';
 import kz from './locales/kz.json';
+import en from './locales/en.json';
 
 i18n
   .use(initReactI18next)
@@ -14,9 +15,12 @@ i18n
       kz: {
         translation: kz,
       },
+      en: {
+        translation: en,
+      },
     },
     lng: "ru",
-    fallbackLng: "kz",
+    fallbackLng: ["ru", "kz"],
     interpolation: {
       escapeValue: false,
     },
