@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme, StackActions } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Linking } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabNavigation from './BottomTabNavigation'
@@ -108,18 +109,20 @@ export default function Navigation() {
     };
 
     return (
-        <NavigationContainer linking={linking} theme={theme}>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen component={BottomTabNavigation} name="root"/>
-              <Stack.Screen
-                name="Auth"
-                component={AuthStackNavigator}
-                options={{
-                  gestureEnabled: false,
-                  animation: 'slide_from_right',
-                }}
-              />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer linking={linking} theme={theme}>
+              <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen component={BottomTabNavigation} name="root"/>
+                <Stack.Screen
+                  name="Auth"
+                  component={AuthStackNavigator}
+                  options={{
+                    gestureEnabled: false,
+                    animation: 'slide_from_right',
+                  }}
+                />
+              </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
     );
   }

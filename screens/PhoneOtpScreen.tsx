@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Dimensions, Alert } from 'react-native';
+import Container from '../components/ui/Container';
+import Button from '../components/ui/Button';
+import FormField from '../components/ui/FormField';
+import { colors } from '../theme/tokens';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { parseApiError } from '../utils/apiError';
 
@@ -36,18 +40,19 @@ export default function PhoneOtpScreen() {
 
   return (
     <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
-      <Text style={{ fontSize:20, marginBottom:20 }}>Подтверждение телефона</Text>
-      <Text style={{ marginBottom:10, color:'#555' }}>Код отправлен на {phone}</Text>
-      <TextInput
-        style={{width: width-40, height:50, borderWidth:1, borderRadius:10, paddingHorizontal:10}}
-        value={code}
-        onChangeText={setCode}
-        placeholder="Код из SMS"
-        keyboardType="numeric"
-      />
-      <TouchableOpacity onPress={handleConfirm} style={{marginTop:20, backgroundColor:'#F09235', padding:15, borderRadius:10, width:width-40, alignItems:'center'}}>
-        <Text style={{color:'#FFF'}}>Продолжить</Text>
-      </TouchableOpacity>
+      <Container style={{ alignItems:'center' }}>
+        <Text style={{ fontSize:20, marginBottom:20 }}>Подтверждение телефона</Text>
+        <Text style={{ marginBottom:10, color:colors.textMuted }}>Код отправлен на {phone}</Text>
+        <View style={{ width: '100%' }}>
+          <FormField
+            value={code}
+            onChangeText={setCode}
+            placeholder="Код из SMS"
+            keyboardType="numeric"
+          />
+        </View>
+        <Button fullWidth onPress={handleConfirm}>Продолжить</Button>
+      </Container>
     </View>
   );
 }

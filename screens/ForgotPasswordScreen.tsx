@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, Dimensions } from 'react-native';
+import Container from '../components/ui/Container';
+import Button from '../components/ui/Button';
+import FormField from '../components/ui/FormField';
+import { colors } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { parseApiError } from '../utils/apiError';
 
@@ -89,7 +93,7 @@ export default function ForgotPasswordScreen() {
           ? 'Код отправлен на почту' 
           : 'Код отправлен на телефон';
         Alert.alert('Успех', successMessage);
-        navigation.navigate('ResetPassword', { email, type: detectedType });
+        (navigation as any).navigate('ResetPassword', { email, type: detectedType });
       } else {
         const parsed = await parseApiError(response);
         Alert.alert('Ошибка', parsed.message);
@@ -101,26 +105,29 @@ export default function ForgotPasswordScreen() {
 
   return (
     <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
-      <Text style={{ fontSize:20, marginBottom:20 }}>Восстановление пароля</Text>
-      <View style={{marginBottom:10, flexDirection:'row'}}>
-        <TouchableOpacity onPress={() => { setMethod('email'); setEmail(''); setPhoneDigits(''); }} style={{ marginRight:10, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
-          <Text style={{ color:'#F09235' }}>Почта</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { setMethod('phone'); setEmail(''); setPhoneDigits(''); }} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
-          <Text style={{ color:'#F09235' }}>Телефон</Text>
-        </TouchableOpacity>
-      </View>
-      <TextInput
-        style={{width: width-40, height:50, borderWidth:1, borderRadius:10, paddingHorizontal:10}}
-        value={email}
-        onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setEmail(v)}
-        placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : 'Email'}
-        keyboardType={method==='phone' ? 'phone-pad' : 'default'}
-        maxLength={method==='phone' ? 18 : 100}
-      />
-      <TouchableOpacity onPress={handleRequestCode} style={{marginTop:20, backgroundColor:'#F09235', padding:15, borderRadius:10, width:width-40, alignItems:'center'}}>
-        <Text style={{color:'#FFF'}}>Отправить код</Text>
-      </TouchableOpacity>
+      <Container style={{ alignItems:'center' }}>
+        <Text style={{ fontSize:20, marginBottom:20 }}>Восстановление пароля</Text>
+        <View style={{marginBottom:10, flexDirection:'row'}}>
+          <TouchableOpacity onPress={() => { setMethod('email'); setEmail(''); setPhoneDigits(''); }} style={{ marginRight:10, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', borderRadius:8, backgroundColor: method==='email' ? colors.mutedBg : '#FFF' }}>
+            <Text style={{ color:colors.primary }}>Почта</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { setMethod('phone'); setEmail(''); setPhoneDigits(''); }} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', borderRadius:8, backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
+            <Text style={{ color:colors.primary }}>Телефон</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ width: '100%' }}>
+          <FormField
+            value={email}
+            onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setEmail(v)}
+            placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : 'Email'}
+            keyboardType={method==='phone' ? 'phone-pad' : 'default'}
+            maxLength={method==='phone' ? 18 : 100}
+          />
+        </View>
+        <Button fullWidth onPress={handleRequestCode}>
+          Отправить код
+        </Button>
+      </Container>
     </View>
   );
 }

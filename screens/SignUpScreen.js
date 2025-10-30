@@ -1,5 +1,10 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, TextInput,  TouchableOpacity, ScrollView, KeyboardAvoidingView,Platform,RefreshControl, Dimensions, Image, Text } from 'react-native';
+import Container from '../components/ui/Container';
+import Button from '../components/ui/Button';
+import FormField from '../components/ui/FormField';
+import Spacer from '../components/ui/Spacer';
+import { spacing, colors } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import {useTranslation} from 'react-i18next'
@@ -136,24 +141,23 @@ export const SignUpScreen = () => {
         style={{ flex: 1 }}
         >
          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:80}}>
+        <Container style={{ alignItems:'center', marginTop:80 }}>
             <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
             <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
-            <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:255,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
+            <Text style={{ fontFamily: 'regular',fontSize:15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
 
             {/* Toggle Email/Phone */}
-            <View style={{marginTop:30, flexDirection:'row', gap:10}}>
-                <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', backgroundColor: method==='email' ? '#FFF4EA' : '#FFF' }}>
-                    <Text style={{ color: '#F09235' }}>{t('auth.email')}</Text>
+            <View style={{marginTop:30, flexDirection:'row', columnGap:10}}>
+                <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', backgroundColor: method==='email' ? colors.mutedBg : colors.bg }}>
+                    <Text style={{ color: colors.primary }}>{t('auth.email')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setMethod('phone'); setLogin(''); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', backgroundColor: method==='phone' ? '#FFF4EA' : '#FFF' }}>
-                    <Text style={{ color: '#F09235' }}>{t('auth.phone')}</Text>
+                <TouchableOpacity onPress={() => { setMethod('phone'); setLogin(''); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : colors.bg }}>
+                    <Text style={{ color: colors.primary }}>{t('auth.phone')}</Text>
                 </TouchableOpacity>
             </View>
 
-            <View style={{marginTop:20}}>
-                <TextInput
-                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
+            <View style={{marginTop:20, width: '100%'}}>
+                <FormField
                     onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setLogin(v)}
                     value={method==='phone' ? (login || '+7 (7') : login}
                     placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('email')}
@@ -161,41 +165,41 @@ export const SignUpScreen = () => {
                     maxLength={method==='phone' ? 18 : 100}
                 />
             </View>
-            <View>
-                <View style={{marginTop:10,flexDirection:'row',alignItems:'center',width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}>
-                    <TextInput
-                        style={{width:'90%'}}
+            <View style={{ width: '100%' }}>
+                <View style={{marginTop:10}}>
+                    <FormField
                         onChangeText={onChangePassword}
                         value={password}
                         placeholder={t('password')}
                         secureTextEntry={!showPassword}
                     />
-                    <MaterialCommunityIcons 
-                        name={showPassword ? 'eye-off' : 'eye'} 
-                        size={24} 
-                        color="#D6D6D6"
-                        style={{marginLeft: 10, }} 
-                        onPress={toggleShowPassword} 
-                    /> 
+                    <View style={{ position: 'absolute', right: spacing.md, top: 22 }}>
+                        <MaterialCommunityIcons 
+                            name={showPassword ? 'eye-off' : 'eye'} 
+                            size={24} 
+                            color="#D6D6D6"
+                            onPress={toggleShowPassword} 
+                        />
+                    </View>
                 </View>
-                <View style={{marginTop:10,flexDirection:'row',alignItems:'center',width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}>
-                    <TextInput
-                        style={{width:'90%'}}
+                <View style={{marginTop:10}}>
+                    <FormField
                         onChangeText={onChangePassword2}
                         value={password2}
                         placeholder={t('password')}
                         secureTextEntry={!showPassword2}
                     />
-                    <MaterialCommunityIcons 
-                        name={showPassword2 ? 'eye-off' : 'eye'} 
-                        size={24} 
-                        color="#D6D6D6"
-                        style={{marginLeft: 10, }} 
-                        onPress={toggleShowPassword2} 
-                    /> 
+                    <View style={{ position: 'absolute', right: spacing.md, top: 22 }}>
+                        <MaterialCommunityIcons 
+                            name={showPassword2 ? 'eye-off' : 'eye'} 
+                            size={24} 
+                            color="#D6D6D6"
+                            onPress={toggleShowPassword2} 
+                        />
+                    </View>
                 </View>
             </View>
-            <View style={{marginTop:20,justifyContent:'center'}}>
+            <View style={{marginTop:20,justifyContent:'center', width: '100%'}}>
                 <View>
                     {loginError ? <Text style={{color: 'red'}}>{loginError}</Text> : null}
                 </View>
@@ -207,18 +211,19 @@ export const SignUpScreen = () => {
                         {password2Error ? <Text style={{color: 'red'}}>{password2Error}</Text> : null}
                     </View>
                 </View>
-                <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
-                    <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
-                </TouchableOpacity>
+                <Button fullWidth onPress={handleRegistration}>
+                    {t('continue')}
+                </Button>
+                <Spacer size={spacing.sm} />
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Login', { prefill: method==='phone' ? normalizeKzPhone(`+77${phoneDigits}`) : login })}
                     style={{alignItems:'center', marginTop:14}}
                     activeOpacity={0.7}
                 >
-                    <Text style={{ color:'#96949D' }}>Уже есть аккаунт? <Text style={{ color:'#F09235' }}>Войти</Text></Text>
+                    <Text style={{ color:colors.textMuted }}>Уже есть аккаунт? <Text style={{ color:colors.primary }}>Войти</Text></Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </Container>
         </ScrollView>
     </KeyboardAvoidingView>
     );

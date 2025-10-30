@@ -28,19 +28,12 @@ const AuthStackNavigator = () => {
         component={LoginScreen}
         options={() => ({
           headerShadowVisible: false,
-          title: null,
-          headerLeft: () => (
-            <View></View>
-          ),
+          title: '',
           })}/>
       <Stack.Screen name="Signup" component={SignUpScreen} 
         options={() => ({
-
           headerShadowVisible: false,
-          title: null,
-          headerLeft: () => (
-            <View></View>
-          ),
+          title: '',
           })}/>
       <Stack.Screen name="LoginOrRegistration" component={LoginOrRegistrationScreen} 
         options={() => ({

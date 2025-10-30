@@ -1,5 +1,10 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, TextInput,  TouchableOpacity, ScrollView, Image, Text, Platform,Alert,Modal, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
+import Container from '../components/ui/Container';
+import Button from '../components/ui/Button';
+import FormField from '../components/ui/FormField';
+import Spacer from '../components/ui/Spacer';
+import { colors } from '../theme/tokens';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { loginSuccess } from '../actions/authActions';
@@ -180,25 +185,24 @@ export const LoginScreen = () => {
                 </View>
                 </View>
             </Modal>
-             <ScrollView contentContainerStyle={{ flex: 1 }}>
-                <View style={{ alignItems: 'center', width: '90%', marginHorizontal: '5%', marginTop: 80 }}>
+            <ScrollView contentContainerStyle={{ flex: 1 }}>
+                <Container style={{ alignItems: 'center', marginTop: 80 }}>
                     <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
                     <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('login.login_to_acc')}</Text>
-                    <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:253,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
+                    <Text style={{ fontFamily: 'regular',fontSize:15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
                     {/* Toggle Email/Phone */}
                     <View style={{marginTop:20, flexDirection:'row', gap:10}}>
-                        <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', backgroundColor: method==='email' ? '#FFF4EA' : '#FFF' }}>
-                            <Text style={{ color: '#F09235' }}>{t('auth.email')}</Text>
+                        <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', backgroundColor: method==='email' ? colors.mutedBg : '#FFF' }}>
+                            <Text style={{ color: colors.primary }}>{t('auth.email')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setMethod('phone'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', backgroundColor: method==='phone' ? '#FFF4EA' : '#FFF' }}>
-                            <Text style={{ color: '#F09235' }}>{t('auth.phone')}</Text>
+                        <TouchableOpacity onPress={() => { setMethod('phone'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
+                            <Text style={{ color: colors.primary }}>{t('auth.phone')}</Text>
                         </TouchableOpacity>
                     </View>
 
-                    <View style={{marginTop:20}}>
-                        <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('register.write_name')}</Text>
-                        <TextInput
-                            style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',fontSize:16}}
+                    <View style={{marginTop:20, width: '100%'}}>
+                        <FormField
+                            label={t('register.write_name')}
                             onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setLogin(v)}
                             value={method==='phone' ? (login || '+7 (7') : login}
                             placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('number_or_email')}
@@ -210,9 +214,8 @@ export const LoginScreen = () => {
                     </View>
                     <View style={{marginTop:15,width: width - 40}}>
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('password')}</Text>
-                        <View style={{flexDirection:'row',alignItems:'center',width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}>
-                            <TextInput
-                                style={{width:'90%',fontSize:16}}
+                        <View style={{width: '100%'}}>
+                            <FormField
                                 onChangeText={onChangePassword}
                                 value={password}
                                 placeholder={t('password')}
@@ -220,30 +223,29 @@ export const LoginScreen = () => {
                                 autoCapitalize="none"
                                 autoCorrect={false}
                             />
-                            <MaterialCommunityIcons 
-                                name={showPassword ? 'eye-off' : 'eye'} 
-                                size={24} 
-                                color="#D6D6D6"
-                                style={{marginLeft: 10, }} 
-                                onPress={toggleShowPassword} 
-                            /> 
+                            <View style={{ position: 'absolute', right: 16, top: 38 }}>
+                                <MaterialCommunityIcons 
+                                    name={showPassword ? 'eye-off' : 'eye'} 
+                                    size={24} 
+                                    color="#D6D6D6"
+                                    onPress={toggleShowPassword} 
+                                /> 
+                            </View>
                         </View>
                     </View>
 
                     <View style={{marginTop:20,justifyContent:'center'}}>
 
                         {error ? <Text style={{color: 'red', textAlign: 'center', marginBottom: 15}}>{error}</Text> : null}
-                        <TouchableOpacity onPress={handleLogin} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
-                            <Text style={{color:'#FFF',fontSize:16,}}>{t('login.login')}</Text>
-                        </TouchableOpacity>
+                        <Button fullWidth onPress={handleLogin}>{t('login.login')}</Button>
 
                         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                            <Text style={{marginTop:30, color:'#96949D',fontSize:15, textAlign:'center'}}>
+                            <Text style={{marginTop:30, color:colors.textMuted,fontSize:15, textAlign:'center'}}>
                                 Забыли пароль?
                             </Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </Container>
             </ScrollView>
         </KeyboardAwareScrollView>
     );
