@@ -38,17 +38,17 @@ export const LoginScreen = () => {
 
     const formatKzPhoneFromDigits = (rest) => {
         const r = (rest || '').slice(0,9);
-        const p1 = r.slice(0,3);
-        const p2 = r.slice(3,6);
-        const p3 = r.slice(6,8);
-        const p4 = r.slice(8,9);
-        let out = `+7 (7${p1}`;
-        if (p1.length < 3) return out;
-        out += `) ${p2}`;
-        if (p2.length < 3) return out;
-        out += `-${p3}`;
-        if (p3.length < 2) return out;
-        out += `-${p4}`;
+        const area = `7${r.slice(0,2)}`;
+        const block1 = r.slice(2,5);
+        const block2 = r.slice(5,7);
+        const block3 = r.slice(7,9);
+        let out = `+7 (${area}`;
+        if (r.length < 2) return out;
+        out += `) ${block1}`;
+        if (block1.length < 3) return out;
+        out += `-${block2}`;
+        if (block2.length < 2) return out;
+        out += `-${block3}`;
         return out;
     };
 
@@ -161,10 +161,10 @@ export const LoginScreen = () => {
                     <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:253,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
                     {/* Toggle Email/Phone */}
                     <View style={{marginTop:20, flexDirection:'row', gap:10}}>
-                        <TouchableOpacity onPress={() => setMethod('email')} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', backgroundColor: method==='email' ? '#FFF4EA' : '#FFF' }}>
+                        <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', backgroundColor: method==='email' ? '#FFF4EA' : '#FFF' }}>
                             <Text style={{ color: '#F09235' }}>{t('auth.email')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setMethod('phone')} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', backgroundColor: method==='phone' ? '#FFF4EA' : '#FFF' }}>
+                        <TouchableOpacity onPress={() => { setMethod('phone'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', backgroundColor: method==='phone' ? '#FFF4EA' : '#FFF' }}>
                             <Text style={{ color: '#F09235' }}>{t('auth.phone')}</Text>
                         </TouchableOpacity>
                     </View>

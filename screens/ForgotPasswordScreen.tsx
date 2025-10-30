@@ -40,17 +40,17 @@ export default function ForgotPasswordScreen() {
 
   const formatKzPhoneFromDigits = (rest: string) => {
     const r = (rest || '').slice(0,9);
-    const p1 = r.slice(0,3);
-    const p2 = r.slice(3,6);
-    const p3 = r.slice(6,8);
-    const p4 = r.slice(8,9);
-    let out = `+7 (7${p1}`;
-    if (p1.length < 3) return out;
-    out += `) ${p2}`;
-    if (p2.length < 3) return out;
-    out += `-${p3}`;
-    if (p3.length < 2) return out;
-    out += `-${p4}`;
+    const area = `7${r.slice(0,2)}`;
+    const block1 = r.slice(2,5);
+    const block2 = r.slice(5,7);
+    const block3 = r.slice(7,9);
+    let out = `+7 (${area}`;
+    if (r.length < 2) return out;
+    out += `) ${block1}`;
+    if (block1.length < 3) return out;
+    out += `-${block2}`;
+    if (block2.length < 2) return out;
+    out += `-${block3}`;
     return out;
   };
 
@@ -101,10 +101,10 @@ export default function ForgotPasswordScreen() {
     <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
       <Text style={{ fontSize:20, marginBottom:20 }}>Восстановление пароля</Text>
       <View style={{marginBottom:10, flexDirection:'row'}}>
-        <TouchableOpacity onPress={() => setMethod('email')} style={{ marginRight:10, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
+        <TouchableOpacity onPress={() => { setMethod('email'); setEmail(''); setPhoneDigits(''); }} style={{ marginRight:10, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='email' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
           <Text style={{ color:'#F09235' }}>Почта</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setMethod('phone')} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
+        <TouchableOpacity onPress={() => { setMethod('phone'); setEmail(''); setPhoneDigits(''); }} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? '#F09235' : '#D6D6D6', borderRadius:8 }}>
           <Text style={{ color:'#F09235' }}>Телефон</Text>
         </TouchableOpacity>
       </View>
