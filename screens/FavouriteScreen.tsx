@@ -2,12 +2,14 @@ import React, { useState, useRef, useCallback } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { ProductCard } from '../components/ProductCard';
 import { useListFavouritesQuery } from '../api';
 
 export const FavouriteScreen = () => {
   const navigation = useNavigation();
   const auth = useSelector((state) => state.auth);
+  const { t } = useTranslation();
   const isAuthenticated = !!auth?.isAuthenticated && !!auth?.token;
 
   // Загружаем избранное только если авторизован
@@ -67,12 +69,12 @@ export const FavouriteScreen = () => {
   if (!isAuthenticated) {
     return (
       <View style={styles.authWrapper}>
-        <Text style={styles.authTitle}>Избранное доступно после входа</Text>
+        <Text style={styles.authTitle}>{t('favorites.login_required')}</Text>
         <Text style={styles.authText}>
-          Войдите в аккаунт, чтобы сохранять объявления и быстро находить их позже.
+          {t('favorites.login_required_text')}
         </Text>
         <TouchableOpacity style={styles.authButton} onPress={goToAuth}>
-          <Text style={styles.authButtonText}>Войти / Зарегистрироваться</Text>
+          <Text style={styles.authButtonText}>{t('favorites.login_register')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -126,7 +128,7 @@ export const FavouriteScreen = () => {
       onEndReachedThreshold={0.5}
       ListEmptyComponent={
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-          <Text style={{ fontSize: 18, color: '#777' }}>Нет избранных объявлений</Text>
+          <Text style={{ fontSize: 18, color: '#777' }}>{t('favorites.no_favorites')}</Text>
         </View>
       }
       refreshing={refreshing}

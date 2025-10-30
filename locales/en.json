@@ -90,6 +90,12 @@
     "installment": "installment",
     "delivery": "delivery"
   },
+  "favorites": {
+    "login_required": "Favorites are available after login",
+    "login_required_text": "Log into your account to save listings and find them quickly later.",
+    "login_register": "Login / Register",
+    "no_favorites": "No favorite listings"
+  },
   "location": {
     "all_kazakhstan": "All Kazakhstan",
     "header": "Location",
