@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text, TouchableOpacity, ViewStyle, StyleSheet, View } from 'react-native';
+import { Text, TouchableOpacity, ViewStyle, StyleSheet, View, StyleProp } from 'react-native';
 import { colors, radius, spacing, hitSlop } from '../../theme/tokens';
 import { fontSizes, lineHeights } from '../../theme/typography';
 
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
 type Props = {
@@ -19,6 +19,7 @@ type Props = {
 };
 
 const sizeToMinHeight: Record<ButtonSize, number> = {
+  xs: 36,
   sm: 40,
   md: 48,
   lg: 56,
@@ -36,7 +37,7 @@ export function Button({
   iconRight,
 }: Props) {
   const minHeight = sizeToMinHeight[size];
-  const baseStyle: ViewStyle = [
+  const baseStyle: StyleProp<ViewStyle> = [
     styles.base,
     { minHeight },
     variant === 'primary' && styles.primary,
@@ -48,7 +49,7 @@ export function Button({
   ];
 
   const textColor = variant === 'primary' ? colors.primaryText : colors.text;
-  const fontSize = fontSizes.md();
+  const fontSize = size === 'xs' ? 12 : size === 'sm' ? 14 : 16;
   const lh = lineHeights.md(fontSize);
 
   return (

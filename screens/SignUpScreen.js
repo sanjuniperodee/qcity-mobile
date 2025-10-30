@@ -202,7 +202,7 @@ export const SignUpScreen = () => {
                         {password2Error ? <Text style={{color: 'red'}}>{password2Error}</Text> : null}
                     </View>
                 </View>
-                <Button size={isDesktop ? 'sm' : 'md'} fullWidth onPress={handleRegistration}>
+                <Button size={isDesktop ? 'xs' : 'md'} fullWidth onPress={handleRegistration}>
                     {t('continue')}
                 </Button>
                 <Spacer size={spacing.sm} />

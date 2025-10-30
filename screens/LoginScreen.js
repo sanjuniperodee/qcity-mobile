@@ -234,7 +234,7 @@ export const LoginScreen = () => {
                     <View style={{marginTop:20,justifyContent:'center'}}>
 
                         {error ? <Text style={{color: 'red', textAlign: 'center', marginBottom: 15}}>{error}</Text> : null}
-                        <Button size={isDesktop ? 'sm' : 'md'} fullWidth onPress={handleLogin}>{t('login.login')}</Button>
+                        <Button size={isDesktop ? 'xs' : 'md'} fullWidth onPress={handleLogin}>{t('login.login')}</Button>
 
                         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                             <Text style={{marginTop:30, color:colors.textMuted,fontSize:15, textAlign:'center'}}>
