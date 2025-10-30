@@ -6,7 +6,7 @@ import BottomTabNavigation from './BottomTabNavigation'
 import { useSelector } from 'react-redux';
 import AuthStackNavigator from './AuthStackNavigation';
 
-
+const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
 
@@ -34,5 +34,3 @@ export default function Navigation() {
         </NavigationContainer>
     );
   }
-
-  const Stack = createNativeStackNavigator()

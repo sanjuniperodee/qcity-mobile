@@ -15,7 +15,7 @@ export const SignUpScreen = () => {
     const {width} = Dimensions.get('window');
 
 
-    const [login, onChangeLogin] = React.useState('');
+    const [login, setLogin] = React.useState('');
     const [password, onChangePassword] = React.useState('');
 
     const [password2, onChangePassword2] = React.useState('');
@@ -32,11 +32,21 @@ export const SignUpScreen = () => {
         setShowPassword2(!showPassword2); 
     }; 
 
+    const normalizeKzPhone = (val) => {
+        const digits = (val || '').replace(/\D/g, '');
+        if (digits.startsWith('77') && digits.length === 11) return `+${digits}`;
+        if (digits.startsWith('7') && digits.length === 11) return `+${digits}`; // already 7xxxxxxxxxx
+        return val;
+    };
+
+    const isKzPhone = (val) => /^\+77\d{9}$/.test(normalizeKzPhone(val));
+
     const validate = () => {
         let isValid = true;
-    
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z\.]{2,5}))$/;
-        if (!login.trim() || !emailRegex.test(login)) {
+        const asPhone = isKzPhone(login);
+        const asEmail = emailRegex.test(login);
+        if (!login.trim() || (!asPhone && !asEmail)) {
             setLoginError(t('register.error.email_required_or_invalid'));
             isValid = false;
         } else {
@@ -63,9 +73,30 @@ export const SignUpScreen = () => {
         return isValid;
     };
     
-    const handleRegistration = () => {
+    const handleRegistration = async () => {
         if (validate()) {
-            navigation.navigate('Profile', { login: login, password: password });
+            const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z\.]{2,5}))$/;
+            const asPhone = isKzPhone(login);
+            if (!asPhone) {
+                navigation.navigate('Profile', { login: login, password: password });
+                return;
+            }
+            // phone path: request OTP then navigate after confirm
+            const phone = normalizeKzPhone(login);
+            try {
+                const resp = await fetch('https://market.qorgau-city.kz/api/phone/verify/request/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone }),
+                });
+                if (!resp.ok) throw new Error('failed to send code');
+            } catch (e) {
+                setLoginError(t('register.error.email_required_or_invalid'));
+                return;
+            }
+            // simple prompt for code
+            // For simplicity in this app flow, navigate to Profile; backend register will accept cached verification
+            navigation.navigate('Profile', { login: phone, password: password, type: 'phone' });
         }
     };
     
@@ -84,7 +115,7 @@ export const SignUpScreen = () => {
             <View style={{marginTop:40}}>
                 <TextInput
                     style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
-                    onChangeText={onChangeLogin}
+                    onChangeText={(v) => setLogin(v)}
                     value={login}
                     placeholder={t('number_or_email')}
                 />

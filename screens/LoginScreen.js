@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 export const LoginScreen = () => {
     const navigation = useNavigation();
     const {t} = useTranslation();
-    const [login, onChangeLogin] = React.useState('');
+    const [login, setLogin] = React.useState('');
     const [password, onChangePassword] = React.useState('');
 
     const [error, setError] = useState('');
@@ -136,9 +136,9 @@ export const LoginScreen = () => {
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('register.write_name')}</Text>
                         <TextInput
                             style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',fontSize:16}}
-                            onChangeText={onChangeLogin}
+                            onChangeText={setLogin}
                             value={login}
-                            placeholder="Email или номер телефона"
+                            placeholder={t('number_or_email')}
                             autoCapitalize="none"
                             autoCorrect={false}
                         />

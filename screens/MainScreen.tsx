@@ -97,10 +97,10 @@ export const HomeScreen = () => {
   useScrollToTop(listRef);
 
   useEffect(() => {
-    if (route.params?.scrollToTop) {
-      scrollRef.current?.scrollTo({ y: 0, animated: true });
+    if ((route.params as any)?.scrollToTop) {
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
-  }, [route.params?.scrollToTop]);
+  }, [(route.params as any)?.scrollToTop]);
 
 
   const user = useSelector((state: any) => state.auth.user, shallowEqual);
@@ -221,7 +221,7 @@ export const HomeScreen = () => {
     () => [
       { id: 1, name: t('categories_main.services'),        icon: <MaterialCommunityIcons name="briefcase-outline" size={26} color={ORANGE} /> },
       { id: 2, name: t('categories_main.products'),        icon: <Ionicons name="cart-outline" size={26} color={ORANGE} /> },
-      { id: 3, name: t('categories_main.findEmployee'),    icon: <Ionicons name="person-search-outline" size={26} color={ORANGE} /> as any || <MaterialCommunityIcons name="account-search-outline" size={26} color={ORANGE} /> },
+      { id: 3, name: t('categories_main.findEmployee'),    icon: <MaterialCommunityIcons name="account-search-outline" size={26} color={ORANGE} /> },
       { id: 99, name: t('categories_main.qorgauAi'),       icon: <Ionicons name="sparkles-outline" size={26} color={ORANGE} /> },
       { id: 4, name: t('categories_main.other'),           icon: <Ionicons name="apps-outline" size={26} color={ORANGE} /> },
       { id: 7, name: t('categories_main.industrialSecurityEducation'), icon: <Ionicons name="school-outline" size={26} color={ORANGE} /> },

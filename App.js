@@ -44,6 +44,21 @@ SplashScreen.preventAutoHideAsync();
 
 enableScreens();
 
+i18n
+  .use(initReactI18next)
+  .init({
+    compatibilityJSON: 'v3',
+    lng: 'ru',
+    resources: {
+      kz: {
+        translation: require('./locales/kz.json')
+      },
+      ru: {
+        translation: require('./locales/ru.json')
+      }
+    }
+  });
+
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('ru');
@@ -81,21 +96,6 @@ export default function App() {
 
     loadResourcesAndDataAsync();
   }, []);
-
-  i18n
-  .use(initReactI18next)
-  .init({
-    compatibilityJSON: 'v3',
-    lng: selectedLanguage,
-    resources: {
-      kz: {
-        translation: require('./locales/kz.json')
-      },
-      ru: {
-        translation: require('./locales/ru.json')
-      }
-    }
-  });
 
   if (!fontsLoaded) {
     return null;

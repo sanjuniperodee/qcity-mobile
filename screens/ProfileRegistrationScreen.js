@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
 
 export const ProfileRegistrationScreen = ({route}) => {
-    const { login, password } = route.params;
+    const { login, password, type } = route.params;
     const {t} = useTranslation();
     const [name, onChangeName] = useState('');
     const dispatch = useDispatch()
@@ -75,11 +75,15 @@ export const ProfileRegistrationScreen = ({route}) => {
         const formData = new FormData();
         formData.append('username', name);
         formData.append('password', password);
-        formData.append('email', login);
+        if (type === 'phone') {
+          formData.append('phone', login);
+        } else {
+          formData.append('email', login);
+        }
         if (image) {
           formData.append('profile_image', { uri: image, type: 'image/jpeg', name: 'profile.jpg' });
         }
-        formData.append('profile.phone_number', ''); // add your phone number
+        formData.append('profile.phone_number', type === 'phone' ? login : '');
     
         try {
           const response = await fetch('https://market.qorgau-city.kz/api/register/', {

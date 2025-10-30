@@ -21,7 +21,7 @@
       "config": {
         "googleMapsApiKey": "AIzaSyBsasFM_cSM1v5WD3TjMt9ioLgzijOgxxY"
       },
-      "buildNumber": "4",
+      "buildNumber": "6",
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
@@ -57,7 +57,7 @@
       },
       "jsEngine": "hermes",
       "package": "com.verozroke.qorgaucity",
-      "versionCode": 190
+      "versionCode": 191
     },
     "web": {
       "favicon": "./assets/favicon.png"

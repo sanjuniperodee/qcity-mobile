@@ -29,6 +29,13 @@ export default function ForgotPasswordScreen() {
     return null;
   };
 
+  const normalizeKzPhone = (val: string) => {
+    const digits = (val || '').replace(/\D/g, '');
+    if (digits.startsWith('77') && digits.length === 11) return `+${digits}`;
+    if (digits.startsWith('7') && digits.length === 11) return `+${digits}`;
+    return val;
+  };
+
   const handleRequestCode = async () => {
     if (!email.trim()) {
       Alert.alert('Ошибка', 'Введите email или номер телефона');
@@ -46,7 +53,7 @@ export default function ForgotPasswordScreen() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          [detectedType === 'email' ? 'email' : 'phone']: email 
+          [detectedType === 'email' ? 'email' : 'phone']: detectedType === 'phone' ? normalizeKzPhone(email) : email 
         }),
       });
 

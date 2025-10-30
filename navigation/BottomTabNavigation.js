@@ -18,14 +18,6 @@ export default function BottomTabNavigation () {
         <View style={styles.container}>
             <Tab.Navigator
                 initialRouteName={'HomeTab'}
-                listeners={({ navigation }) => ({
-                    tabPress: e => {
-                      navigation.navigate('HomeTab', {
-                        screen: 'HomeScreen',
-                        params: { scrollToTop: true }
-                      });
-                    },
-                  })}
                 screenOptions={({ route }) => ({
                     headerShown: false,
                     tabBarLabel: ({ color }) => {
@@ -52,6 +44,12 @@ export default function BottomTabNavigation () {
                 })}
                 >
                 <Tab.Screen name="HomeTab" component={MainStackNavigator}
+                    listeners={{
+                        tabPress: (e) => {
+                          // Reset to top when tab is pressed
+                          // This is handled by useScrollToTop in MainScreen
+                        },
+                      }}
                     options={{
                         tabBarLabel: t('tabs.home'),
                         tabBarIcon: ({focused}) => focused ? 
