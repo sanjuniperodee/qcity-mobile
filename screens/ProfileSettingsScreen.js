@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput,  TouchableOpacity, Image, Text,KeyboardAvoidingView,Alert,ActivityIndicator,Modal,Platform,StyleSheet,ScrollView,Dimensions } from 'react-native';
+import Container from '../components/ui/Container';
+import FormField from '../components/ui/FormField';
+import Button from '../components/ui/Button';
 import * as ImagePicker from 'expo-image-picker';
 import { loginSuccess } from '../actions/authActions';
 import { logout } from '../actions/authActions';
@@ -188,7 +191,8 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
             </View>
             </View>
         </Modal>
-        <ScrollView contentContainerStyle={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:0}}>
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+          <Container style={{ alignItems:'center' }}>
             <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
                 {image ? (
                     <View >
@@ -203,47 +207,33 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
                 )}
             </TouchableOpacity>
 
-            <View style={{marginTop:25}}>
+            <View style={{marginTop:25, width:'100%'}}>
                 <Text style={{fontFamily:'medium',fontSize:16,marginBottom:10}}>Ваше имя</Text>
-                <TextInput
-                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
-                    onChangeText={onChangeName}
-                    value={name}
-                    placeholder="Введите ваше имя"
-                />
+                <FormField onChangeText={onChangeName} value={name} placeholder="Введите ваше имя" />
             </View>
-            <View style={{marginTop:20}}>
+            <View style={{marginTop:20, width:'100%'}}>
                 <Text style={{fontFamily:'medium',fontSize:16,marginBottom:10}}>Номер телефона</Text>
-                <TextInput
-                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
-                    onChangeText={onChangePhone}
-                    value={phone}
-                    placeholder="Введите номер телефона"
-                />
+                <FormField onChangeText={onChangePhone} value={phone} placeholder="Введите номер телефона" />
             </View>
-            <View style={{marginTop:20}}>
+            <View style={{marginTop:20, width:'100%'}}>
                 <Text style={{fontFamily:'medium',fontSize:16,marginBottom:10}}>Почта для входа</Text>
-                <TextInput
-                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
-                    onChangeText={onChangeEmail}
-                    value={email}
-                    placeholder="Введите почту"
-                />
+                <FormField onChangeText={onChangeEmail} value={email} placeholder="Введите почту" />
             </View>
 
-            <View style={{marginTop:20,flexDirection:'row',justifyContent:'center'}}>
-                <TouchableOpacity onPress={() => {handleLanguage('kz')}} style={{paddingVertical:15,width:165,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1}}>
+            <View style={{marginTop:20,flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:10}}>
+                <TouchableOpacity onPress={() => {handleLanguage('kz')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
                     <Text style={{color:'#F09235',fontSize:16,}}>{t('kaz')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {handleLanguage('ru')}} style={{marginLeft:10,paddingVertical:15,width:165,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1}}>
+                <TouchableOpacity onPress={() => {handleLanguage('ru')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
                     <Text style={{color:'#F09235',fontSize:16,}}>{t('rus')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {handleLanguage('en')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
+                    <Text style={{color:'#F09235',fontSize:16,}}>{t('eng')}</Text>
                 </TouchableOpacity>
             </View>
 
-            <View style={{marginTop:20,justifyContent:'center'}}>
-                <TouchableOpacity onPress={handleProfileEdit} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
-                    <Text style={{color:'#FFF',fontSize:16,}}>Изменить профиль</Text>
-                </TouchableOpacity>
+            <View style={{marginTop:20,justifyContent:'center', width:'100%'}}>
+                <Button fullWidth onPress={handleProfileEdit}>Изменить профиль</Button>
             </View>
             <TouchableOpacity onPress={handleLogout} style={{marginTop:20}}><Text style={{fontFamily:'medium',opacity:.4}}>Выйти из аккаунта</Text></TouchableOpacity>
             <TouchableOpacity
@@ -262,7 +252,8 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
                ? <ActivityIndicator color="#fff" />
                : <Text style={{color:'#ff3b30',fontSize:16,fontFamily:'medium'}}>Удалить аккаунт</Text>}
            </TouchableOpacity>
-            </ScrollView>
+          </Container>
+        </ScrollView>
         </KeyboardAvoidingView>
     );
   }

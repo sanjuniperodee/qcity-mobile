@@ -15,7 +15,7 @@ export const getDevice = () => {
 };
 
 export const container = {
-  maxWidth: 1024,
+  maxWidth: 1280,
   horizontal: spacing.lg,
 };
 

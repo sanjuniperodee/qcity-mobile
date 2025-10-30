@@ -304,8 +304,11 @@ export const HomeScreen = () => {
           data={stories}
           horizontal
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{  paddingTop: 6 }}
+          contentContainerStyle={{  paddingTop: 6, paddingHorizontal: 10 }}
           showsHorizontalScrollIndicator={false}
+          decelerationRate="fast"
+          snapToInterval={Math.round(SCREEN_WIDTH * 0.29) + 12}
+          getItemLayout={(_, index) => ({ length: Math.round(SCREEN_WIDTH * 0.29) + 12, offset: (Math.round(SCREEN_WIDTH * 0.29) + 12) * index, index })}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleOpenStory(item)} style={styles.storyChip} activeOpacity={0.9}>
               <Image source={item.preview} style={styles.storyImg} />

@@ -172,15 +172,8 @@ export const SignUpScreen = () => {
                         value={password}
                         placeholder={t('password')}
                         secureTextEntry={!showPassword}
+                        accessoryRight={<MaterialCommunityIcons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#D6D6D6" onPress={toggleShowPassword} />}
                     />
-                    <View style={{ position: 'absolute', right: spacing.md, top: 22 }}>
-                        <MaterialCommunityIcons 
-                            name={showPassword ? 'eye-off' : 'eye'} 
-                            size={24} 
-                            color="#D6D6D6"
-                            onPress={toggleShowPassword} 
-                        />
-                    </View>
                 </View>
                 <View style={{marginTop:10}}>
                     <FormField
@@ -188,15 +181,8 @@ export const SignUpScreen = () => {
                         value={password2}
                         placeholder={t('password')}
                         secureTextEntry={!showPassword2}
+                        accessoryRight={<MaterialCommunityIcons name={showPassword2 ? 'eye-off' : 'eye'} size={24} color="#D6D6D6" onPress={toggleShowPassword2} />}
                     />
-                    <View style={{ position: 'absolute', right: spacing.md, top: 22 }}>
-                        <MaterialCommunityIcons 
-                            name={showPassword2 ? 'eye-off' : 'eye'} 
-                            size={24} 
-                            color="#D6D6D6"
-                            onPress={toggleShowPassword2} 
-                        />
-                    </View>
                 </View>
             </View>
             <View style={{marginTop:20,justifyContent:'center', width: '100%'}}>

@@ -222,15 +222,8 @@ export const LoginScreen = () => {
                                 secureTextEntry={!showPassword}
                                 autoCapitalize="none"
                                 autoCorrect={false}
+                                accessoryRight={<MaterialCommunityIcons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#D6D6D6" onPress={toggleShowPassword} />}
                             />
-                            <View style={{ position: 'absolute', right: 16, top: 38 }}>
-                                <MaterialCommunityIcons 
-                                    name={showPassword ? 'eye-off' : 'eye'} 
-                                    size={24} 
-                                    color="#D6D6D6"
-                                    onPress={toggleShowPassword} 
-                                /> 
-                            </View>
                         </View>
                     </View>
 
