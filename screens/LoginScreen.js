@@ -26,7 +26,7 @@ export const LoginScreen = () => {
 
     // Prefill from navigation params (e.g., from SignUpScreen)
     React.useEffect(() => {
-        const params = route.params as any;
+        const params = route.params || {};
         if (params?.prefill && !login) {
             setLogin(params.prefill);
             if (/^\+77\d{9}$/.test(params.prefill)) {
