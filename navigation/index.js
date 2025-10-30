@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme, StackActions } from '@react-navigation/native';
-import * as Linking from 'expo-linking';
+import { Linking } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabNavigation from './BottomTabNavigation'
 import { useSelector } from 'react-redux';
@@ -19,9 +19,8 @@ export default function Navigation() {
       };
     
 
-    const prefix = Linking.createURL('/');
     const linking = {
-      prefixes: ['https://www.qcity.kz', prefix],
+      prefixes: ['https://www.qcity.kz'],
       config: {
         screens: {
           root: {
