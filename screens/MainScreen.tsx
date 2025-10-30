@@ -117,8 +117,9 @@ export const HomeScreen = () => {
   const limit = 6;
 
   const selectedCity = useSelector((state: any) => state.city.selectedCity, shallowEqual);
-  const effectiveCity = selectedCity || 'Весь Казахстан';
-  const isAllKazakhstan = effectiveCity === 'Весь Казахстан';
+  const allKazakhstanText = t('location.all_kazakhstan');
+  const effectiveCity = selectedCity || allKazakhstanText;
+  const isAllKazakhstan = effectiveCity === allKazakhstanText;
 
   const [visibleItems, setVisibleItems] = useState<Array<string | number>>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -318,9 +319,9 @@ export const HomeScreen = () => {
         />
         <StoriesInstructions visible={modalVisible} onClose={() => setModalVisible(false)} story={selectedStory} />
 
-        {/* Категории */}
+        {/* Categories */}
         <View style={styles.sectionRow}>
-          <Text style={styles.sectionTitle}>Категории</Text>
+          <Text style={styles.sectionTitle}>{t('main.categories')}</Text>
         </View>
 
         <Grid gap={SCREEN_WIDTH >= 1024 ? 10 : 12} style={{ width: '95%', alignSelf: 'center', marginTop: 8, marginBottom: 15 }}>
@@ -340,7 +341,7 @@ export const HomeScreen = () => {
           ))}
         </Grid>
 
-        {/* Рекомендации + выбор города */}
+        {/* Recommendations + city selection */}
         <View style={[styles.sectionRow, { marginTop: 8, marginBottom: 8 }]}>
           <Text style={styles.sectionTitle}>
             {isAllKazakhstan ? t('recommendation') : selectedCity }
@@ -348,7 +349,7 @@ export const HomeScreen = () => {
           <TouchableOpacity style={styles.cityChip} onPress={() => setVisible(true)} activeOpacity={0.8}>
             <Ionicons name="location-outline" size={16} color={ORANGE} />
             <Text style={styles.cityChipText} numberOfLines={1}>
-              {selectedCity || 'Весь Казахстан'}
+              {selectedCity || t('location.all_kazakhstan')}
             </Text>
             <Ionicons name="chevron-down" size={14} color={ORANGE} />
           </TouchableOpacity>
@@ -379,7 +380,7 @@ export const HomeScreen = () => {
         ListEmptyComponent={
           isLoading ? null : (
             <View style={{ padding: 40, alignItems: 'center' }}>
-              <Text>Нет объявлений</Text>
+              <Text>{t('main.no_listings')}</Text>
             </View>
           )
         }

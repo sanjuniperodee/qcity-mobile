@@ -12,7 +12,9 @@
     "findEmployee": "Find employee",
     "qorgauAi": "Qorgau AI",
     "other": "Other",
-    "industrialSecurityEducation": "Industrial safety training"
+    "securityAgencies": "Security Agencies",
+    "industrialSecurity": "Industrial Safety",
+    "industrialSecurityEducation": "Industrial Safety Training"
   },
   "stories": {
     "create": "How to create an ad",
@@ -20,7 +22,9 @@
     "security": "Platform security"
   },
   "recommendation": "Recommendations",
+  "recommendation_in_city": "Recommendations in {{city}}",
   "welcome": "Let's start",
+  "welcome_desc": "You can register an account or login to existing one",
   "password": "Password",
   "email": "Email",
   "kaz": "Kazakh",
@@ -42,14 +46,187 @@
     "register": "Register",
     "register_of_acc": "Create account",
     "create_acc": "Create an account to use all features",
-    "write_name": "Enter your username"
+    "profile_pic": "Profile photo",
+    "write_name": "Enter your username",
+    "error": {
+      "login_required": "Username is required.",
+      "password_required": "Password is required.",
+      "email_required_or_invalid": "Enter a valid email address.",
+      "password_length": "Password must be at least 6 characters.",
+      "passwords_do_not_match": "Passwords do not match.",
+      "name_required": "Fill in the name",
+      "image_required": "Profile picture is required"
+    }
   },
   "login": {
     "login": "Login",
-    "login_to_acc": "Login to your account"
+    "login_to_acc": "Login to your account",
+    "input_fields": "Input fields"
   },
   "main": {
+    "hello": "Hello",
+    "lets": "Let's check out new listings",
     "search_catalog": "Search the catalog"
+  },
+  "profile_settings": {
+    "editing_profile": "Editing profile",
+    "your_name": "Your name",
+    "enter_your_name": "Enter your name",
+    "phone_number": "Phone number",
+    "enter_phone_number": "Enter phone number",
+    "email_for_login": "Email for login",
+    "enter_email": "Enter email",
+    "edit_profile": "Edit profile",
+    "logout": "Log out",
+    "delete_account": {
+      "title": "Delete account?",
+      "message": "This action is irreversible: profile and personal data will be deleted according to the storage policy.",
+      "button": "Delete account",
+      "confirm": "Delete",
+      "user_not_found": "Could not identify user.",
+      "deletion_started": "Deletion initiated",
+      "will_be_deleted_soon": "Account will be deleted soon.",
+      "deletion_error": "Deletion error",
+      "only_own_account": "You can only delete your own account.",
+      "deletion_failed": "Could not delete account. Try again later."
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "error": "Error",
+    "access_denied": "Access denied",
+    "network": "Network",
+    "error_code": "Code {{code}}"
+  },
+  "categories": {
+    "transport": "Transport",
+    "work": "Work",
+    "real_estate": "Real Estate",
+    "exchange_free": "Exchange / Free",
+    "electronics": "Electronics",
+    "hobbies_sports_recreation": "Hobbies / Sports / Recreation",
+    "childrens_world": "Children's World",
+    "products": "Products",
+    "services": "Services",
+    "clothing_shoes": "Clothing / Shoes",
+    "animals": "Animals",
+    "home_furniture": "Home / Furniture",
+    "buy": "Buy",
+    "garden_plants": "Garden / Plants",
+    "construction_renovation": "Construction and Renovation",
+    "design_interior": "Design and Interior"
+  },
+  "extra_info": "Additional information",
+  "product_statement": "Product condition",
+  "post": "Publish",
+  "title": {
+    "header": "Title",
+    "min_length_instruction": "Enter at least 16 characters",
+    "length_display": "{title.length}/70",
+    "placeholder": "Listing title"
+  },
+  "price": {
+    "header": "Price",
+    "placeholder": "Specify price"
+  },
+  "category": {
+    "header": "Category",
+    "placeholder": "Select category"
+  },
+  "description": {
+    "header": "Description",
+    "min_length_instruction": "Enter at least 40 characters",
+    "length_display": "{content.length}/9000",
+    "placeholder": "Describe your product or service in detail"
+  },
+  "location": {
+    "header": "Location",
+    "placeholder": "Select city",
+    "options": ["Astana", "Almaty", "Shymkent", "Kyzylorda"]
+  },
+  "additional_fields": {
+    "brand": {
+      "header": "Brand",
+      "placeholder": "Specify brand"
+    },
+    "color": {
+      "header": "Color",
+      "placeholder": "Select color"
+    },
+    "fuel_type": {
+      "header": "Fuel type",
+      "placeholder": "Select fuel type",
+      "options": ["Gasoline", "Diesel", "Electric", "Hybrid"]
+    },
+    "engine_volume": {
+      "header": "Engine volume",
+      "placeholder": "Specify engine volume"
+    },
+    "number_of_owners": {
+      "header": "Number of owners",
+      "placeholder": "Specify number of previous owners"
+    },
+    "number_of_rooms": {
+      "header": "Number of rooms",
+      "placeholder": "Specify number of rooms"
+    },
+    "total_area": {
+      "header": "Total area",
+      "placeholder": "Specify total area in sq.m"
+    },
+    "year_of_construction": {
+      "header": "Year of construction",
+      "placeholder": "Specify year of construction"
+    },
+    "lease_term": {
+      "header": "Lease term",
+      "placeholder": "Specify lease term"
+    },
+    "renovation": {
+      "header": "Renovation",
+      "placeholder": "Select renovation type",
+      "options": ["Euro renovation", "Partial renovation", "White frame", "Black frame"]
+    },
+    "heating": {
+      "header": "Heating",
+      "placeholder": "Select heating type",
+      "options": ["Air", "Electric", "Water", "Central"]
+    },
+    "bathroom": {
+      "header": "Bathroom",
+      "placeholder": "Select bathroom type",
+      "options": ["Separate", "Combined"]
+    },
+    "property_type": {
+      "header": "Property type",
+      "placeholder": "Select property type",
+      "options": ["From owner", "Shared ownership"]
+    },
+    "furniture": {
+      "header": "Furniture",
+      "placeholder": "Specify furniture level",
+      "options": ["Full", "Partial", "Without furniture"]
+    },
+    "building_type": {
+      "header": "Building type",
+      "placeholder": "Select building type",
+      "options": ["Brick", "Panel"]
+    },
+    "statement": {
+      "header": "Condition",
+      "placeholder": "Select item condition",
+      "options": ["New", "Used"]
+    },
+    "body": {
+      "header": "Body type",
+      "placeholder": "Select body type",
+      "options": ["Crossover", "Coupe", "Sedan", "Hatchback", "Liftback", "Coupe", "Roadster", "Targa"]
+    },
+    "transmission": {
+      "header": "Transmission",
+      "placeholder": "Select transmission type",
+      "options": ["Automatic", "Manual"]
+    }
   }
 }
 

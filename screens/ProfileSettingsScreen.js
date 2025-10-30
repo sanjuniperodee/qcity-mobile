@@ -58,18 +58,18 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      'Удалить аккаунт?',
-      'Это действие необратимо: профиль и персональные данные будут удалены согласно политике хранения.',
+      t('profile_settings.delete_account.title'),
+      t('profile_settings.delete_account.message'),
       [
-        { text: 'Отмена', style: 'cancel' },
-        { text: 'Удалить', style: 'destructive', onPress: actuallyDeleteAccount }
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('profile_settings.delete_account.confirm'), style: 'destructive', onPress: actuallyDeleteAccount }
       ]
     );
   };
 
   const actuallyDeleteAccount = async () => {
     if (!user?.username) {
-      Alert.alert('Ошибка', 'Не удалось определить пользователя.');
+      Alert.alert(t('common.error'), t('profile_settings.delete_account.user_not_found'));
       return;
     }
   
@@ -82,10 +82,10 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
         ...getAuthHeader(token),
       };
   
-      // 1) Пытаемся удалить через DELETE
+      // 1) Trying to delete via DELETE
       let res = await fetch(url, { method: 'DELETE', headers });
   
-      // 2) Если бекенд не разрешает DELETE (405) — пробуем POST
+      // 2) If backend doesn't allow DELETE (405) - try POST
       if (res.status === 405) {
         res = await fetch(url, {
           method: 'POST',
@@ -101,18 +101,18 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
   
       if (res.status === 202) {
         handleLogout();
-        Alert.alert('Удаление запущено', 'Аккаунт будет удалён в ближайшее время.');
+        Alert.alert(t('profile_settings.delete_account.deletion_started'), t('profile_settings.delete_account.will_be_deleted_soon'));
         return;
       }
   
       if (res.status === 401) { handleLogout(); return; }
-      if (res.status === 403) { Alert.alert('Доступ запрещён', 'Можно удалить только свой аккаунт.'); return; }
-      if (res.status === 404) { Alert.alert('Ошибка удаления', 'Пользователь не найден.'); return; }
+      if (res.status === 403) { Alert.alert(t('common.access_denied'), t('profile_settings.delete_account.only_own_account')); return; }
+      if (res.status === 404) { Alert.alert(t('profile_settings.delete_account.deletion_error'), t('profile_settings.delete_account.user_not_found')); return; }
   
       const text = await (async () => { try { return await res.text(); } catch { return ''; } })();
-      Alert.alert('Ошибка удаления', text || `Код ${res.status}`);
+      Alert.alert(t('profile_settings.delete_account.deletion_error'), text || t('common.error_code', {code: res.status}));
     } catch (e) {
-      Alert.alert('Сеть', e?.message ?? 'Не удалось выполнить удаление. Попробуйте позже.');
+      Alert.alert(t('common.network'), e?.message ?? t('profile_settings.delete_account.deletion_failed'));
     } finally {
       setDeleting(false);
     }
@@ -188,7 +188,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
             <View style={styles.centeredView}>
             <View style={styles.modalView}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text style={styles.modalText}>Редактирование профиля</Text>
+                <Text style={styles.modalText}>{t('profile_settings.editing_profile')}</Text>
             </View>
             </View>
         </Modal>
@@ -204,22 +204,22 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
                 ) : (
                     <View style={{ width: 110, height: 110, backgroundColor: '#F7F8F9', borderRadius: 100,borderWidth:1,borderColor:'#D6D6D6', justifyContent: 'center', alignItems: 'center' }}>
                         <Image style={{height:25,width:25,marginTop:20}} source={require('../assets/plus.jpg')} />
-                        <Text style={{ fontFamily:'regular',fontSize:14,color:'#96949D',marginTop:10, }}>Фото профиля</Text>
+                        <Text style={{ fontFamily:'regular',fontSize:14,color:'#96949D',marginTop:10, }}>{t('register.profile_pic')}</Text>
                     </View>
                 )}
             </TouchableOpacity>
 
             <View style={{marginTop:25, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>Ваше имя</Text>
-                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeName} value={name} placeholder="Введите ваше имя" />
+                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.your_name')}</Text>
+                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeName} value={name} placeholder={t('profile_settings.enter_your_name')} />
             </View>
             <View style={{marginTop:20, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>Номер телефона</Text>
-                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangePhone} value={phone} placeholder="Введите номер телефона" />
+                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.phone_number')}</Text>
+                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangePhone} value={phone} placeholder={t('profile_settings.enter_phone_number')} />
             </View>
             <View style={{marginTop:20, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>Почта для входа</Text>
-                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeEmail} value={email} placeholder="Введите почту" />
+                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.email_for_login')}</Text>
+                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeEmail} value={email} placeholder={t('profile_settings.enter_email')} />
             </View>
 
             <View style={{marginTop:20,flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:10}}>
@@ -235,9 +235,9 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
             </View>
 
             <View style={{marginTop:20,justifyContent:'center', width:'100%'}}>
-                <Button size={Dimensions.get('window').width >= 1024 ? 'xs' : 'md'} fullWidth onPress={handleProfileEdit}>Изменить профиль</Button>
+                <Button size={Dimensions.get('window').width >= 1024 ? 'xs' : 'md'} fullWidth onPress={handleProfileEdit}>{t('profile_settings.edit_profile')}</Button>
             </View>
-            <TouchableOpacity onPress={handleLogout} style={{marginTop:20}}><Text style={{fontFamily:'medium',opacity:.4}}>Выйти из аккаунта</Text></TouchableOpacity>
+            <TouchableOpacity onPress={handleLogout} style={{marginTop:20}}><Text style={{fontFamily:'medium',opacity:.4}}>{t('profile_settings.logout')}</Text></TouchableOpacity>
             <TouchableOpacity
              onPress={handleDeleteAccount}
              disabled={deleting}
@@ -252,7 +252,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
              }}>
              {deleting
                ? <ActivityIndicator color="#fff" />
-               : <Text style={{color:'#ff3b30',fontSize:16,fontFamily:'medium'}}>Удалить аккаунт</Text>}
+               : <Text style={{color:'#ff3b30',fontSize:16,fontFamily:'medium'}}>{t('profile_settings.delete_account.button')}</Text>}
            </TouchableOpacity>
             </View>
           </Container>
