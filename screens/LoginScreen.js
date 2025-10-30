@@ -5,11 +5,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { loginSuccess } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { parseApiError } from '../utils/apiError';
 
 export const LoginScreen = () => {
     const navigation = useNavigation();
+    const route = useRoute();
     const {t} = useTranslation();
     const [login, setLogin] = React.useState('');
     const [password, onChangePassword] = React.useState('');
@@ -22,6 +23,18 @@ export const LoginScreen = () => {
     const [inputType, setInputType] = useState(''); // detected type
     const [method, setMethod] = useState('email'); // explicit toggle
     const [phoneDigits, setPhoneDigits] = useState('');
+
+    // Prefill from navigation params (e.g., from SignUpScreen)
+    React.useEffect(() => {
+        const params = route.params as any;
+        if (params?.prefill && !login) {
+            setLogin(params.prefill);
+            if (/^\+77\d{9}$/.test(params.prefill)) {
+                // if phone, switch method
+                setMethod('phone');
+            }
+        }
+    }, [route.params]);
 
     const toggleShowPassword = () => { 
         setShowPassword(!showPassword); 

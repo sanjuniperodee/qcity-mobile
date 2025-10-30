@@ -210,6 +210,13 @@ export const SignUpScreen = () => {
                 <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
                     <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => (navigation as any).navigate('Login', { prefill: method==='phone' ? normalizeKzPhone(`+77${phoneDigits}`) : login })}
+                    style={{alignItems:'center', marginTop:14}}
+                    activeOpacity={0.7}
+                >
+                    <Text style={{ color:'#96949D' }}>Уже есть аккаунт? <Text style={{ color:'#F09235' }}>Войти</Text></Text>
+                </TouchableOpacity>
             </View>
         </View>
         </ScrollView>
