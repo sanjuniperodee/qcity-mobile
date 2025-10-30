@@ -20,6 +20,7 @@ export const LoginScreen = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [inputType, setInputType] = useState(''); // detected type
     const [method, setMethod] = useState('email'); // explicit toggle
+    const [phoneDigits, setPhoneDigits] = useState('');
 
     const toggleShowPassword = () => { 
         setShowPassword(!showPassword); 
@@ -33,6 +34,30 @@ export const LoginScreen = () => {
     const validatePhone = (phone) => {
         const phoneRegex = /^\+7\s?\d{3}\s?\d{3}\s?\d{2}\s?\d{2}$/;
         return phoneRegex.test(phone);
+    };
+
+    const formatKzPhoneFromDigits = (rest) => {
+        const r = (rest || '').slice(0,9);
+        const p1 = r.slice(0,3);
+        const p2 = r.slice(3,6);
+        const p3 = r.slice(6,8);
+        const p4 = r.slice(8,9);
+        let out = `+7 (7${p1}`;
+        if (p1.length < 3) return out;
+        out += `) ${p2}`;
+        if (p2.length < 3) return out;
+        out += `-${p3}`;
+        if (p3.length < 2) return out;
+        out += `-${p4}`;
+        return out;
+    };
+
+    const handlePhoneChange = (value) => {
+        const only = (value || '').replace(/\D/g, '');
+        const rest = only.replace(/^77?/, '').slice(0,9);
+        setPhoneDigits(rest);
+        const masked = formatKzPhoneFromDigits(rest);
+        setLogin(masked || '+7 (7');
     };
 
     const detectInputType = (input) => {
@@ -148,9 +173,11 @@ export const LoginScreen = () => {
                         <Text style={{fontFamily:'medium' ,marginBottom:10,fontSize:14}}>{t('register.write_name')}</Text>
                         <TextInput
                             style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',fontSize:16}}
-                            onChangeText={setLogin}
-                            value={login}
+                            onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setLogin(v)}
+                            value={method==='phone' ? (login || '+7 (7') : login}
                             placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('number_or_email')}
+                            keyboardType={method==='phone' ? 'phone-pad' : 'default'}
+                            maxLength={method==='phone' ? 18 : 100}
                             autoCapitalize="none"
                             autoCorrect={false}
                         />
