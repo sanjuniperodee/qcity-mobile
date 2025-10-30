@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
-  ImageBackground,
+  Image,
   Dimensions,
   TouchableWithoutFeedback,
   StyleSheet,
@@ -120,11 +120,12 @@ export const StoriesInstructions = ({ visible, onClose, story }) => {
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
         >
-          <ImageBackground
-            source={currentSlide.image}
-            style={styles.image}
-            imageStyle={{ borderRadius: 0 }}
-          >
+          <View style={styles.imageContainer}>
+            <Image
+              source={currentSlide.image}
+              style={styles.image}
+              resizeMode="contain" // по высоте, чтобы вся ширина влезла
+            />
             <View style={styles.progressContainer}>
               {story.slides.map((_, index) => (
                 <View key={index} style={styles.progressBackground}>
@@ -154,7 +155,7 @@ export const StoriesInstructions = ({ visible, onClose, story }) => {
             <View style={styles.bottomOverlay}>
               <Text style={styles.title}>{story.title}</Text>
             </View>
-          </ImageBackground>
+          </View>
         </TouchableWithoutFeedback>
       </View>
     </Modal>
@@ -162,10 +163,15 @@ export const StoriesInstructions = ({ visible, onClose, story }) => {
 }
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    width,
+    height,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'space-between',
+  },
   image: {
     width,
     height,
-    justifyContent: 'space-between',
   },
   closeBtn: {
     position: 'absolute',

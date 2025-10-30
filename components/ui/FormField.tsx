@@ -14,10 +14,10 @@ type Props = {
 export default function FormField({ label, errorText, containerStyle, style, accessoryRight, dense, ...rest }: Props) {
   return (
     <View style={[styles.container, containerStyle]}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
-      <View style={[styles.inputWrapper, dense && { height: 44 }] }>
+      {label ? <Text style={[styles.label, dense && styles.labelDense]}>{label}</Text> : null}
+      <View style={[styles.inputWrapper, dense && { height: 40 }] }>
         <TextInput
-          style={[styles.input, dense && { fontSize: fontSizes.xs() }, style]}
+          style={[styles.input, dense && { fontSize: 12 }, style]}
           placeholderTextColor={colors.textMuted}
           {...rest}
         />
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radius.md,
     paddingLeft: spacing.md,
-    paddingRight: 48,
+    paddingRight: 44,
     height: 50,
     position: 'relative',
   },
@@ -58,9 +58,12 @@ const styles = StyleSheet.create({
     right: spacing.md,
     top: 0,
     bottom: 0,
-    width: 36,
+    width: 32,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  labelDense: {
+    fontSize: 12,
   },
   error: {
     marginTop: spacing.xs,
