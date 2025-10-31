@@ -51,7 +51,8 @@ export const ProductCard = (props) => {
           onPress={()=>{navigation.push('ViewPost',{id:props.id})}} 
           style={{
             width: '100%',
-            height: windowWidth < 768 ? 270 : 330, // Smaller height for mobile
+            // Let content define height; keep a minimal height to avoid collapse
+            minHeight: 400,
             borderRadius: radius.md,
             borderWidth: props.tariff === 2 ? 2 : 0, 
             borderColor: props.tariff === 2 ? colors.primary : 'transparent',
