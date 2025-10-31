@@ -68,14 +68,9 @@ import React, {
         });
   
       return () => {
-        if (notificationListener.current) {
-          NotificationsModule.removeNotificationSubscription(
-            notificationListener.current
-          );
-        }
-        if (responseListener.current) {
-          NotificationsModule.removeNotificationSubscription(responseListener.current);
-        }
+        // On web, removeNotificationSubscription may be undefined; use Subscription.remove()
+        try { notificationListener.current?.remove?.(); } catch {}
+        try { responseListener.current?.remove?.(); } catch {}
       };
     }, []);
   
