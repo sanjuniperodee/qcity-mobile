@@ -42,11 +42,11 @@ export const ResponsiveProductGrid = ({
   const numColumns = getNumColumns();
   
   // Calculate item width based on number of columns with fixed outer padding and spacing
-  const listHorizontalPadding = 12; // px on each side
+  const listHorizontalPadding = 0; // no extra padding so header/search keep their width
   const interItemSpacing = 12; // px between items
 
   const getItemWidth = () => {
-    const available = screenWidth - listHorizontalPadding * 2 - interItemSpacing * (numColumns - 1);
+    const available = screenWidth - interItemSpacing * (numColumns - 1);
     return Math.floor(available / numColumns);
   };
   const itemWidth = getItemWidth();
@@ -55,7 +55,7 @@ export const ResponsiveProductGrid = ({
     <FlatList
       data={data}
       numColumns={numColumns}
-      style={[styles.container, { paddingHorizontal: listHorizontalPadding }]}
+      style={styles.container}
       contentContainerStyle={styles.contentContainer}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
