@@ -55,7 +55,9 @@ export const ResponsiveProductGrid = ({
   const itemWidth = getItemWidth();
   
   // Force the item width to be a percentage on mobile screens
-  const itemWidthStyle = screenWidth < 768 ? { width: '46%' } : { width: itemWidth, maxWidth: 300 };
+  const itemWidthStyle = screenWidth < 768 ? 
+    { width: '48%', maxWidth: screenWidth / 2 - 16 } : 
+    { width: itemWidth, maxWidth: 300 };
   
   return (
     <FlatList
