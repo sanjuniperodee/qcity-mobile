@@ -51,19 +51,16 @@ export const ProductCard = (props) => {
           onPress={()=>{navigation.push('ViewPost',{id:props.id})}} 
           style={{
             width: '100%',
-            height: windowWidth < 768 ? 220 : 270, // Even smaller height for mobile
-            marginBottom: spacing.md,
+            height: windowWidth < 768 ? 270 : 330, // Smaller height for mobile
             borderRadius: radius.md,
             borderWidth: props.tariff === 2 ? 2 : 0, 
             borderColor: props.tariff === 2 ? colors.primary : 'transparent',
             backgroundColor: '#FFFFFF',
             shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.15,
-            shadowRadius: 4,
-            elevation: 3,
-            margin: 3,
-            padding: 3
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 2,
+            elevation: 2
           }}>
           <View>
             <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',bottom:10,zIndex:2,left:10,position:'absolute'}}>
@@ -95,7 +92,7 @@ export const ProductCard = (props) => {
               </View>
             </View>
             {props.media[0]?.type === 'video' ? 
-              <View style={{position:'relative'}}>
+              <View style={{position:'relative', width:'100%', aspectRatio:1, borderRadius:8, overflow:'hidden'}}>
                 {props.tariff === 1 && (
                   <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
                     <Text style={{fontFamily: 'bold', fontSize: 12, color: '#fff'}}>ТОП</Text>
@@ -115,7 +112,7 @@ export const ProductCard = (props) => {
                 interruptionModeAndroid= {InterruptionModeAndroid.DoNotMix}
                 shouldDuckAndroid= {true}
                 staysActiveInBackground= {false}
-                style={{ width: '100%', height: 200,borderRadius:8 }}
+                style={{ width: '100%', height: '100%' }}
                 source={{
                     uri: `https://market.qorgau-city.kz${props.media[0].image}`,
                 }}
@@ -126,7 +123,7 @@ export const ProductCard = (props) => {
                 />
               </View>
             :
-            <View style={{position:'relative'}}>
+            <View style={{position:'relative', width:'100%', aspectRatio:1, borderRadius:8, overflow:'hidden'}}>
                 {props.tariff === 1 && (
                   <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
                     <Text style={{fontFamily: 'bold', fontSize: 12, color: '#fff'}}>ТОП</Text>
@@ -138,12 +135,13 @@ export const ProductCard = (props) => {
                     style={{ height: 23, width: 25,objectFit:'contain' }}
                   />
                 </TouchableOpacity>
-                {isImageLoading && <ActivityIndicator style={{ position: 'absolute', width: '100%', height: 200 }} />}
+                {isImageLoading && <ActivityIndicator style={{ position: 'absolute', width: '100%', height: '100%' }} />}
                 <Image
-                    style={{width:'100%', height:200, borderRadius:8}}
+                    style={{width:'100%', height:'100%'}}
                     source={props.image === '/media/defaults/post.png' ? require('../assets/post.png') : {uri: `https://market.qorgau-city.kz${props.image}`}}
                     onLoadStart={() => setImageLoading(true)}
                     onLoadEnd={() => setImageLoading(false)}
+                    contentFit={'cover'}
                 />
             </View>
             }
