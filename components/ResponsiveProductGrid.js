@@ -71,10 +71,7 @@ export const ResponsiveProductGrid = ({
       renderItem={({ item }) => (
         <View style={[
           styles.itemContainer,
-          { 
-            width: itemWidth,
-            maxWidth: 300, // Maximum width for desktop displays
-          }
+          itemWidthStyle
         ]}>
           {React.createElement(ProductCardComponent || require('./ProductCard').ProductCard, {
             key: item.id,
@@ -106,7 +103,7 @@ export const ResponsiveProductGrid = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 2,
     flex: 1,
   },
   contentContainer: {
@@ -114,12 +111,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemContainer: {
-    padding: 5,
-    margin: 5,
+    padding: 4,
+    margin: 4,
     alignItems: 'center',
   },
   columnWrapperStyle: {
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     flexWrap: 'wrap',
+    paddingHorizontal: 4,
   }
 });
