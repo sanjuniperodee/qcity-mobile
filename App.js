@@ -9,12 +9,12 @@ import { store, persistor } from './store/index';
 import { enableScreens } from 'react-native-screens';
 import * as SplashScreen from 'expo-splash-screen';
 import { I18nextProvider } from 'react-i18next';
-import * as Notifications from "expo-notifications";
+import * as NotificationsModule from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
 import { NotificationProvider } from './context/NotificationContext';
 import Purchases from "react-native-purchases";
 
-Notifications.setNotificationHandler({
+NotificationsModule.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
@@ -36,7 +36,7 @@ TaskManager.defineTask(
   }
 );
 
-Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+NotificationsModule.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 
 
 SplashScreen.preventAutoHideAsync();

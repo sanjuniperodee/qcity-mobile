@@ -9,7 +9,7 @@ import { ProductCard } from '../components/ProductCard';
 import { ResponsiveProductGrid } from '../components/ResponsiveProductGrid';
 import { useGetPostListQuery, useGetPostListCityQuery } from '../api';
 import { useTranslation } from 'react-i18next';
-import * as Notifications from 'expo-notifications';
+import * as NotificationsModule from 'expo-notifications';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Grid } from '../components/ui/Grid';
 import CategoryTile from '../components/ui/CategoryTile';
@@ -87,7 +87,7 @@ export const HomeScreen = () => {
   useEffect(() => {
     console.log('Device.isDevice:', Device.isDevice);
     (async () => {
-      const perm = await Notifications.getPermissionsAsync();
+      const perm = await NotificationsModule.getPermissionsAsync();
       console.log('Permissions:', perm);
     })();
   }, []);

@@ -6,13 +6,13 @@ import React, {
     useRef,
     ReactNode,
   } from "react";
-  import * as Notifications from "expo-notifications";
+  import * as NotificationsModule from "expo-notifications";
   import { Subscription } from "expo-modules-core";
   import { registerForPushNotificationsAsync } from "../utils/registerForPushNotificationsAsync";
   
   interface NotificationContextType {
     expoPushToken: string | null;
-    notification: Notifications.Notification | null;
+    notification: NotificationsModule.Notification | null;
     error: Error | null;
   }
   
@@ -39,7 +39,7 @@ import React, {
   }) => {
     const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
     const [notification, setNotification] =
-      useState<Notifications.Notification | null>(null);
+      useState<NotificationsModule.Notification | null>(null);
     const [error, setError] = useState<Error | null>(null);
   
     const notificationListener = useRef<Subscription>();
@@ -52,13 +52,13 @@ import React, {
       );
   
       notificationListener.current =
-        Notifications.addNotificationReceivedListener((notification) => {
+        NotificationsModule.addNotificationReceivedListener((notification) => {
           console.log("🔔 Notification Received: ", notification);
           setNotification(notification);
         });
   
       responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {
+        NotificationsModule.addNotificationResponseReceivedListener((response) => {
           console.log(
             "🔔 Notification Response: ",
             JSON.stringify(response, null, 2),
@@ -69,12 +69,12 @@ import React, {
   
       return () => {
         if (notificationListener.current) {
-          Notifications.removeNotificationSubscription(
+          NotificationsModule.removeNotificationSubscription(
             notificationListener.current
           );
         }
         if (responseListener.current) {
-          Notifications.removeNotificationSubscription(responseListener.current);
+          NotificationsModule.removeNotificationSubscription(responseListener.current);
         }
       };
     }, []);

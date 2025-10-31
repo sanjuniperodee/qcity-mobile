@@ -1,5 +1,5 @@
 import { Platform } from "react-native";
-import * as Notifications from "expo-notifications";
+import * as NotificationsModule from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 

@@ -48,10 +48,14 @@ export const ResponsiveProductGrid = ({
     const padding = 10; // Padding on each side of the screen
     const spacing = 10; // Spacing between items
     const availableWidth = screenWidth - (padding * 2) - (spacing * (numColumns - 1));
+    // For mobile, ensure we always have at least 2 columns
     return availableWidth / numColumns;
   };
 
   const itemWidth = getItemWidth();
+  
+  // Force the item width to be a percentage on mobile screens
+  const itemWidthStyle = screenWidth < 768 ? { width: '46%' } : { width: itemWidth, maxWidth: 300 };
   
   return (
     <FlatList
