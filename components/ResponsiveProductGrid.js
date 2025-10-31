@@ -96,7 +96,6 @@ export const ResponsiveProductGrid = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 12,
   },
   contentContainer: {
     paddingBottom: 60,

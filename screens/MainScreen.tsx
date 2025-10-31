@@ -390,7 +390,7 @@ export const HomeScreen = () => {
         onRefresh={onRefresh}
         ProductCardComponent={MemoProductCard}
         ListFooterComponent={
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, paddingHorizontal: 12 }}>
             {isLoading && <ActivityIndicator size="large" color={ORANGE} />}
           </View>
         }
