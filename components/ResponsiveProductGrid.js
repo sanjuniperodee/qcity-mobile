@@ -42,13 +42,15 @@ export const ResponsiveProductGrid = ({
   const numColumns = getNumColumns();
   
   // Calculate item width based on number of columns with fixed outer padding and spacing
-  const listHorizontalPadding = 0; // no extra padding so header/search keep their width
+  const listHorizontalPadding = 12; // no extra padding so header/search keep their width
   const interItemSpacing = 12; // px between items
 
   const getItemWidth = () => {
-    const available = screenWidth - interItemSpacing * (numColumns - 1);
-    return Math.floor(available / numColumns);
+    const totalSpacing = interItemSpacing * (numColumns - 1) + listHorizontalPadding * 2;
+    const availableWidth = screenWidth - totalSpacing;
+    return Math.floor(availableWidth / numColumns);
   };
+
   const itemWidth = getItemWidth();
 
   return (
@@ -56,7 +58,7 @@ export const ResponsiveProductGrid = ({
       data={data}
       numColumns={numColumns}
       style={styles.container}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={[styles.contentContainer, { paddingHorizontal: listHorizontalPadding }]}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
       key={`grid-${numColumns}`} // Force re-render when columns change
