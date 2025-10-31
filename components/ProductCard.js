@@ -51,7 +51,7 @@ export const ProductCard = (props) => {
           onPress={()=>{navigation.push('ViewPost',{id:props.id})}} 
           style={{
             width: '100%',
-            height: 320,
+            height: windowWidth < 768 ? 180 : 270, // Even smaller height for mobile
             marginBottom: spacing.md,
             borderRadius: radius.md,
             borderWidth: props.tariff === 2 ? 2 : 0, 
@@ -62,8 +62,8 @@ export const ProductCard = (props) => {
             shadowOpacity: 0.15,
             shadowRadius: 4,
             elevation: 3,
-            margin: 5,
-            padding: 5
+            margin: 3,
+            padding: 3
           }}>
           <View>
             <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',bottom:10,zIndex:2,left:10,position:'absolute'}}>

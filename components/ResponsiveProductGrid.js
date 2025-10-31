@@ -28,20 +28,11 @@ export const ResponsiveProductGrid = ({
     return () => subscription.remove();
   }, []);
 
-  // Calculate number of columns based on screen width
-  const getNumColumns = () => {
-    if (screenWidth < 480) {
-      return 2; // Small mobile screens - 2 columns
-    } else if (screenWidth < 768) {
-      return 2; // Regular mobile screens - 2 columns
-    } else if (screenWidth < 1024) {
-      return 3; // Tablets - 3 columns
-    } else {
-      return 4; // Desktop/large screens - 4 columns
-    }
-  };
-
-  const numColumns = getNumColumns();
+  // Always use 2 columns for mobile, regardless of screenWidth
+  const numColumns = 2;
+  
+  // Mobile devices always need 2 columns
+  const isMobile = true; // Force mobile layout
 
   // Calculate item width based on number of columns with appropriate spacing
   const getItemWidth = () => {
@@ -54,10 +45,8 @@ export const ResponsiveProductGrid = ({
 
   const itemWidth = getItemWidth();
   
-  // Force the item width to be a percentage on mobile screens
-  const itemWidthStyle = screenWidth < 768 ? 
-    { width: '48%', maxWidth: screenWidth / 2 - 16 } : 
-    { width: itemWidth, maxWidth: 300 };
+  // Force the item width to exactly 48%
+  const itemWidthStyle = { width: '48%', maxWidth: screenWidth / 2 - 16 };
   
   return (
     <FlatList
@@ -67,14 +56,16 @@ export const ResponsiveProductGrid = ({
       contentContainerStyle={styles.contentContainer}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
+      key={numColumns} // Force re-render when columns change
       keyExtractor={(item) => item.id.toString()}
       ListHeaderComponent={ListHeaderComponent}
       ListEmptyComponent={ListEmptyComponent}
-      renderItem={({ item }) => (
-        <View style={[
-          styles.itemContainer,
-          itemWidthStyle
-        ]}>
+      renderItem={({ item, index }) => (
+        <View style={{
+          width: '49%',
+          padding: 2,
+          margin: 1,
+        }}>
           {React.createElement(ProductCardComponent || require('./ProductCard').ProductCard, {
             key: item.id,
             id: item.id,
@@ -98,28 +89,34 @@ export const ResponsiveProductGrid = ({
       refreshing={refreshing}
       onRefresh={onRefresh}
       ListFooterComponent={ListFooterComponent}
-      columnWrapperStyle={styles.columnWrapperStyle}
+      columnWrapperStyle={{ 
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingHorizontal: 2,
+      }}
     />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 2,
+    paddingHorizontal: 0,
     flex: 1,
+    width: '100%',
   },
   contentContainer: {
     paddingBottom: 60,
     alignItems: 'center',
+    width: '100%',
   },
   itemContainer: {
-    padding: 4,
-    margin: 4,
+    padding: 3,
+    margin: 1,
     alignItems: 'center',
   },
   columnWrapperStyle: {
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    width: '100%',
     paddingHorizontal: 4,
   }
 });
