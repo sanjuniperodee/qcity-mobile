@@ -52,7 +52,7 @@ export const ProductCard = (props) => {
           style={{
             width: '100%',
             // Let content define height; keep a minimal height to avoid collapse
-            minHeight: windowWidth < 768 ? 350 : 450,
+            minHeight: maxContentHeight,
             borderRadius: radius.md,
             borderWidth: props.tariff === 2 ? 2 : 0, 
             borderColor: props.tariff === 2 ? colors.primary : 'transparent',

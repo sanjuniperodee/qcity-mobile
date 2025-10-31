@@ -103,4 +103,5 @@ const styles = StyleSheet.create({
   itemContainer: {
     alignItems: 'center',
   },
+  gap: 12,
 });
