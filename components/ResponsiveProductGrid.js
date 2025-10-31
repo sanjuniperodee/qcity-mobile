@@ -41,30 +41,21 @@ export const ResponsiveProductGrid = ({
   
   const numColumns = getNumColumns();
   
-  // Calculate item dimensions based on number of columns
-  const getItemStyle = () => {
-    const totalMargin = 16; // Total horizontal margin/padding per item
-    const containerPadding = 16; // Padding of container
-    const spacing = 8; // Spacing between items
-    
-    // Calculate width based on number of columns
-    const availableWidth = screenWidth - containerPadding;
-    const itemWidth = (availableWidth / numColumns) - spacing;
-    
-    return {
-      width: itemWidth,
-      marginHorizontal: spacing / 2,
-      marginVertical: spacing / 2,
-    };
+  // Calculate item width based on number of columns with fixed outer padding and spacing
+  const listHorizontalPadding = 12; // px on each side
+  const interItemSpacing = 12; // px between items
+
+  const getItemWidth = () => {
+    const available = screenWidth - listHorizontalPadding * 2 - interItemSpacing * (numColumns - 1);
+    return Math.floor(available / numColumns);
   };
-  
-  const itemStyle = getItemStyle();
+  const itemWidth = getItemWidth();
 
   return (
     <FlatList
       data={data}
       numColumns={numColumns}
-      style={styles.container}
+      style={[styles.container, { paddingHorizontal: listHorizontalPadding }]}
       contentContainerStyle={styles.contentContainer}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
@@ -73,7 +64,7 @@ export const ResponsiveProductGrid = ({
       ListHeaderComponent={ListHeaderComponent}
       ListEmptyComponent={ListEmptyComponent}
       renderItem={({ item }) => (
-        <View style={[styles.itemContainer, { width: itemStyle.width }]}>
+        <View style={[styles.itemContainer, { width: itemWidth, marginBottom: interItemSpacing }]}>
           {React.createElement(ProductCardComponent || require('./ProductCard').ProductCard, {
             key: item.id,
             id: item.id,
@@ -97,7 +88,7 @@ export const ResponsiveProductGrid = ({
       refreshing={refreshing}
       onRefresh={onRefresh}
       ListFooterComponent={ListFooterComponent}
-      columnWrapperStyle={styles.columnWrapperStyle}
+      columnWrapperStyle={{ justifyContent: 'space-between' }}
     />
   );
 };
@@ -105,18 +96,11 @@ export const ResponsiveProductGrid = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 8,
   },
   contentContainer: {
     paddingBottom: 60,
-    alignItems: 'flex-start',
-    paddingHorizontal: 0,
   },
   itemContainer: {
     alignItems: 'center',
   },
-  columnWrapperStyle: {
-    flex: 1,
-    justifyContent: 'flex-start',
-  }
 });
