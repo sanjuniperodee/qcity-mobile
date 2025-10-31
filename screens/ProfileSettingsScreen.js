@@ -183,6 +183,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
     return (
       <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
       >
         <Modal
             animationType="slide"
@@ -199,7 +200,10 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
             </View>
             </View>
         </Modal>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 40 }}
+        >
           <Container style={{ alignItems:'center' }}>
             <View style={{ width:'100%', maxWidth: (Dimensions.get('window').width >= 1024 ? 480 : undefined), alignItems:'center' }}>
             <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
