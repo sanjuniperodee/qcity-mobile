@@ -20,6 +20,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useGetPostByIdQuery, useGetPostListQuery, useAddToFavouritesMutation, useRemoveFromFavouritesMutation, useListFavouritesQuery } from '../api';
 import { ProductCard } from '../components/ProductCard';
+import { ResponsiveProductGrid } from '../components/ResponsiveProductGrid';
 import { SliderComponent } from '../components/SliderComponent';
 import { Social } from '../components/Social';
 
@@ -417,36 +418,13 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                 ) : null}
 
                 <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 20 }}>Похожие объявления</Text>
-                <ScrollView
-                  horizontal={true}
-                  contentContainerStyle={{
-                    paddingBottom: 20,
-                    marginBottom: 20,
-                    marginTop: 10,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  {Array.isArray(dataPost?.results)
-                    ? dataPost.results.map((item) => (
-                        <ProductCard
-                          viewPost={1}
-                          id={item.id}
-                          title={item.title}
-                          key={item.id}
-                          image={item.images?.[0]?.image}
-                          cost={item.cost}
-                          media={item.images}
-                          condition={item.condition}
-                          mortage={item.mortage}
-                          delivery={item.delivery}
-                          city={item.geolocation}
-                          date={item.date}
-                        />
-                      ))
-                    : null}
-                </ScrollView>
+                {Array.isArray(dataPost?.results) && (
+                  <View style={{ marginTop: 10 }}>
+                    <ResponsiveProductGrid
+                      data={dataPost.results}
+                    />
+                  </View>
+                )}
               </View>
             </View>
           )}
