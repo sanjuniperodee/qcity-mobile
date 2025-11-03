@@ -73,6 +73,7 @@ export const CreatePostScreen = () => {
   const [mediaError, setMediaError] = useState(false);
   const [cityError, setCityError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
+  const [generalError, setGeneralError] = useState('');
 
   // Refs for each input field
   const titleRef = React.createRef();
@@ -388,17 +389,30 @@ export const CreatePostScreen = () => {
 
       if (response.ok) {
         setLoading(false);
+        setSent(false);
+        setGeneralError('');
         const data = await response.json();
         const createdPostId = data.id;
         navigation.navigate('PostTariffs', { id: createdPostId });
       } else {
         setLoading(false);
-        const errorData = await response.json();
-        console.error('Error creating post:', errorData);
+        setSent(false);
+        let errorText = '';
+        try {
+          const errorData = await response.json();
+          errorText = errorData.detail || JSON.stringify(errorData);
+        } catch (e) {
+          errorText = `Ошибка ${response.status}`;
+        }
+        setGeneralError(errorText);
+        console.error('Error creating post:', errorText);
       }
     } catch (error) {
       setLoading(false);
-      console.error('Fetch error:', error.message);
+      setSent(false);
+      const msg = error?.message ? String(error.message) : 'Сеть недоступна';
+      setGeneralError(msg);
+      console.error('Fetch error:', msg);
     }
   };
 
@@ -470,6 +484,9 @@ export const CreatePostScreen = () => {
 
         <View style={{ marginTop: 20, marginBottom: 150, width: '90%', alignSelf: 'center' }}>
           <Text style={{ fontFamily: 'medium', fontSize: 22, marginTop: 10 }}>{`Подать объявление ${categoryParam}`}</Text>
+          {generalError ? (
+            <Text style={{ color: 'red', marginTop: 12 }}>{generalError}</Text>
+          ) : null}
 
           <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 20 }}>{t('title.header')}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, marginTop: 5 }}>
@@ -824,7 +841,7 @@ export const CreatePostScreen = () => {
             </View>
           </View>
 
-          <TouchableOpacity onPress={sendPostRequest} style={{ borderRadius: 10, overflow: 'hidden', marginBottom: 20, marginTop: 40, backgroundColor: '#F09235', paddingVertical: 15, alignItems: 'center' }}>
+          <TouchableOpacity onPress={sendPostRequest} disabled={loading} style={{ borderRadius: 10, overflow: 'hidden', marginBottom: 20, marginTop: 40, backgroundColor: loading ? '#d7a06f' : '#F09235', paddingVertical: 15, alignItems: 'center' }}>
             <Text style={{ color: '#F7F8F9', fontSize: 16 }}>Опубликовать</Text>
           </TouchableOpacity>
         </View>
