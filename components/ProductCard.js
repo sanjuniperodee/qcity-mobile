@@ -162,20 +162,35 @@ export const ProductCard = (props) => {
                 maxWidth:'100%'
               }}
             >{props.title}</Text>
-            <Text style={{fontFamily:'medium',marginTop:5,fontSize:18,color:colors.text, textAlign:'left'}}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{
+                fontFamily:'medium',
+                marginTop:5,
+                fontSize:18,
+                color:colors.text,
+                textAlign:'left',
+                lineHeight:22,
+                minHeight:22,
+                maxWidth:'100%'
+              }}
+            >
               {props.cost} ₸
             </Text>
             <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginTop:8}}>
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, maxWidth:'58%'}}
+                style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, width:'56%'}}
               >{props.city}</Text>
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, maxWidth:'40%', textAlign:'right'}}
-              >{props.date}</Text>
+              <View style={{width:'42%', alignItems:'flex-end'}}>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, textAlign:'right'}}
+                >{props.date}</Text>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
