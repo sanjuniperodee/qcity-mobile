@@ -63,7 +63,8 @@
       "password_length": "Құпия сөз кемінде 6 таңбадан тұруы тиіс.",
       "passwords_do_not_match": "Құпия сөздер сәйкес келмейді.",
       "name_required": "Атын толтырыңыз",
-      "image_required": "Профиль суреті қажет."
+      "image_required": "Профиль суреті қажет.",
+      "email_already_in_use": "Бұл пошта бұрыннан тіркелген"
     }
   },
   "login": {

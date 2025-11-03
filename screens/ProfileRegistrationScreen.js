@@ -119,6 +119,9 @@ export const ProfileRegistrationScreen = ({route}) => {
             if (parsed.fieldErrors.phone?.length || parsed.fieldErrors.phone_number?.length) {
               alert((parsed.fieldErrors.phone?.[0] || parsed.fieldErrors.phone_number?.[0]));
             }
+            if (parsed.fieldErrors.email?.length) {
+              alert(t('register.error.email_already_in_use'));
+            }
             if (!Object.keys(parsed.fieldErrors).length) {
               alert(parsed.message);
             }

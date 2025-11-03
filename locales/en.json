@@ -64,7 +64,8 @@
       "password_length": "Password must be at least 6 characters.",
       "passwords_do_not_match": "Passwords do not match.",
       "name_required": "Fill in the name",
-      "image_required": "Profile picture is required"
+      "image_required": "Profile picture is required",
+      "email_already_in_use": "This email is already in use"
     }
   },
   "login": {

@@ -63,7 +63,8 @@
         "password_length": "Пароль должен быть не менее 6 символов.",
         "passwords_do_not_match": "Пароли не совпадают.",
         "name_required": "Заполните имя",
-        "image_required": "Фото профиля обязателен"
+        "image_required": "Фото профиля обязателен",
+        "email_already_in_use": "Эта почта уже используется"
       }
     },
     "login": {
