@@ -66,8 +66,9 @@ export default function ForgotPasswordScreen() {
     const only = (value || '').replace(/\D/g, '');
     const rest = only.replace(/^77?/, '').slice(0,9);
     setPhoneDigits(rest);
+    if (!rest) { setEmail(''); return; }
     const masked = formatKzPhoneFromDigits(rest);
-    setEmail(masked || '+7 (7');
+    setEmail(masked);
   };
 
   const handleRequestCode = async () => {

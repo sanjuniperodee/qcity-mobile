@@ -82,8 +82,9 @@ export const LoginScreen = () => {
         const only = (value || '').replace(/\D/g, '');
         const rest = only.replace(/^77?/, '').slice(0,9);
         setPhoneDigits(rest);
+        if (!rest) { setLogin(''); return; }
         const masked = formatKzPhoneFromDigits(rest);
-        setLogin(masked || '+7 (7');
+        setLogin(masked);
     };
 
     const detectInputType = (input) => {
@@ -206,7 +207,7 @@ export const LoginScreen = () => {
                         <FormField
                             label={t('register.write_name')}
                             onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setLogin(v)}
-                            value={method==='phone' ? (login || '+7 (7') : login}
+                            value={method==='phone' ? login : login}
                             placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('number_or_email')}
                             keyboardType={method==='phone' ? 'phone-pad' : 'default'}
                             maxLength={method==='phone' ? 18 : 100}

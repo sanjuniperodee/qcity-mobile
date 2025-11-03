@@ -70,8 +70,9 @@ export const SignUpScreen = () => {
         // remove leading 77 if user pasted full number
         const rest = only.replace(/^77?/, '').slice(0,9);
         setPhoneDigits(rest);
+        if (!rest) { setLogin(''); return; }
         const masked = formatKzPhoneFromDigits(rest);
-        setLogin(masked || '+7 (7');
+        setLogin(masked);
     };
 
     const validate = () => {
@@ -161,7 +162,7 @@ export const SignUpScreen = () => {
             <View style={{marginTop:20, width: '100%'}}>
                 <FormField
                     onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setLogin(v)}
-                    value={method==='phone' ? (login || '+7 (7') : login}
+                    value={method==='phone' ? login : login}
                     placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('email')}
                     keyboardType={method==='phone' ? 'phone-pad' : 'default'}
                     maxLength={method==='phone' ? 18 : 100}
