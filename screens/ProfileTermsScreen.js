@@ -8,7 +8,7 @@ export const ProfileTermsScreen = () => {
   return (
     <ScrollView>
       <View style={{width:'90%',alignSelf:'center'}}>
-        <Image style={{width:165,height:126,alignSelf:'center',marginTop:20}} source={require('../assets/profileLogo.png')}/>
+        <Image style={{height:40,alignSelf:'center',marginTop:20,resizeMode:'contain'}} source={require('../assets/logo.png')}/>
         <Text style={{fontFamily:'regular',fontSize:14,lineHeight:17,marginTop:20}}>Условия пользования веб-сайтом/мобильным приложением
 
 Общие положения
