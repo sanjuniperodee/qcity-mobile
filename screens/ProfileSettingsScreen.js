@@ -164,11 +164,21 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
           const formData = new FormData();
           // Прикрепляем файл только если пользователь выбрал НОВОЕ локальное изображение
           if (image && typeof image === 'string' && !image.startsWith('http')) {
-            formData.append('profile_image', {
-              uri: image,
-              type: 'image/jpeg',
-              name: 'profile_image.jpg',
-            });
+            if (Platform.OS === 'web') {
+              try {
+                const resp = await fetch(image);
+                const blob = await resp.blob();
+                formData.append('profile_image', blob, 'profile_image.jpg');
+              } catch (e) {
+                console.warn('Failed to read image blob', e);
+              }
+            } else {
+              formData.append('profile_image', {
+                uri: image,
+                type: 'image/jpeg',
+                name: 'profile_image.jpg',
+              });
+            }
           }
           formData.append('username', name);
           formData.append('phone_number', phone);

@@ -86,7 +86,17 @@ export const ProfileRegistrationScreen = ({route}) => {
           formData.append('email', login);
         }
         if (image && !image.startsWith('http')) {
-          formData.append('profile_image', { uri: image, type: 'image/jpeg', name: 'profile.jpg' });
+          if (Platform.OS === 'web') {
+            try {
+              const resp = await fetch(image);
+              const blob = await resp.blob();
+              formData.append('profile_image', blob, 'profile.jpg');
+            } catch (e) {
+              console.warn('Failed to read image blob', e);
+            }
+          } else {
+            formData.append('profile_image', { uri: image, type: 'image/jpeg', name: 'profile.jpg' });
+          }
         }
         formData.append('profile.phone_number', type === 'phone' ? login : '');
     
