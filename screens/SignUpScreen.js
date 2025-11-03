@@ -66,9 +66,14 @@ export const SignUpScreen = () => {
     };
 
     const handlePhoneChange = (value) => {
-        const only = (value || '').replace(/\D/g, '');
+        const incoming = value || '';
+        const only = incoming.replace(/\D/g, '');
         // remove leading 77 if user pasted full number
-        const rest = only.replace(/^77?/, '').slice(0,9);
+        let rest = only.replace(/^77?/, '').slice(0,9);
+        const currentMasked = formatKzPhoneFromDigits(phoneDigits) || '+7 (7';
+        if (rest.length === phoneDigits.length && incoming.length < currentMasked.length) {
+            rest = phoneDigits.slice(0, Math.max(0, phoneDigits.length - 1));
+        }
         setPhoneDigits(rest);
         const masked = formatKzPhoneFromDigits(rest);
         setLogin(masked || '+7 (7');

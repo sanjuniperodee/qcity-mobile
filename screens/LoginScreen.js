@@ -79,8 +79,14 @@ export const LoginScreen = () => {
     };
 
     const handlePhoneChange = (value) => {
-        const only = (value || '').replace(/\D/g, '');
-        const rest = only.replace(/^77?/, '').slice(0,9);
+        const incoming = value || '';
+        const only = incoming.replace(/\D/g, '');
+        let rest = only.replace(/^77?/, '').slice(0,9);
+        // Если пользователь нажал backspace на символе маски, а цифры не изменились — удаляем последнюю цифру вручную
+        const currentMasked = formatKzPhoneFromDigits(phoneDigits) || '+7 (7';
+        if (rest.length === phoneDigits.length && incoming.length < currentMasked.length) {
+            rest = phoneDigits.slice(0, Math.max(0, phoneDigits.length - 1));
+        }
         setPhoneDigits(rest);
         const masked = formatKzPhoneFromDigits(rest);
         setLogin(masked || '+7 (7');

@@ -63,8 +63,13 @@ export default function ForgotPasswordScreen() {
   };
 
   const handlePhoneChange = (value: string) => {
-    const only = (value || '').replace(/\D/g, '');
-    const rest = only.replace(/^77?/, '').slice(0,9);
+    const incoming = value || '';
+    const only = incoming.replace(/\D/g, '');
+    let rest = only.replace(/^77?/, '').slice(0,9);
+    const currentMasked = formatKzPhoneFromDigits(phoneDigits) || '+7 (7';
+    if (rest.length === phoneDigits.length && incoming.length < currentMasked.length) {
+      rest = phoneDigits.slice(0, Math.max(0, phoneDigits.length - 1));
+    }
     setPhoneDigits(rest);
     const masked = formatKzPhoneFromDigits(rest);
     setEmail(masked || '+7 (7');
