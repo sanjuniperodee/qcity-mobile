@@ -40,6 +40,7 @@ export const PostViewScreen = ({ route }) => {
 
   const windowWidth = Dimensions.get('window').width;
   const scrollViewRef = useRef(null);
+  const [similarWidth, setSimilarWidth] = useState(0);
 
   const [isFavourite, setIsFavourite] = useState(false);
   const [addToFavourites, { isLoading: isAdding }] = useAddToFavouritesMutation();
@@ -419,9 +420,11 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
 
                 <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 20 }}>Похожие объявления</Text>
                 {Array.isArray(dataPost?.results) && (
-                  <View style={{ marginTop: 10 }}>
+                  <View style={{ marginTop: 10 }} onLayout={(e) => setSimilarWidth(e.nativeEvent.layout.width)}>
                     <ResponsiveProductGrid
                       data={dataPost.results}
+                      containerWidth={similarWidth || undefined}
+                      scrollEnabled={false}
                     />
                   </View>
                 )}

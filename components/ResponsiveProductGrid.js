@@ -14,19 +14,24 @@ export const ResponsiveProductGrid = ({
   refreshing,
   onRefresh,
   ListFooterComponent,
-  ProductCardComponent
+  ProductCardComponent,
+  containerWidth,
+  scrollEnabled
 }) => {
-  const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
+  const [screenWidth, setScreenWidth] = useState(containerWidth || Dimensions.get('window').width);
   
   // Listen for dimension changes to handle orientation changes or window resizing
   useEffect(() => {
+    if (containerWidth) {
+      setScreenWidth(containerWidth);
+      return;
+    }
     const handleDimensionsChange = ({ window }) => {
       setScreenWidth(window.width);
     };
-
     const subscription = Dimensions.addEventListener('change', handleDimensionsChange);
     return () => subscription.remove();
-  }, []);
+  }, [containerWidth]);
 
   // Determine number of columns based on screen width
   const getNumColumns = () => {
@@ -59,6 +64,7 @@ export const ResponsiveProductGrid = ({
       numColumns={numColumns}
       style={styles.container}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: listHorizontalPadding }]}
+      scrollEnabled={scrollEnabled !== undefined ? scrollEnabled : true}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
       key={`grid-${numColumns}`} // Force re-render when columns change
