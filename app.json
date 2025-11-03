@@ -2,7 +2,7 @@
   "expo": {
     "name": "Qorgau Marketplace",
     "slug": "qorgau-marketplace",
-    "version": "1.9.0",
+    "version": "2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

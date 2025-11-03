@@ -162,11 +162,14 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
           setLoading(true);
           setNameError(''); setEmailError(''); setPhoneError(''); setGeneralError('');
           const formData = new FormData();
-          formData.append('profile_image', {
-            uri: image,
-            type: 'image/jpeg',
-            name: 'profile_image.jpg',
-          });
+          // Прикрепляем файл только если пользователь выбрал НОВОЕ локальное изображение
+          if (image && typeof image === 'string' && image.startsWith('file://')) {
+            formData.append('profile_image', {
+              uri: image,
+              type: 'image/jpeg',
+              name: 'profile_image.jpg',
+            });
+          }
           formData.append('username', name);
           formData.append('phone_number', phone);
           formData.append('email', email);
@@ -180,7 +183,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
               const data = result.error?.data || {};
               if (data.username?.length) setNameError(String(data.username[0]));
               if (data.email?.length) setEmailError(String(data.email[0]));
-              if (data.phone_number?.length) setPhoneError(String(data.phone_number[0]));
+              if (data.phone_number?.length) setPhoneError(t('register.error.phone_already_in_use'));
               if (!data.username && !data.email && !data.phone_number) {
                 const fallback =
                   status === 400 ? 'Ошибка валидации' :

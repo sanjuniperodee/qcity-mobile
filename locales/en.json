@@ -65,7 +65,8 @@
       "passwords_do_not_match": "Passwords do not match.",
       "name_required": "Fill in the name",
       "image_required": "Profile picture is required",
-      "email_already_in_use": "This email is already in use"
+      "email_already_in_use": "This email is already in use",
+      "phone_already_in_use": "This phone number is already in use"
     }
   },
   "login": {

@@ -64,7 +64,8 @@
       "passwords_do_not_match": "Құпия сөздер сәйкес келмейді.",
       "name_required": "Атын толтырыңыз",
       "image_required": "Профиль суреті қажет.",
-      "email_already_in_use": "Бұл пошта бұрыннан тіркелген"
+      "email_already_in_use": "Бұл пошта бұрыннан тіркелген",
+      "phone_already_in_use": "Бұл телефон нөмірі бұрыннан тіркелген"
     }
   },
   "login": {

@@ -64,7 +64,8 @@
         "passwords_do_not_match": "Пароли не совпадают.",
         "name_required": "Заполните имя",
         "image_required": "Фото профиля обязателен",
-        "email_already_in_use": "Эта почта уже используется"
+        "email_already_in_use": "Эта почта уже используется",
+        "phone_already_in_use": "Этот номер уже используется"
       }
     },
     "login": {

@@ -13,6 +13,7 @@ export const ProfileRegistrationScreen = ({route}) => {
     const [name, onChangeName] = useState('');
     const dispatch = useDispatch()
     const [image, setImage] = useState(null);
+    const [generalError, setGeneralError] = useState('');
     const navigation = useNavigation();
 
     const { width } = Dimensions.get('window');
@@ -73,6 +74,7 @@ export const ProfileRegistrationScreen = ({route}) => {
           return;
         }
         setIsLoading(true);
+        setGeneralError('');
         setEmailError('');
         
         const formData = new FormData();
@@ -83,7 +85,7 @@ export const ProfileRegistrationScreen = ({route}) => {
         } else {
           formData.append('email', login);
         }
-        if (image) {
+        if (image && image.startsWith('file://')) {
           formData.append('profile_image', { uri: image, type: 'image/jpeg', name: 'profile.jpg' });
         }
         formData.append('profile.phone_number', type === 'phone' ? login : '');
@@ -119,14 +121,13 @@ export const ProfileRegistrationScreen = ({route}) => {
             // map field errors
             if (parsed.fieldErrors.username?.length) setNameError(parsed.fieldErrors.username[0]);
             if (parsed.fieldErrors.phone?.length || parsed.fieldErrors.phone_number?.length) {
-              // keep as a general alert for phone since no phone field on this screen
-              alert((parsed.fieldErrors.phone?.[0] || parsed.fieldErrors.phone_number?.[0]));
+              setGeneralError(t('register.error.phone_already_in_use'));
             }
             if (parsed.fieldErrors.email?.length) {
               setEmailError(t('register.error.email_already_in_use'));
             }
             if (!Object.keys(parsed.fieldErrors).length) {
-              alert(parsed.message);
+              setGeneralError(parsed.message);
             }
             setIsLoading(false)
           }
@@ -185,6 +186,7 @@ export const ProfileRegistrationScreen = ({route}) => {
             { nameError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{nameError}</Text> : null }
             { imageError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{imageError}</Text> : null }
             { emailError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{emailError}</Text> : null }
+            { generalError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{generalError}</Text> : null }
             <View style={{marginTop:20,justifyContent:'center'}}>
                 <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
                     <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
