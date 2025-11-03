@@ -176,19 +176,21 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
           if (result.error) {
             setLoading(false);
             try {
-              const res = result.error?.originalStatus ? { status: result.error.originalStatus, json: async () => result.error.data } : null;
-              if (res) {
-                const parsed = await parseApiError({
-                  status: res.status,
-                } as any as Response);
-                // When using RTK, we already have data; manually map fields
-                const data = result.error.data || {};
-                if (data.username?.length) setNameError(String(data.username[0]));
-                if (data.email?.length) setEmailError(String(data.email[0]));
-                if (data.phone_number?.length) setPhoneError(String(data.phone_number[0]));
-                if (!data.username && !data.email && !data.phone_number) setGeneralError(parsed.message);
-              } else {
-                setGeneralError('Произошла ошибка');
+              const status = result.error?.originalStatus;
+              const data = result.error?.data || {};
+              if (data.username?.length) setNameError(String(data.username[0]));
+              if (data.email?.length) setEmailError(String(data.email[0]));
+              if (data.phone_number?.length) setPhoneError(String(data.phone_number[0]));
+              if (!data.username && !data.email && !data.phone_number) {
+                const fallback =
+                  status === 400 ? 'Ошибка валидации' :
+                  status === 401 ? 'Неверный логин или пароль' :
+                  status === 403 ? 'Доступ запрещён' :
+                  status === 404 ? 'Не найдено' :
+                  status === 429 ? 'Слишком много запросов. Повторите позже' :
+                  status >= 500 ? 'Сервис временно недоступен' :
+                  'Произошла ошибка';
+                setGeneralError(data.detail || fallback);
               }
             } catch (e) {
               setGeneralError('Произошла ошибка');
