@@ -212,6 +212,7 @@ export const LoginScreen = () => {
                             maxLength={method==='phone' ? 18 : 100}
                             autoCapitalize="none"
                             autoCorrect={false}
+                            selection={method==='phone' ? { start: (login || '+7 (7').length, end: (login || '+7 (7').length } : undefined}
                             dense={isDesktop}
                         />
                     </View>

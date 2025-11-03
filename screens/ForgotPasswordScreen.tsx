@@ -125,6 +125,7 @@ export default function ForgotPasswordScreen() {
             placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : 'Email'}
             keyboardType={method==='phone' ? 'phone-pad' : 'default'}
             maxLength={method==='phone' ? 18 : 100}
+            selection={method==='phone' ? { start: (email || '+7 (7').length, end: (email || '+7 (7').length } as any : undefined}
           />
         </View>
         {error ? <Text style={{ color: 'red', marginTop: 10 }}>{error}</Text> : null}

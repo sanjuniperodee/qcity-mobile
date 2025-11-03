@@ -161,10 +161,11 @@ export const SignUpScreen = () => {
             <View style={{marginTop:20, width: '100%'}}>
                 <FormField
                     onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setLogin(v)}
-                    value={method==='phone' ? login : login}
+                    value={method==='phone' ? (login || '+7 (7') : login}
                     placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('email')}
                     keyboardType={method==='phone' ? 'phone-pad' : 'default'}
                     maxLength={method==='phone' ? 18 : 100}
+                    selection={method==='phone' ? { start: (login || '+7 (7').length, end: (login || '+7 (7').length } : undefined}
                     dense={isDesktop}
                 />
             </View>
