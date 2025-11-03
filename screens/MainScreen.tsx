@@ -271,7 +271,10 @@ export const HomeScreen = () => {
 
         {/* Шапка с безопасным отступом сверху */}
         <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
-          <Image style={styles.logo} source={require('../assets/logo.png')} />
+          <View style={styles.logoContainer}>
+            <Text style={styles.logoText}>Qorgau</Text>
+            <Text style={styles.logoSubtext}>City</Text>
+          </View>
           <View style={styles.headerRight}>
             <TouchableOpacity
               style={styles.headerUser}
@@ -418,7 +421,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: 12, paddingBottom: 6, backgroundColor: '#FFFFFF',
   },
-  logo: { height: 26, width: 120, resizeMode: 'contain' },
+  logoContainer: { flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' },
+  logoText: { fontSize: 20, fontFamily: 'medium', color: ORANGE, lineHeight: 22, letterSpacing: 0.3 },
+  logoSubtext: { fontSize: 20, fontFamily: 'medium', color: ORANGE, lineHeight: 22, letterSpacing: 0.3, marginTop: -4 },
   headerRight: { flexDirection: 'row', alignItems: 'center' },
   headerUser: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6, paddingHorizontal: 8, borderRadius: 10 },
   headerUserText: { fontSize: 18, marginLeft: 8, fontFamily: 'medium', color: '#141517' },
