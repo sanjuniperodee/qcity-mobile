@@ -567,8 +567,14 @@ export const CreatePostScreen = () => {
             {mediaError && <Text style={{ color: 'red', marginVertical: 5 }}>Добавьте хоть одно фото или видео</Text>}
             <Text style={{ marginTop: 5, fontSize: 14, opacity: .6, fontFamily: 'regular' }}>Видео помогает покупателю лучше оценить товар. Добавьте короткий ролик и вы продадите быстрее!</Text>
 
-            <ScrollView horizontal contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingBottom: 15 }}>
-              <TouchableOpacity style={{ marginRight: 10 }} onPress={chooseMedia}>
+            <ScrollView horizontal contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingBottom: 15 }} keyboardShouldPersistTaps="handled">
+              <TouchableOpacity
+                style={{ marginRight: 10, zIndex: 2 }}
+                onPress={chooseMedia}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                accessibilityRole="button"
+                accessibilityLabel="add-media"
+              >
                 <View style={{ width: 110, height: 110, backgroundColor: '#F7F8F9', borderRadius: 10, borderWidth: 1, borderColor: '#c4c4c4', justifyContent: 'center', alignItems: 'center' }}>
                   <Image style={{ height: 25, width: 25 }} source={require('../assets/plusBlue.png')} />
                 </View>
