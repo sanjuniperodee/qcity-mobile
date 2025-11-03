@@ -7,6 +7,7 @@ import { Video,ResizeMode } from 'expo-av';
 import { useGetCategoriesListQuery } from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGetPostByIdQuery } from '../api';
+import { parseApiError } from '../utils/apiError';
 import { TextInputMask } from 'react-native-masked-text';
 import {useTranslation} from 'react-i18next'
 import { InputMap } from '../components/InputMap';
@@ -18,6 +19,7 @@ export const EditPostScreen = ({route}) => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const [loading,setLoading] = useState(false)
+  const [generalError, setGeneralError] = useState('')
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const { data, error, isLoading } = useGetCategoriesListQuery();
@@ -268,15 +270,19 @@ export const EditPostScreen = ({route}) => {
 
       if (response.ok) {
         setLoading(false)
-        Alert.alert('Пост успешно изменен','')
+        setGeneralError('')
       } else {
         setLoading(false);
-        const errorData = await response.json();
-        console.error('Error creating post:', errorData);
+        try {
+          const parsed = await parseApiError(response);
+          setGeneralError(parsed.message);
+        } catch (e) {
+          setGeneralError('Произошла ошибка');
+        }
       }
     } catch (error) {
       setLoading(false);
-      console.error('Fetch error:', error.message);
+      setGeneralError('Сеть недоступна');
     }
   };
 
@@ -329,6 +335,7 @@ export const EditPostScreen = ({route}) => {
       </Modal>
       
   <View style={{ marginTop: 20,marginBottom:150, width: '90%', alignSelf: 'center' }}>
+    {generalError ? <Text style={{ color: 'red', marginBottom: 10 }}>{generalError}</Text> : null}
     <Text style={{ fontSize: 16, fontFamily: 'bold' }}>Добавьте фотографии</Text>
     <ScrollView horizontal={true} contentContainerStyle={{flexDirection:'row',alignItems:'center',marginTop:10,paddingBottom:15}}>
         <TouchableOpacity style={{ marginRight: 10 }} onPress={pickImage}>

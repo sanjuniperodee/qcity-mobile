@@ -9,6 +9,7 @@ import { logout } from '../actions/authActions';
 import { persistor } from '../store/index';
 import { useDispatch,useSelector } from 'react-redux';
 import { useUpdateUserProfileMutation } from '../api';
+import { parseApiError } from '../utils/apiError';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 
@@ -29,6 +30,10 @@ export const ProfileSettingsScreen = ({route}) => {
     const [image, setImage] = useState(null);
 
     const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation();
+    const [nameError, setNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [phoneError, setPhoneError] = useState('');
+    const [generalError, setGeneralError] = useState('');
 
     useEffect(() => {
         if (user.profile_image) {
@@ -152,9 +157,10 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
       onChangeName(name);
   }
 
-    const handleProfileEdit = async () => {
+  const handleProfileEdit = async () => {
         try {
           setLoading(true);
+          setNameError(''); setEmailError(''); setPhoneError(''); setGeneralError('');
           const formData = new FormData();
           formData.append('profile_image', {
             uri: image,
@@ -169,7 +175,24 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
     
           if (result.error) {
             setLoading(false);
-            console.error('Profile update failed:', result.error);
+            try {
+              const res = result.error?.originalStatus ? { status: result.error.originalStatus, json: async () => result.error.data } : null;
+              if (res) {
+                const parsed = await parseApiError({
+                  status: res.status,
+                } as any as Response);
+                // When using RTK, we already have data; manually map fields
+                const data = result.error.data || {};
+                if (data.username?.length) setNameError(String(data.username[0]));
+                if (data.email?.length) setEmailError(String(data.email[0]));
+                if (data.phone_number?.length) setPhoneError(String(data.phone_number[0]));
+                if (!data.username && !data.email && !data.phone_number) setGeneralError(parsed.message);
+              } else {
+                setGeneralError('Произошла ошибка');
+              }
+            } catch (e) {
+              setGeneralError('Произошла ошибка');
+            }
           } else {
             console.log(result.data.user);
             setLoading(false);
@@ -177,6 +200,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
           }
         } catch (error) {
           console.error('Error during profile update:', error);
+          setGeneralError('Сеть недоступна');
         }
       };
 
@@ -223,15 +247,19 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
             <View style={{marginTop:25, width:'100%'}}>
                 <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.your_name')}</Text>
                 <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeName} value={name} placeholder={t('profile_settings.enter_your_name')} />
+                {nameError ? <Text style={{ color: 'red', marginTop: 8 }}>{nameError}</Text> : null}
             </View>
             <View style={{marginTop:20, width:'100%'}}>
                 <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.phone_number')}</Text>
                 <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangePhone} value={phone} placeholder={t('profile_settings.enter_phone_number')} />
+                {phoneError ? <Text style={{ color: 'red', marginTop: 8 }}>{phoneError}</Text> : null}
             </View>
             <View style={{marginTop:20, width:'100%'}}>
                 <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.email_for_login')}</Text>
                 <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeEmail} value={email} placeholder={t('profile_settings.enter_email')} />
+                {emailError ? <Text style={{ color: 'red', marginTop: 8 }}>{emailError}</Text> : null}
             </View>
+            {generalError ? <Text style={{ color: 'red', marginTop: 10, alignSelf:'flex-start' }}>{generalError}</Text> : null}
 
             <View style={{marginTop:20,flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:10}}>
                 <TouchableOpacity onPress={() => {handleLanguage('kz')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>

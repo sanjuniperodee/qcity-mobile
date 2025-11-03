@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert, Dimensions } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Dimensions } from 'react-native';
 import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
@@ -16,6 +16,7 @@ export default function ForgotPasswordScreen() {
   const { width } = Dimensions.get('window');
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const [error, setError] = useState('');
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,13 +72,13 @@ export default function ForgotPasswordScreen() {
 
   const handleRequestCode = async () => {
     if (!email.trim()) {
-      Alert.alert(t('common.error'), t('alerts.error.empty_fields'));
+      setError(t('alerts.error.empty_fields'));
       return;
     }
 
     const detectedType = method === 'email' ? 'email' : (validatePhone(email) ? 'phone' : null);
     if (!detectedType) {
-      Alert.alert(t('common.error'), t('alerts.error.invalid_contact'));
+      setError(t('alerts.error.invalid_contact'));
       return;
     }
 
@@ -94,14 +95,14 @@ export default function ForgotPasswordScreen() {
         const successMessage = detectedType === 'email' 
           ? 'Код отправлен на почту' 
           : 'Код отправлен на телефон';
-        Alert.alert(t('common.success'), t('alerts.success.code_sent'));
+        setError('');
         (navigation as any).navigate('ResetPassword', { email, type: detectedType });
       } else {
         const parsed = await parseApiError(response);
-        Alert.alert(t('common.error'), parsed.message);
+        setError(parsed.message);
       }
     } catch (error) {
-      Alert.alert(t('common.error'), String(error));
+      setError(t('common.network'));
     }
   };
 
@@ -126,6 +127,7 @@ export default function ForgotPasswordScreen() {
             maxLength={method==='phone' ? 18 : 100}
           />
         </View>
+        {error ? <Text style={{ color: 'red', marginTop: 10 }}>{error}</Text> : null}
         <Button fullWidth onPress={handleRequestCode}>
           Отправить код
         </Button>

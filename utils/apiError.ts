@@ -42,13 +42,19 @@ export async function parseApiError(res: Response): Promise<ParsedApiError> {
     if (n.includes('too many requests')) return 'Слишком много запросов. Повторите позже';
     if (n.includes('sms send failed') || n.includes('failed to send code')) return 'Не удалось отправить SMS. Повторите позже';
     if (n.includes('verification code sent')) return 'Код отправлен';
+    if (n.includes('you do not have permission')) return 'Недостаточно прав для выполнения действия';
+    if (n.includes('already in favourites')) return 'Уже в избранном';
+    if (n.includes('post not found')) return 'Объявление не найдено';
+    if (n.includes('password updated successfully')) return 'Пароль обновлён';
     return s;
   };
 
   if (message) message = mapKnown(message);
 
   if (!message) {
-    if (status === 401) message = 'Неверный логин или пароль';
+    if (status === 400) message = 'Ошибка валидации';
+    else if (status === 401) message = 'Неверный логин или пароль';
+    else if (status === 403) message = 'Доступ запрещён';
     else if (status === 404) message = 'Не найдено';
     else if (status === 429) message = 'Слишком много запросов. Повторите позже';
     else if (status >= 500) message = 'Сервис временно недоступен';

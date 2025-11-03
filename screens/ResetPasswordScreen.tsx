@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert, Dimensions, ActivityIndicator } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Dimensions, ActivityIndicator } from 'react-native';
 import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
@@ -12,6 +12,7 @@ export default function ResetPasswordScreen() {
   const [newPassword, setNewPassword] = useState('');
   const [codeError, setCodeError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [generalError, setGeneralError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { width } = Dimensions.get('window');
   const route = useRoute();
@@ -21,6 +22,7 @@ export default function ResetPasswordScreen() {
   const handleResetPassword = async () => {
     setCodeError('');
     setPasswordError('');
+    setGeneralError('');
     if (!code.trim() || !newPassword.trim()) {
       if (!code.trim()) setCodeError('Введите код');
       if (!newPassword.trim()) setPasswordError('Введите новый пароль');
@@ -45,7 +47,6 @@ export default function ResetPasswordScreen() {
       });
 
       if (response.ok) {
-        Alert.alert('Успех', 'Пароль изменён');
         (navigation as any).navigate('Login');
       } else {
         const parsed = await parseApiError(response);
@@ -56,12 +57,12 @@ export default function ResetPasswordScreen() {
         if (parsed.fieldErrors.code?.length) setCodeError(parsed.fieldErrors.code[0]);
         if (parsed.fieldErrors.new_password?.length) setPasswordError(parsed.fieldErrors.new_password[0]);
         if (!parsed.fieldErrors.code?.length && !parsed.fieldErrors.new_password?.length && !msg.includes('код') && !msg.includes('парол')) {
-          Alert.alert('Ошибка', parsed.message);
+          setGeneralError(parsed.message);
         }
       }
       setIsLoading(false);
     } catch (error) {
-      Alert.alert('Ошибка', String(error));
+      setGeneralError('Сеть недоступна');
       setIsLoading(false);
     }
   };
@@ -73,6 +74,7 @@ export default function ResetPasswordScreen() {
         <Text style={{ color:colors.textMuted, marginBottom:16 }}>
           {type === 'phone' ? 'Введите код из SMS' : 'Введите код из email'}
         </Text>
+        {generalError ? <Text style={{ color: 'red', marginBottom: 10 }}>{generalError}</Text> : null}
         <View style={{ width: '100%' }}>
           <FormField
             value={code}
