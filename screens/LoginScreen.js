@@ -82,9 +82,8 @@ export const LoginScreen = () => {
         const only = (value || '').replace(/\D/g, '');
         const rest = only.replace(/^77?/, '').slice(0,9);
         setPhoneDigits(rest);
-        if (!rest) { setLogin(''); return; }
         const masked = formatKzPhoneFromDigits(rest);
-        setLogin(masked);
+        setLogin(masked || '+7 (7');
     };
 
     const detectInputType = (input) => {
@@ -198,7 +197,7 @@ export const LoginScreen = () => {
                         <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', backgroundColor: method==='email' ? colors.mutedBg : '#FFF' }}>
                             <Text style={{ color: colors.primary }}>{t('auth.email')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setMethod('phone'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
+                        <TouchableOpacity onPress={() => { setMethod('phone'); setLogin('+7 (7'); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
                             <Text style={{ color: colors.primary }}>{t('auth.phone')}</Text>
                         </TouchableOpacity>
                     </View>
@@ -207,7 +206,7 @@ export const LoginScreen = () => {
                         <FormField
                             label={t('register.write_name')}
                             onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setLogin(v)}
-                            value={method==='phone' ? login : login}
+                            value={method==='phone' ? (login || '+7 (7') : login}
                             placeholder={method==='phone' ? '+7 (7XX) XXX-XX-XX' : t('number_or_email')}
                             keyboardType={method==='phone' ? 'phone-pad' : 'default'}
                             maxLength={method==='phone' ? 18 : 100}

@@ -66,9 +66,8 @@ export default function ForgotPasswordScreen() {
     const only = (value || '').replace(/\D/g, '');
     const rest = only.replace(/^77?/, '').slice(0,9);
     setPhoneDigits(rest);
-    if (!rest) { setEmail(''); return; }
     const masked = formatKzPhoneFromDigits(rest);
-    setEmail(masked);
+    setEmail(masked || '+7 (7');
   };
 
   const handleRequestCode = async () => {
@@ -115,7 +114,7 @@ export default function ForgotPasswordScreen() {
           <TouchableOpacity onPress={() => { setMethod('email'); setEmail(''); setPhoneDigits(''); }} style={{ marginRight:10, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', borderRadius:8, backgroundColor: method==='email' ? colors.mutedBg : '#FFF' }}>
             <Text style={{ color:colors.primary }}>Почта</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { setMethod('phone'); setEmail(''); setPhoneDigits(''); }} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', borderRadius:8, backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
+          <TouchableOpacity onPress={() => { setMethod('phone'); setEmail('+7 (7'); setPhoneDigits(''); }} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', borderRadius:8, backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
             <Text style={{ color:colors.primary }}>Телефон</Text>
           </TouchableOpacity>
         </View>

@@ -70,9 +70,8 @@ export const SignUpScreen = () => {
         // remove leading 77 if user pasted full number
         const rest = only.replace(/^77?/, '').slice(0,9);
         setPhoneDigits(rest);
-        if (!rest) { setLogin(''); return; }
         const masked = formatKzPhoneFromDigits(rest);
-        setLogin(masked);
+        setLogin(masked || '+7 (7');
     };
 
     const validate = () => {
@@ -154,7 +153,7 @@ export const SignUpScreen = () => {
                 <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', backgroundColor: method==='email' ? colors.mutedBg : colors.bg }}>
                     <Text style={{ color: colors.primary }}>{t('auth.email')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setMethod('phone'); setLogin(''); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : colors.bg }}>
+                <TouchableOpacity onPress={() => { setMethod('phone'); setLogin('+7 (7'); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : colors.bg }}>
                     <Text style={{ color: colors.primary }}>{t('auth.phone')}</Text>
                 </TouchableOpacity>
             </View>
