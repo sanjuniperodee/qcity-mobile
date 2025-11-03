@@ -61,7 +61,7 @@ export default function BottomTabNavigation () {
                     }}
                 />
                 <Tab.Screen
-                    name={t("tabs.feed")}
+                    name="FeedTab"
                     component={FavoriteStackNavigator}
                     options={{
                         tabBarLabel: t('tabs_short.favorites'),
@@ -71,7 +71,7 @@ export default function BottomTabNavigation () {
                     }}
                 />
                 <Tab.Screen
-                    name={t("tabs.create_new")}
+                    name="CreateTab"
                     component={CreatePostStackNavigation}
                     options={{
                         tabBarLabel: t('tabs_short.add'),
@@ -80,7 +80,7 @@ export default function BottomTabNavigation () {
                     }}
                 />
                 <Tab.Screen
-                    name={t("tabs.messages")}
+                    name="MessagesTab"
                     component={MessagesStackNavigator}
                     options={{
                         tabBarLabel: t('tabs_short.messages'),
@@ -90,7 +90,7 @@ export default function BottomTabNavigation () {
                     }}
                 />
                 <Tab.Screen
-                    name={t("tabs.profile")}
+                    name="ProfileTab"
                     component={ProfileStackNavigator}
                     options={{
                         tabBarLabel: t('tabs_short.profile'),

@@ -42,13 +42,13 @@ export default function Navigation() {
                     },
                   },
                   // Избранные
-                  [require('../locales/ru.json').tabs.feed]: {
+                  FeedTab: {
                     screens: {
                       Home: 'favourites',
                     },
                   },
                   // Создание поста
-                  [require('../locales/ru.json').tabs.create_new]: {
+                  CreateTab: {
                     screens: {
                       CreatePostCategory: 'create',
                       CreatePost: 'create/details',
@@ -58,14 +58,14 @@ export default function Navigation() {
                     },
                   },
                   // Сообщения
-                  [require('../locales/ru.json').tabs.messages]: {
+                  MessagesTab: {
                     screens: {
                       Messages: 'messages',
                       MessagesDm: 'messages/:username',
                     },
                   },
                   // Профиль
-                  [require('../locales/ru.json').tabs.profile]: {
+                  ProfileTab: {
                     screens: {
                       Profile: 'profile',
                       Policy: 'profile/policy',
