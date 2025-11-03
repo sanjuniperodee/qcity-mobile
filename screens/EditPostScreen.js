@@ -13,8 +13,8 @@ import {useTranslation} from 'react-i18next'
 import { InputMap } from '../components/InputMap';
 
 export const EditPostScreen = ({route}) => {
-  post_id = route.params.post
-  const { data:postData,isLoading: isPostLoading,refetch } = useGetPostByIdQuery(post_id);
+  const post_id = route?.params?.post;
+  const { data:postData,isLoading: isPostLoading,refetch } = useGetPostByIdQuery(post_id ?? 0);
 
   const navigation = useNavigation();
   const {t} = useTranslation();
@@ -204,7 +204,6 @@ export const EditPostScreen = ({route}) => {
     formData.append('geolocation', city);
     formData.append('cost', cost);
     formData.append('author', userId);
-    formData.append('isActive', true);
 
     formData.append('phone', phone);
     formData.append('phone_whatsapp', whatsapp);

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, Image, Text, Alert } from 'react-native';
+import { ScrollView, TouchableOpacity, Image, Text, Alert, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 import Purchases, {
   PurchasesOfferings,
@@ -18,11 +18,13 @@ export const CreatePostTarrifsScreen = ({route}) => {
   
 
   useEffect(() => {
+    if (Platform.OS === 'web') return;
     getOfferings();
     getCustomerInfo();
   }, []);
 
   async function getCustomerInfo() {
+    if (Platform.OS === 'web') return;
     const customerInfo = await Purchases.getCustomerInfo();
     console.log("📢 customerInfo", JSON.stringify(customerInfo, null, 2));
   }
@@ -39,7 +41,7 @@ export const CreatePostTarrifsScreen = ({route}) => {
       });
       const data = await response.json();
       if (response.status === 200) {
-        console.log('✅ Post edited successfully');
+        console.log('✅ Оплата принята. Публикация после одобрения модератором.');
       } else {
         console.log('❌ Error editing post:', data.detail);
       }
@@ -49,6 +51,10 @@ export const CreatePostTarrifsScreen = ({route}) => {
   }
 
   const handleSubscribe = async (pkg: PurchasesPackage) => {
+    if (Platform.OS === 'web') {
+      Alert.alert('Недоступно', 'Покупки доступны только в приложении');
+      return;
+    }
     try {
       const { customerInfo } = await Purchases.purchasePackage(pkg);
 
@@ -72,6 +78,7 @@ export const CreatePostTarrifsScreen = ({route}) => {
   };
 
   async function getOfferings() {
+    if (Platform.OS === 'web') return;
     const offerings = await Purchases.getOfferings();
     if (offerings.current && offerings.current.availablePackages.length > 0) {
       setOfferings(offerings);
@@ -82,7 +89,7 @@ export const CreatePostTarrifsScreen = ({route}) => {
     <ScrollView style={{alignSelf:'center',marginTop:0,width:'90%'}}>
       <Image style={{width:200,height:80,alignSelf:'center',marginTop:30,resizeMode:'contain'}} source={require('../assets/logo.jpg')} />
       <Text style={{fontSize:24,fontFamily:'medium',textAlign:'center',marginTop:20}}>Выберите тариф</Text>
-      {offerings?.current?.availablePackages.map((pkg) => (
+      {Platform.OS !== 'web' && offerings?.current?.availablePackages.map((pkg) => (
         <TouchableOpacity 
           onPress={() => handleSubscribe(pkg)} 
           style={{borderRadius:10,width:'100%',borderWidth:1,borderColor:'#F09235',marginTop:20}} 

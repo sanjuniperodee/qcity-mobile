@@ -341,7 +341,6 @@ export const CreatePostScreen = () => {
     formData.append('geolocation', city);
     formData.append('cost', cost);
     formData.append('author', userId);
-    formData.append('isActive', true);
 
     formData.append('phone', phone);
     formData.append('phone_whatsapp', whatsapp);
