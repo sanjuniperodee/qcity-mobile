@@ -345,16 +345,30 @@ export const CreatePostScreen = () => {
     formData.append('tiktok', tiktok);
     formData.append('twogis', twogis);
 
-    images.forEach((item, index) => {
-      const mime = guessMime(item.type, item.uri);
-      const name = (item.fileName || `media_${index}`).toLowerCase();
-      formData.append(`images[${index}][image]`, {
-        uri: item.uri,
-        name,
-        type: mime,
-      });
-      formData.append(`images[${index}][type]`, item.type); // 'image' | 'video'
-    });
+    // Приложение (iOS/Android) — передаём { uri, name, type }
+    // Web — нужен Blob/File: читаем через fetch(item.uri) и добавляем blob
+    await Promise.all(
+      images.map(async (item, index) => {
+        const mime = guessMime(item.type, item.uri);
+        const name = (item.fileName || `media_${index}`).toLowerCase();
+        if (Platform.OS === 'web') {
+          try {
+            const resp = await fetch(item.uri);
+            const blob = await resp.blob();
+            formData.append(`images[${index}][image]`, blob, name);
+          } catch (e) {
+            console.warn('Failed to read media blob', e);
+          }
+        } else {
+          formData.append(`images[${index}][image]`, {
+            uri: item.uri,
+            name,
+            type: mime,
+          });
+        }
+        formData.append(`images[${index}][type]`, item.type); // 'image' | 'video'
+      })
+    );
 
     try {
       setLoading(true);
