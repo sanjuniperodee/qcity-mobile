@@ -4,12 +4,14 @@ import { View, StyleSheet, TouchableOpacity, ScrollView, Text, ActivityIndicator
 import { useSelector } from 'react-redux';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
+import { useGetMyPostsCountsQuery } from '../api';
 
 export const ProfileMainScreen = () => {
   const navigation = useNavigation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
   const [isImageLoading, setImageLoading] = useState(true);
+  const { data: counts } = useGetMyPostsCountsQuery(undefined, { skip: !isAuthenticated });
 
 
   // --- Если пользователь НЕ авторизован: показываем красивый CTA-блок ---
@@ -96,19 +98,23 @@ export const ProfileMainScreen = () => {
 
         <Text style={styles.sectionTitle}>Мои объявления</Text>
         <TouchableOpacity onPress={() => { navigation.navigate('active' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Активные</Text>
+          <Text style={styles.profileButtonText}>Активные{typeof counts?.active === 'number' ? ` (${counts.active})` : ''}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('notactive' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Не активные</Text>
+          <Text style={styles.profileButtonText}>Не активные{typeof counts?.not_active === 'number' ? ` (${counts.not_active})` : ''}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('notpayed' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Не оплаченные</Text>
+          <Text style={styles.profileButtonText}>Не оплаченные{typeof counts?.not_paid === 'number' ? ` (${counts.not_paid})` : ''}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { navigation.navigate('deleted' as never); }} style={styles.profileButton}>
-          <Text style={styles.profileButtonText}>Удаленные</Text>
+          <Text style={styles.profileButtonText}>Удаленные{typeof counts?.deleted === 'number' ? ` (${counts.deleted})` : ''}</Text>
+          <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => { navigation.navigate('approve' as never); }} style={styles.profileButton}>
+          <Text style={styles.profileButtonText}>На модерации{typeof counts?.moderation === 'number' ? ` (${counts.moderation})` : ''}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
 

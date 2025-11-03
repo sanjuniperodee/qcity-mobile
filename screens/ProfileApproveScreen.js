@@ -1,17 +1,17 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { View, ScrollView,Text } from 'react-native';
-import { useGetAdminPostsQuery } from '../api';
+import { useGetMyModerationPostsQuery } from '../api';
 import { ProfileProductCard } from '../components/ProfileProductCard';
 
 export const ProfileApproveScreen = () => {
-  const { data: ActivePosts, isLoading, isError, refetch } = useGetAdminPostsQuery();
+  const { data: moderationPosts, isLoading, isError, refetch } = useGetMyModerationPostsQuery();
   const video = useRef(null);
 
   useEffect(() => {
     video.current?.setStatusAsync({ isMuted: true });
     video.current?.playAsync();
     refetch();
-  }, [ActivePosts]);
+  }, [moderationPosts]);
 
   const renderActivePostCard = (item) => {
     return (
@@ -36,10 +36,10 @@ export const ProfileApproveScreen = () => {
   return (
     <ScrollView>
     <View style={{ width: '90%', alignSelf: 'center', marginTop: 10, marginBottom: 90 }}>
-      {ActivePosts && ActivePosts.length === 0 ? (
+      {moderationPosts && moderationPosts.length === 0 ? (
         <Text style={{ alignSelf: 'center', fontFamily: 'medium', marginTop: 100, fontSize: 20, color: '#96949D' }}>Пусто</Text>
       ) : (
-        ActivePosts && ActivePosts.map(renderActivePostCard)
+        moderationPosts && moderationPosts.map(renderActivePostCard)
       )}
     </View>
   </ScrollView>

@@ -18,6 +18,15 @@ export const api = createApi({
   }),
   tagTypes: ['PostList','PostListMap', 'CategoriesList','Favourites'],
   endpoints: (builder) => ({
+    getMyPostsCounts: builder.query({
+      query: () => 'my_posts_counts/',
+      keepUnusedDataFor: 30,
+    }),
+    getMyModerationPosts: builder.query({
+      query: () => 'my_moderation_posts/',
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
     getPostList: builder.query({
       query: ({ page, limit }) => {
         console.log(`Querying with page: ${page}, limit: ${limit}`);
@@ -222,6 +231,8 @@ export const {
   useGetPostListQuery,
   useGetPostListCityQuery,
   useGetPostListMapQuery,
+  useGetMyPostsCountsQuery,
+  useGetMyModerationPostsQuery,
   useGetPostByIdQuery,
   useGetCategoriesListQuery,
   useGetSubCategoriesListQuery,
