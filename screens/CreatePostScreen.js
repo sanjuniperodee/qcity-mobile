@@ -221,6 +221,12 @@ export const CreatePostScreen = () => {
 
   // ---- NEW: Choice of source (camera photo/video or library) ----
   const chooseMedia = () => {
+    // Web: открываем сразу файловый диалог (Alert/ActionSheet на web не поддерживает кнопки)
+    if (Platform.OS === 'web') {
+      pickFromLibrary();
+      return;
+    }
+
     const open = (option) => {
       if (option === 'photo') pickFromCamera('image');
       if (option === 'video') pickFromCamera('video');
