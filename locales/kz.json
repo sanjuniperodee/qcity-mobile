@@ -6,6 +6,13 @@
     "messages": "Хабарламалар",
     "profile": "Профиль"
   },
+  "tabs_short": {
+    "home": "Басты",
+    "favorites": "Таңдаулы",
+    "add": "Қосу",
+    "messages": "Хабарламалар",
+    "profile": "Профиль"
+  },
   "categories_main": {
     "services": "Қызметтер",
     "products": "Тауарлар",

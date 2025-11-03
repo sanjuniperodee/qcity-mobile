@@ -6,6 +6,13 @@
       "messages": "Сообщения",
       "profile": "Профиль"
     },
+    "tabs_short": {
+      "home": "Главная",
+      "favorites": "Избранное",
+      "add": "Добавить",
+      "messages": "Сообщения",
+      "profile": "Кабинет"
+    },
     "categories_main": {
       "services": "Услуги",
       "products": "Товары",

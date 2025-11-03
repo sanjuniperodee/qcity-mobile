@@ -6,6 +6,13 @@
     "messages": "Messages",
     "profile": "Your Profile"
   },
+  "tabs_short": {
+    "home": "Home",
+    "favorites": "Favorites",
+    "add": "Add",
+    "messages": "Messages",
+    "profile": "Profile"
+  },
   "categories_main": {
     "services": "Services",
     "products": "Products",

@@ -20,7 +20,16 @@ export default function BottomTabNavigation () {
                 initialRouteName={'HomeTab'}
                 screenOptions={({ route }) => ({
                     headerShown: false,
-                    tabBarShowLabel: false,
+                    tabBarShowLabel: true,
+                    tabBarLabelStyle: {
+                        fontSize: 11,
+                        marginTop: 4,
+                        marginBottom: 2,
+                    },
+                    tabBarItemStyle: {
+                        paddingVertical: 4,
+                        flex: 1,
+                    },
                     tabBarStyle: {
                         backgroundColor: '#FFF',
                         borderTopWidth: 0,
@@ -28,7 +37,7 @@ export default function BottomTabNavigation () {
                         borderTopWidth: 0, 
                         width: '100%',
                         alignSelf: 'center',
-                        paddingHorizontal:'5%',
+                        paddingHorizontal: 0,
                         borderTopLeftRadius:15,
                         borderTopRightRadius:15,
                         elevation: 0,
@@ -45,6 +54,7 @@ export default function BottomTabNavigation () {
                         },
                       }}
                     options={{
+                        tabBarLabel: t('tabs_short.home'),
                         tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/mainIconActive.png')}/> : 
                         <TabIcon image={require('../assets/mainIcon.png')}/>,
@@ -53,7 +63,9 @@ export default function BottomTabNavigation () {
                 <Tab.Screen
                     name={t("tabs.feed")}
                     component={FavoriteStackNavigator}
-                    options={{tabBarIcon: ({focused}) => focused ? 
+                    options={{
+                        tabBarLabel: t('tabs_short.favorites'),
+                        tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/Heart.png')}/> : 
                         <TabIcon image={require('../assets/Favorite.png')}/>,
                     }}
@@ -61,14 +73,18 @@ export default function BottomTabNavigation () {
                 <Tab.Screen
                     name={t("tabs.create_new")}
                     component={CreatePostStackNavigation}
-                    options={{tabBarIcon: () =>  
+                    options={{
+                        tabBarLabel: t('tabs_short.add'),
+                        tabBarIcon: () =>  
                         <CreateTabIcon image={require('../assets/createPostIcon.png')}/> 
                     }}
                 />
                 <Tab.Screen
                     name={t("tabs.messages")}
                     component={MessagesStackNavigator}
-                    options={{tabBarIcon: ({focused}) => focused ? 
+                    options={{
+                        tabBarLabel: t('tabs_short.messages'),
+                        tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/messagesIconActive.png')}/> : 
                         <TabIcon image={require('../assets/messagesIcon.png')}/>,
                     }}
@@ -76,7 +92,9 @@ export default function BottomTabNavigation () {
                 <Tab.Screen
                     name={t("tabs.profile")}
                     component={ProfileStackNavigator}
-                    options={{tabBarIcon: ({focused}) => focused ? 
+                    options={{
+                        tabBarLabel: t('tabs_short.profile'),
+                        tabBarIcon: ({focused}) => focused ? 
                         <TabIcon image={require('../assets/profileIconActive.png')}/> : 
                         <TabIcon image={require('../assets/profileIcon.png')}/>,
                     }}
