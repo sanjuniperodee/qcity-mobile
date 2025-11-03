@@ -70,7 +70,7 @@ export const ProfileMainScreen = () => {
             style={{ height: 110, width: 110, borderRadius: 150, marginRight: 15 }}
             source={
               user?.profile_image
-                ? { uri: `https://market.qorgau-city.kz${user.profile_image}` }
+                ? { uri: `https://market.qorgau-city.kz${user.profile_image}?cb=${Date.now()}` }
                 : require('../assets/profilePurple.png')
             }
             onLoadStart={() => setImageLoading(true)}

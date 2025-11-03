@@ -85,7 +85,7 @@ export const ProfileRegistrationScreen = ({route}) => {
         } else {
           formData.append('email', login);
         }
-        if (image && image.startsWith('file://')) {
+        if (image && !image.startsWith('http')) {
           formData.append('profile_image', { uri: image, type: 'image/jpeg', name: 'profile.jpg' });
         }
         formData.append('profile.phone_number', type === 'phone' ? login : '');

@@ -163,7 +163,7 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
           setNameError(''); setEmailError(''); setPhoneError(''); setGeneralError('');
           const formData = new FormData();
           // Прикрепляем файл только если пользователь выбрал НОВОЕ локальное изображение
-          if (image && typeof image === 'string' && image.startsWith('file://')) {
+          if (image && typeof image === 'string' && !image.startsWith('http')) {
             formData.append('profile_image', {
               uri: image,
               type: 'image/jpeg',
