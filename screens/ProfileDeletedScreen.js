@@ -18,20 +18,29 @@ export const ProfileDeletedScreen = () => {
     return (
         <View style={{marginBottom:10}}>
             <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F09235',borderRadius:10,position:'relative',alignItems:'center'}}>
-              {item.images[0].type === 'video' ? 
-                      <Video
-                      isMuted={true}
-                      ref={video}
-                      style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}}
-                      source={{
-                          uri: `https://market.qorgau-city.kz${item.images[0].image}`,
-                      }}
-                      resizeMode={ResizeMode.COVER}
-                      isLooping
-                      />
-                  :
-                    <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`https://market.qorgau-city.kz${item.images[0].image}`}}/>
-                  }
+          {(() => {
+            const first = item && item.images && item.images.length > 0 ? item.images[0] : null;
+            const isVideo = first && first.type === 'video';
+            const uri = first && first.image ? `https://market.qorgau-city.kz${first.image}` : 'https://market.qorgau-city.kz/media/defaults/post.png';
+            if (isVideo) {
+              return (
+                <Video
+                  isMuted={true}
+                  ref={video}
+                  style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}}
+                  source={{ uri }}
+                  resizeMode={ResizeMode.COVER}
+                  isLooping
+                />
+              );
+            }
+            return (
+              <Image
+                style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}}
+                source={{ uri }}
+              />
+            );
+          })()}
               <View style={{paddingHorizontal:7}}>
                   <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                     <View style={{width:190}}>

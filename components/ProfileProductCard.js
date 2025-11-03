@@ -146,17 +146,19 @@ export const ProfileProductCard = (props) => {
               <Text style={styles.mediaPlaceholderText}>Нет фото</Text>
             </View>
           )}
-          <Pressable
-            onPress={handleDelete}
-            hitSlop={12}
-            android_ripple={{ color: 'rgba(0,0,0,0.08)', borderless: true }}
-            style={styles.deleteBtn}
-          >
-            <Image
-              source={require('../assets/trash.png')}
-              style={{ width: 18, height: 22, tintColor: '#fff' }}
-            />
-          </Pressable>
+          {props.screen !== 'Admin' && (
+            <Pressable
+              onPress={handleDelete}
+              hitSlop={12}
+              android_ripple={{ color: 'rgba(0,0,0,0.08)', borderless: true }}
+              style={styles.deleteBtn}
+            >
+              <Image
+                source={require('../assets/trash.png')}
+                style={{ width: 18, height: 22, tintColor: '#fff' }}
+              />
+            </Pressable>
+          )}
         </View>
 
         <View style={styles.infoWrap}>
@@ -192,29 +194,31 @@ export const ProfileProductCard = (props) => {
       </Pressable>
 
       {/* Кнопки действия */}
-      <View style={[styles.actionsWrap, isNarrow && styles.actionsWrapColumn]}>
-        <Pressable
-          onPress={props.screen !== 'Payed' ? handleMainAction : undefined}
-          android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
-          style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
-        >
-          <Text style={styles.outlineBtnText}>{mainButtonText}</Text>
-        </Pressable>
+      {!props.hideActions && (
+        <View style={[styles.actionsWrap, isNarrow && styles.actionsWrapColumn]}>
+          <Pressable
+            onPress={props.screen !== 'Payed' ? handleMainAction : undefined}
+            android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
+            style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
+          >
+            <Text style={styles.outlineBtnText}>{mainButtonText}</Text>
+          </Pressable>
 
-        <Pressable
-          onPress={
-            props.screen === 'Admin'
-              ? handleNotApprove
-              : () => navigation.navigate('edit', { post: props.id })
-          }
-          android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
-          style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
-        >
-          <Text style={styles.outlineBtnText}>
-            {props.screen === 'Admin' ? 'Отклонить' : 'Редактировать'}
-          </Text>
-        </Pressable>
-      </View>
+          <Pressable
+            onPress={
+              props.screen === 'Admin'
+                ? handleNotApprove
+                : () => navigation.navigate('edit', { post: props.id })
+            }
+            android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
+            style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
+          >
+            <Text style={styles.outlineBtnText}>
+              {props.screen === 'Admin' ? 'Отклонить' : 'Редактировать'}
+            </Text>
+          </Pressable>
+        </View>
+      )}
 
       {/* CTA-кнопка */}
       {props.screen !== 'Admin' && (

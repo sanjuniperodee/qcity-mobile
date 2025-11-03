@@ -1,11 +1,14 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { View, ScrollView,Text } from 'react-native';
+import { useSelector } from 'react-redux';
 import { useGetMyModerationPostsQuery } from '../api';
 import { ProfileProductCard } from '../components/ProfileProductCard';
 
 export const ProfileApproveScreen = () => {
   const { data: moderationPosts, isLoading, isError, refetch } = useGetMyModerationPostsQuery();
   const video = useRef(null);
+  const user = useSelector(state => state.auth.user);
+  const isAdmin = user?.username === 'admin';
 
   useEffect(() => {
     video.current?.setStatusAsync({ isMuted: true });
@@ -17,13 +20,14 @@ export const ProfileApproveScreen = () => {
     return (
       <ProfileProductCard
         id={item.id}
-        screen="Admin"
+        screen={isAdmin ? 'Admin' : 'Moderation'}
+        hideActions={!isAdmin}
         pk={item.post_pk}
         title={item.title}
         key={item.id}
-        image={item.images[0].image}
+        image={item.images?.[0]?.image}
         cost={item.cost}
-        media={item.images}
+        media={item.images || []}
         condition={item.condition}
         mortage={item.mortage}
         delivery={item.delivery}
