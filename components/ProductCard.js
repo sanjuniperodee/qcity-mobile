@@ -149,13 +149,33 @@ export const ProductCard = (props) => {
           </View>
 
           <View style={{paddingHorizontal:spacing.sm}}>
-            <Text numberOfLines={2} ellipsizeMode="tail" style={{opacity:.9,fontSize:15,minHeight:20,marginTop:10,fontFamily:'medium',maxWidth:'100%'}}>{props.title}</Text>
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
+              style={{
+                opacity:.9,
+                fontSize:15,
+                lineHeight:20,
+                minHeight:40,
+                marginTop:10,
+                fontFamily:'medium',
+                maxWidth:'100%'
+              }}
+            >{props.title}</Text>
             <Text style={{fontFamily:'medium',marginTop:5,fontSize:18,color:colors.text, textAlign:'left'}}>
               {props.cost} ₸
             </Text>
-            <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
-              <Text numberOfLines={1} style={{fontFamily:'regular',fontSize:12,color:colors.textMuted,marginTop:5, maxWidth:'55%'}}>{props.city}</Text>
-              <Text numberOfLines={1} style={{fontFamily:'regular',fontSize:12,color:colors.textMuted,marginTop:5, maxWidth:'40%', textAlign:'right'}}>{props.date}</Text>
+            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginTop:8}}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, maxWidth:'58%'}}
+              >{props.city}</Text>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, maxWidth:'40%', textAlign:'right'}}
+              >{props.date}</Text>
             </View>
           </View>
         </TouchableOpacity>
