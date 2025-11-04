@@ -175,24 +175,21 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <View style={styles.HeaderRight}>
-          <HeaderIcon
-            side={'right'}
-            source={isFavourite ? require('../assets/Heart.png') : require('../assets/Favorite.png')}
-            onPress={() => toggleFavourite()}
-          />
-        </View>
-      ),
+      headerRight: () => null,
     });
-  }, [navigation, onShare, isFavourite, isAuthenticated]);
+  }, [navigation]);
 
   // Контакты: если не авторизован — маскируем
   const phoneToShow = isAuthenticated ? data?.phone : maskPhone(data?.phone);
   const showRealContacts = isAuthenticated;
 
   return (
-    <ScrollView style={styles.container} ref={scrollViewRef} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.container}
+      ref={scrollViewRef}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.scrollContent}
+    >
       {!data ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#F09235" />
@@ -225,9 +222,28 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   </View>
                 )}
               </View>
-              <View style={styles.viewsSection}>
-                <MaterialCommunityIcons name="eye-outline" size={18} color="#999" />
-                <Text style={styles.viewsText}>{data?.views || 0}</Text>
+              <View style={styles.actionsRow}>
+                <View style={styles.viewsSection}>
+                  <MaterialCommunityIcons name="eye-outline" size={18} color="#999" />
+                  <Text style={styles.viewsText}>{data?.views || 0}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={toggleFavourite}
+                  style={[
+                    styles.favoriteButton,
+                    {
+                      backgroundColor: isFavourite ? '#FFEBEE' : '#F7F8F9',
+                      borderColor: isFavourite ? '#F44336' : '#E0E0E0',
+                    }
+                  ]}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons
+                    name={isFavourite ? 'heart' : 'heart-outline'}
+                    size={22}
+                    color={isFavourite ? '#F44336' : '#999'}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -522,6 +538,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  scrollContent: {
+    paddingTop: 0,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -533,20 +552,31 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     marginBottom: 0,
+    marginTop: 0,
+    paddingTop: 0,
   },
   mainContent: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 12,
   },
   headerSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
     marginBottom: 16,
   },
   titleSection: {
-    flex: 1,
-    marginRight: 12,
+    marginBottom: 12,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  favoriteButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
