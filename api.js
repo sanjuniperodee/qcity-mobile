@@ -119,6 +119,26 @@ export const api = createApi({
       providesTags: ['PostList'],
       keepUnusedDataFor: 0,
     }),
+    getAdminApprovedPosts: builder.query({
+      query: () => 'admin_approved_posts/',
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
+    getAdminRejectedPosts: builder.query({
+      query: () => 'admin_rejected_posts/',
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
+    getAdminUsers: builder.query({
+      query: () => 'admin_users/',
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
+    getAdminStats: builder.query({
+      query: () => 'admin_stats/',
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
     getNotActivePosts: builder.query({
       query: () => 'not_active_posts/',
       providesTags: ['PostList'],
@@ -266,6 +286,10 @@ export const {
   useSearchPostsByCityQuery,
   useGetActivePostsQuery,
   useGetAdminPostsQuery,
+  useGetAdminApprovedPostsQuery,
+  useGetAdminRejectedPostsQuery,
+  useGetAdminUsersQuery,
+  useGetAdminStatsQuery,
   useGetNotActivePostsQuery,
   useGetDeletedPostsQuery,
   useGetNotPaidPostsQuery,

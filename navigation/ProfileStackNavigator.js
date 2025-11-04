@@ -14,6 +14,9 @@ import { ProfileNotPayedScreen } from '../screens/ProfileNotPayedScreen';
 import { ProfileDeletedScreen } from '../screens/ProfileDeletedScreen';
 import { ProfileRejectedScreen } from '../screens/ProfileRejectedScreen';
 import { ProfileadminScreen } from '../screens/ProfileadminScreen';
+import { AdminApprovedPostsScreen } from '../screens/AdminApprovedPostsScreen';
+import { AdminRejectedPostsScreen } from '../screens/AdminRejectedPostsScreen';
+import { AdminUsersScreen } from '../screens/AdminUsersScreen';
 import { ProfileSettingsScreen } from '../screens/ProfileSettingsScreen';
 import { ProfileFavouriteScreen } from '../screens/ProfileFavouriteScreen';
 import { EditPostScreen } from '../screens/EditPostScreen';
@@ -46,6 +49,9 @@ const ProfileStackNavigator = () => {
       <Stack.Screen name="deleted" component={ProfileDeletedScreen} options={() => ({ headerTitle: 'Удаленные' })}/>
       <Stack.Screen name="rejected" component={ProfileRejectedScreen} options={() => ({ headerTitle: 'Отклоненные' })}/>
       <Stack.Screen name="admin" component={ProfileadminScreen} options={() => ({ headerTitle: 'Админ панель' })}/>
+      <Stack.Screen name="adminApproved" component={AdminApprovedPostsScreen} options={() => ({ headerTitle: 'Одобренные объявления' })}/>
+      <Stack.Screen name="adminRejected" component={AdminRejectedPostsScreen} options={() => ({ headerTitle: 'Отклоненные объявления' })}/>
+      <Stack.Screen name="adminUsers" component={AdminUsersScreen} options={() => ({ headerTitle: 'Пользователи' })}/>
       <Stack.Screen name="ProfileSettings" component={ProfileSettingsScreen} options={() => ({ headerTitle: 'Настройки профиля' })}/>
 
         <Stack.Screen name='PostTariffs' component={CreatePostTarrifsScreen} options={() => ({ headerTitle: 'Тарифы' })}/>

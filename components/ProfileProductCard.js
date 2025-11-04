@@ -224,10 +224,10 @@ export const ProfileProductCard = (props) => {
       </Pressable>
 
       {/* Кнопки действия */}
-      {!props.hideActions && (
+      {!props.hideActions && props.screen !== 'Payed' && (
         <View style={[styles.actionsWrap, isNarrow && styles.actionsWrapColumn]}>
           <Pressable
-            onPress={props.screen !== 'Payed' && props.screen !== 'Rejected' ? handleMainAction : props.screen === 'Rejected' ? handleMainAction : undefined}
+            onPress={props.screen !== 'Rejected' ? handleMainAction : props.screen === 'Rejected' ? handleMainAction : undefined}
             android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
             style={[styles.outlineBtn, isNarrow && styles.buttonFull, props.screen === 'Rejected' && styles.buttonFull]}
           >
@@ -249,6 +249,19 @@ export const ProfileProductCard = (props) => {
               </Text>
             </Pressable>
           )}
+        </View>
+      )}
+
+      {/* Кнопка редактирования для неоплаченных постов */}
+      {!props.hideActions && props.screen === 'Payed' && (
+        <View style={[styles.actionsWrap, isNarrow && styles.actionsWrapColumn]}>
+          <Pressable
+            onPress={() => navigation.navigate('edit', { post: props.id })}
+            android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
+            style={[styles.outlineBtn, styles.buttonFull]}
+          >
+            <Text style={styles.outlineBtnText}>Редактировать</Text>
+          </Pressable>
         </View>
       )}
 
