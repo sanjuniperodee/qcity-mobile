@@ -89,7 +89,7 @@ export const ProfileMainScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {user?.username === 'admin' ? (
+        {user?.email === 'admin@mail.ru' ? (
           <TouchableOpacity onPress={() => { navigation.navigate('admin' as never); }} style={styles.profileButton}>
             <Text style={{ fontFamily: 'medium', fontSize: 16, opacity: 0.8 }}>Админ панель</Text>
             <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />

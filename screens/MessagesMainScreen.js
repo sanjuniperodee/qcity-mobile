@@ -95,7 +95,7 @@ export const MessagesMainScreen = () => {
     >
       {data && data.length > 0 ? (
         data.map((item) =>
-          auth.user.username !== 'admin' || (auth.user.username === 'admin' && item.last_message) ? (
+          auth.user.email !== 'admin@mail.ru' || (auth.user.email === 'admin@mail.ru' && item.last_message) ? (
             <React.Fragment key={item.id}>
               <TouchableOpacity
                 onPress={() =>

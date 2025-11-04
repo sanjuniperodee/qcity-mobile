@@ -1,20 +1,26 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { View, ScrollView,Text } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useGetMyModerationPostsQuery } from '../api';
+import { useGetMyModerationPostsQuery, useGetAdminPostsQuery } from '../api';
 import { ProfileProductCard } from '../components/ProfileProductCard';
 
 export const ProfileApproveScreen = () => {
-  const { data: moderationPosts, isLoading, isError, refetch } = useGetMyModerationPostsQuery();
-  const video = useRef(null);
   const user = useSelector(state => state.auth.user);
-  const isAdmin = user?.username === 'admin';
+  const isAdmin = user?.email === 'admin@mail.ru';
+  const { data: myModerationPosts, refetch: refetchMy } = useGetMyModerationPostsQuery(undefined, { skip: isAdmin });
+  const { data: adminPosts, refetch: refetchAdmin } = useGetAdminPostsQuery(undefined, { skip: !isAdmin });
+  const moderationPosts = isAdmin ? adminPosts : myModerationPosts;
+  const video = useRef(null);
 
   useEffect(() => {
     video.current?.setStatusAsync({ isMuted: true });
     video.current?.playAsync();
-    refetch();
-  }, [moderationPosts]);
+    if (isAdmin) {
+      refetchAdmin();
+    } else {
+      refetchMy();
+    }
+  }, [moderationPosts, isAdmin]);
 
   const renderActivePostCard = (item) => {
     return (
