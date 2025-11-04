@@ -1,5 +1,4 @@
-import React, { Component,useState,useEffect } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {HomeScreen} from '../screens/MainScreen'
@@ -34,7 +33,25 @@ export default function MainStackNavigator({ route, navigation }) {
             <Main.Screen 
                 name='ViewPost' 
                 component={PostViewScreen}
-                options={() => ({})}/>
+                options={() => ({
+                    headerTransparent: false,
+                    headerStyle: {
+                        backgroundColor: '#FFFFFF',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                        borderBottomWidth: 0,
+                        height: 56,
+                    },
+                    headerTitleStyle: {
+                        display: 'none',
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 8,
+                    },
+                    headerRightContainerStyle: {
+                        paddingRight: 8,
+                    },
+                })}/>
             <Main.Screen 
                 name='ViewUser' 
                 component={UserViewScreen}
@@ -58,11 +75,7 @@ export default function MainStackNavigator({ route, navigation }) {
                       },
                     headerShadowVisible:false,
                     title: 'Поиск',
-                    headerLeft: () => (
-                        <View style={styles.HeaderRight}>
-                            <HeaderIcon source={require('../assets/goback.png')} onPress={() => navigation.goBack()}/>
-                        </View>
-                    ),
+                    headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
                     })}/>
             <Main.Screen 
                 name='GetPostsByCategory' 
