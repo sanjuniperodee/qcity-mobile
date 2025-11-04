@@ -11,6 +11,7 @@ import { useGetPostListQuery, useGetPostListCityQuery } from '../api';
 import { useTranslation } from 'react-i18next';
 import * as NotificationsModule from 'expo-notifications';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Grid } from '../components/ui/Grid';
 import CategoryTile from '../components/ui/CategoryTile';
 import { StoriesInstructions } from '../components/StoriesInstructions.js';
@@ -270,28 +271,38 @@ export const HomeScreen = () => {
         </Modal>
 
         {/* Шапка с безопасным отступом сверху */}
-        <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>Qorgau</Text>
-            <Text style={styles.logoSubtext}>City</Text>
+            <LinearGradient
+              colors={['#F3B127', '#F26D1D']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.logoGradient}
+            >
+              <Text style={styles.logoText}>Qorgau</Text>
+              <Text style={styles.logoSubtext}>City</Text>
+            </LinearGradient>
           </View>
           <View style={styles.headerRight}>
             <TouchableOpacity
               style={styles.headerUser}
               onPress={() => {
-                if (user?.username) return;
+                if (user?.username) {
+                  (navigation as any).navigate('ProfileTab', { screen: 'Profile' });
+                  return;
+                }
                 (navigation as any).navigate('Auth', { screen: 'LoginOrRegistration' });
               }}
               activeOpacity={0.7}
             >
-              <Ionicons name="person-outline" size={20} color={ORANGE} />
-              <Text style={styles.headerUserText}>
+              <Ionicons name="person-outline" size={20} color="#F09235" />
+              <Text style={styles.headerUserText} numberOfLines={1}>
                 {user?.username ? user.username : t('register.register')}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setVisible(true)} style={styles.headerGeo} activeOpacity={0.7}>
-              <Ionicons name="location-outline" size={22} color={ORANGE} />
+              <Ionicons name="location-outline" size={22} color="#F09235" />
             </TouchableOpacity>
           </View>
         </View>
@@ -302,8 +313,10 @@ export const HomeScreen = () => {
           style={styles.searchBar}
           activeOpacity={0.85}
         >
-          <Ionicons name="search-outline" size={18} color="#A7A7A7" />
-          <Text style={styles.searchPlaceholder}>{t('main.search_catalog')}</Text>
+          <View style={styles.searchBarContent}>
+            <Ionicons name="search-outline" size={20} color="#999" />
+            <Text style={styles.searchPlaceholder}>{t('main.search_catalog')}</Text>
+          </View>
         </TouchableOpacity>
 
         {/* «Сторис»-чипы */}
@@ -353,16 +366,20 @@ export const HomeScreen = () => {
         </Grid>
 
         {/* Recommendations + city selection */}
-        <View style={[styles.sectionRow, { marginTop: 8, marginBottom: 8 }]}>
-          <Text style={styles.sectionTitle}>
-            {isAllKazakhstan ? t('recommendation') : selectedCity }
+        <View style={styles.recommendationsHeader}>
+          <Text style={styles.recommendationsTitle}>
+            {isAllKazakhstan ? t('recommendation') : selectedCity}
           </Text>
-          <TouchableOpacity style={styles.cityChip} onPress={() => setVisible(true)} activeOpacity={0.8}>
-            <Ionicons name="location-outline" size={16} color={ORANGE} />
+          <TouchableOpacity
+            style={styles.cityChip}
+            onPress={() => setVisible(true)}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="location-outline" size={16} color="#F09235" />
             <Text style={styles.cityChipText} numberOfLines={1}>
               {selectedCity || t('location.all_kazakhstan')}
             </Text>
-            <Ionicons name="chevron-down" size={14} color={ORANGE} />
+            <Ionicons name="chevron-down" size={14} color="#F09235" />
           </TouchableOpacity>
         </View>
       </>
@@ -397,6 +414,8 @@ export const HomeScreen = () => {
             {isLoading && <ActivityIndicator size="large" color={ORANGE} />}
           </View>
         }
+        containerWidth={SCREEN_WIDTH}
+        scrollEnabled={true}
       />
     </>
   );
@@ -418,24 +437,103 @@ const styles = StyleSheet.create({
   cityTextActive: { textAlign: 'center', fontFamily: 'medium', fontSize: 15, color: ORANGE },
 
   header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 12, paddingBottom: 6, backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingBottom: 12,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
   },
-  logoContainer: { flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' },
-  logoText: { fontSize: 20, fontFamily: 'medium', color: ORANGE, lineHeight: 22, letterSpacing: 0.3 },
-  logoSubtext: { fontSize: 20, fontFamily: 'medium', color: ORANGE, lineHeight: 22, letterSpacing: 0.3, marginTop: -4 },
-  headerRight: { flexDirection: 'row', alignItems: 'center' },
-  headerUser: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6, paddingHorizontal: 8, borderRadius: 10 },
-  headerUserText: { fontSize: 18, marginLeft: 8, fontFamily: 'medium', color: '#141517' },
-  headerGeo: { marginLeft: 6, padding: 6, borderRadius: 10 },
+  logoContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  logoGradient: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  logoText: {
+    fontSize: 22,
+    fontFamily: 'bold',
+    color: '#FFFFFF',
+    lineHeight: 24,
+    letterSpacing: 0.5,
+  },
+  logoSubtext: {
+    fontSize: 18,
+    fontFamily: 'medium',
+    color: '#FFFFFF',
+    lineHeight: 20,
+    letterSpacing: 0.3,
+    marginLeft: 4,
+    opacity: 0.95,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  headerUser: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: '#F7F8F9',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    maxWidth: 150,
+  },
+  headerUserText: {
+    fontSize: 14,
+    marginLeft: 6,
+    fontFamily: 'medium',
+    color: '#1A1A1A',
+    flex: 1,
+  },
+  headerGeo: {
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: '#F7F8F9',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
 
   searchBar: {
-    width: '95%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#FAFAFA', borderWidth: 1, borderColor: '#EEE', height: 48, paddingHorizontal: 14,
-    borderRadius: 14, marginTop: 8,
-    marginBottom: 10,
+    width: '95%',
+    alignSelf: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#E0E0E0',
+    height: 52,
+    borderRadius: 16,
+    marginTop: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  searchPlaceholder: { marginLeft: 10, fontSize: 16, color: '#A7A7A7' },
+  searchBarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    height: '100%',
+  },
+  searchPlaceholder: {
+    marginLeft: 12,
+    fontSize: 16,
+    fontFamily: 'regular',
+    color: '#999',
+    flex: 1,
+  },
 
   storyChip: {
     height: 120, width: SCREEN_WIDTH * 0.29, borderRadius: 16, backgroundColor: LIGHT_ORANGE,
@@ -443,14 +541,51 @@ const styles = StyleSheet.create({
   },  
   storyImg: { width: '100%', height: '100%', borderRadius: 14,borderWidth: 2, borderColor: ORANGE, marginBottom: 6, resizeMode: 'cover' },
 
-  sectionRow: { width: '95%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 30 },
-  sectionTitle: { fontFamily: 'semibold', fontSize: 20, color: '#141517' },
-
-  // category grid moved to Grid + CategoryTile
-
-  cityChip: {
-    flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, height: 34,
-    borderRadius: 10, backgroundColor: '#FFF5EA', borderWidth: 1, borderColor: '#F3D9C2',
+  sectionRow: {
+    width: '95%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 24,
+    marginBottom: 16,
   },
-  cityChipText: { fontSize: 13.5, color: '#7A4A1F', maxWidth: 140 },
+  sectionTitle: {
+    fontFamily: 'bold',
+    fontSize: 22,
+    color: '#1A1A1A',
+  },
+  recommendationsHeader: {
+    width: '95%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 24,
+    marginBottom: 16,
+  },
+  recommendationsTitle: {
+    fontFamily: 'bold',
+    fontSize: 22,
+    color: '#1A1A1A',
+    flex: 1,
+  },
+  cityChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    backgroundColor: '#FFF8F0',
+    borderWidth: 1.5,
+    borderColor: '#FFE5CC',
+    height: 40,
+  },
+  cityChipText: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#E65100',
+    maxWidth: 140,
+  },
 });
