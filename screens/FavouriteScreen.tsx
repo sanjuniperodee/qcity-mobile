@@ -1,5 +1,5 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, Dimensions } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { ProductCard } from '../components/ProductCard';
 import { ResponsiveProductGrid } from '../components/ResponsiveProductGrid';
 import { useListFavouritesQuery } from '../api';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export const FavouriteScreen = () => {
   const navigation = useNavigation();
@@ -112,20 +114,10 @@ export const FavouriteScreen = () => {
 
   const favouritesCount = items.length;
 
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#F09235']}
-            tintColor="#F09235"
-          />
-        }
-      >
+  // Header component для ResponsiveProductGrid
+  const headerComponent = useMemo(
+    () => (
+      <View>
         {/* Заголовок с статистикой */}
         <View style={styles.header}>
           <LinearGradient
@@ -157,38 +149,44 @@ export const FavouriteScreen = () => {
             </Text>
           </View>
         </View>
+      </View>
+    ),
+    [favouritesCount]
+  );
 
-        {/* Список избранного */}
-        {items.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <View style={styles.emptyIcon}>
-              <Ionicons name="heart-outline" size={64} color="#E0E0E0" />
-            </View>
-            <Text style={styles.emptyTitle}>{t('favorites.no_favorites')}</Text>
-            <Text style={styles.emptySubtitle}>
-              Добавьте объявления в избранное, чтобы быстро найти их позже
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.gridContainer}>
-            <ResponsiveProductGrid
-              data={items}
-              onViewableItemsChanged={onViewableItemsChanged}
-              viewabilityConfig={viewabilityConfig}
-              onEndReached={loadMoreItems}
-              onEndReachedThreshold={0.5}
-              ListHeaderComponent={null}
-              ListEmptyComponent={null}
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              ListFooterComponent={null}
-              ProductCardComponent={null}
-              containerWidth={undefined}
-              scrollEnabled={false}
-            />
-          </View>
-        )}
-      </ScrollView>
+  // Empty component
+  const emptyComponent = useMemo(
+    () => (
+      <View style={styles.emptyContainer}>
+        <View style={styles.emptyIcon}>
+          <Ionicons name="heart-outline" size={64} color="#E0E0E0" />
+        </View>
+        <Text style={styles.emptyTitle}>{t('favorites.no_favorites')}</Text>
+        <Text style={styles.emptySubtitle}>
+          Добавьте объявления в избранное, чтобы быстро найти их позже
+        </Text>
+      </View>
+    ),
+    [t]
+  );
+
+  return (
+    <View style={styles.container}>
+      <ResponsiveProductGrid
+        data={items}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
+        onEndReached={loadMoreItems}
+        onEndReachedThreshold={0.5}
+        ListHeaderComponent={headerComponent}
+        ListEmptyComponent={emptyComponent}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        ListFooterComponent={null}
+        ProductCardComponent={ProductCard}
+        containerWidth={SCREEN_WIDTH}
+        scrollEnabled={true}
+      />
     </View>
   );
 };
@@ -197,12 +195,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8F9',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 20,
   },
   loadingContainer: {
     flex: 1,
@@ -317,9 +309,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#B85C1A',
     flex: 1,
-  },
-  gridContainer: {
-    paddingHorizontal: 20,
   },
   emptyContainer: {
     alignItems: 'center',
