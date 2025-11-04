@@ -14,9 +14,10 @@ import {
   Platform,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { useGetPostByIdQuery, useGetPostListQuery, useAddToFavouritesMutation, useRemoveFromFavouritesMutation, useListFavouritesQuery } from '../api';
 import { ProductCard } from '../components/ProductCard';
@@ -191,296 +192,319 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
   const showRealContacts = isAuthenticated;
 
   return (
-    <ScrollView horizontal={false} style={{ marginTop: 0 }} ref={scrollViewRef}>
-      <View style={{ alignSelf: 'center' }}>
-        <ScrollView horizontal={false} style={{ width: windowWidth, paddingBottom: 150, marginTop: 0 }}>
-          {!data ? (
-            <ActivityIndicator style={{ marginTop: 100 }} size={'large'} />
-          ) : (
-            <View>
-              <SliderComponent data={data?.images} />
-              <View style={{ width: '90%', alignSelf: 'center', marginTop: 10 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    width: '100%',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginTop: 25,
-                    paddingBottom: 20,
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#ddd',
-                  }}
-                >
-                  <View style={{ maxWidth: '70%' }}>
-                    <Text style={{ fontSize: 24, fontFamily: 'medium' }}>{data?.title}</Text>
-                    {data?.categories?.name ? (
-                      <Text style={{ fontSize: 15, fontFamily: 'regular', opacity: 0.6, marginTop: 10 }}>
-                        {data.categories.name}
-                      </Text>
-                    ) : null}
-                    {data?.subcategory ? (
-                      <TouchableOpacity onPress={() => navigation.navigate('postsByCategory', { id: data?.categories?.id })}>
-                        <Text style={{ fontFamily: 'medium', marginTop: 5, fontSize: 15, opacity: 0.6 }}>{data.subcategory}</Text>
-                      </TouchableOpacity>
-                    ) : null}
-                  </View>
-                </View>
+    <ScrollView style={styles.container} ref={scrollViewRef} showsVerticalScrollIndicator={false}>
+      {!data ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#F09235" />
+        </View>
+      ) : (
+        <View style={styles.content}>
+          {/* Галерея изображений */}
+          <View style={styles.sliderContainer}>
+            <SliderComponent data={data?.images} />
+          </View>
 
-                <Text style={{ fontFamily: 'medium', fontSize: 28, color: '#000', marginTop: 20}}>{data?.cost} ₸</Text>
-
-                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
-                  {data?.phone ? (
-                    <TouchableOpacity
-                      style={{ flexDirection: 'row', alignItems: 'center' }}
-                      onPress={() => {
-                        if (showRealContacts) makeCall(data.phone);
-                        else ensureAuthOrGo();
-                      }}
-                    >
-                      <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 15 }}>{phoneToShow}</Text>
-                      {isAuthenticated ? null : <Text style={{ fontFamily: 'regular', fontSize: 13, marginTop: 15, marginLeft: 10, opacity: 0.6 }}>Показать телефон</Text>}
-                    </TouchableOpacity>
-                  ) : null}
-
-                  <View style={{ flexDirection: 'row', marginTop: 17, alignItems: 'center' }}>
-                    <Text style={{ color: '#333', fontFamily: 'medium', fontSize: 15 }}>{data?.views}</Text>
-                    <MaterialCommunityIcons name={'eye'} size={22} color="#CFCFCF" style={{ marginLeft: 10 }} />
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('ViewUser', { username: data?.author?.username });
-                  }}
-                  style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}
-                >
-                  <Image
-                    style={{ width: 50, height: 50, borderRadius: 100, marginRight: 10 }}
-                    source={
-                      data?.author?.profile_image
-                        ? { uri: `https://market.qorgau-city.kz${data.author.profile_image}` }
-                        : require('../assets/profilePurple.png')
-                    }
-                  />
-                  <Text style={{ fontSize: 18, fontFamily: 'medium' }}>{data?.author?.username || 'Пользователь'}</Text>
-                </TouchableOpacity>
-
-                <View>
-                  <Text style={{ fontSize: 14, fontFamily: 'regular', marginTop: 20, opacity: 0.7 }}>{data?.geolocation}</Text>
-                  {data?.adress ? (
-                    <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 5 }}>{data.adress.split(',')[0]}</Text>
-                  ) : null}
-                </View>
-
-                {(data?.telegram ||
-                  data?.site ||
-                  data?.insta ||
-                  data?.facebook ||
-                  data?.phone_whatsapp ||
-                  data?.twogis) && (
-                  <View style={{ marginTop: 20 }}>
-                    {!isAuthenticated ? (
-                      <TouchableOpacity
-                        onPress={() => ensureAuthOrGo()}
-                        style={{
-                          borderWidth: 1,
-                          borderColor: '#F2D8BD',
-                          backgroundColor: '#FFF7EE',
-                          padding: 12,
-                          borderRadius: 10,
-                          marginBottom: 10,
-                        }}
-                      >
-                        <Text style={{ fontFamily: 'medium', fontSize: 14, color: '#7A4A1F' }}>
-                          Контакты скрыты. {"\n"} Войдите, чтобы увидеть полные ссылки и номера.
-                        </Text>
-                      </TouchableOpacity>
-                    ) : null}
-
-                    <View style={{ flexDirection: 'row', width: '100%', flexWrap: 'wrap' }}>
-                      {data?.telegram && (
-                        <Social
-                          url={isAuthenticated ? data.telegram : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.telegram)}
-                          image={require('../assets/telegram.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.site && (
-                        <Social
-                          url={isAuthenticated ? data.site : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.site)}
-                          image={require('../assets/site.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.insta && (
-                        <Social
-                          url={isAuthenticated ? data.insta : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.insta)}
-                          image={require('../assets/insta.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.facebook && (
-                        <Social
-                          url={isAuthenticated ? data.facebook : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.facebook)}
-                          image={require('../assets/facebook.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.phone_whatsapp && (
-                        <Social
-                          url={isAuthenticated ? data.phone_whatsapp : undefined}
-                          label={isAuthenticated ? undefined : maskPhone(data.phone_whatsapp)}
-                          whatsapp
-                          image={require('../assets/whatsapp.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.twogis && (
-                        <Social
-                          url={isAuthenticated ? data.twogis : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.twogis)}
-                          image={require('../assets/2gis.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                    </View>
+          {/* Основная информация */}
+          <View style={styles.mainContent}>
+            {/* Заголовок и категория */}
+            <View style={styles.headerSection}>
+              <View style={styles.titleSection}>
+                <Text style={styles.title}>{data?.title}</Text>
+                {data?.categories?.name && (
+                  <View style={styles.categoryBadge}>
+                    <Ionicons name="folder-outline" size={14} color="#F09235" />
+                    <Text style={styles.categoryText}>{data.categories.name}</Text>
+                    {data?.subcategory && (
+                      <>
+                        <Ionicons name="chevron-forward" size={12} color="#999" style={{ marginHorizontal: 4 }} />
+                        <TouchableOpacity onPress={() => navigation.navigate('postsByCategory', { id: data?.categories?.id })}>
+                          <Text style={styles.subcategoryText}>{data.subcategory}</Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
                   </View>
                 )}
+              </View>
+              <View style={styles.viewsSection}>
+                <MaterialCommunityIcons name="eye-outline" size={18} color="#999" />
+                <Text style={styles.viewsText}>{data?.views || 0}</Text>
+              </View>
+            </View>
 
-                <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 30 }}>Описание</Text>
-                <Text style={{ fontSize: 16, fontFamily: 'regular', marginTop: 10 }}>{data?.content}</Text>
+            {/* Цена */}
+            <View style={styles.priceSection}>
+              <Text style={styles.price}>{data?.cost} ₸</Text>
+            </View>
 
-                {/* Информация о статусе для админа/модерации */}
-                {isAdminView && (
-                  <View style={{ marginTop: 30, backgroundColor: '#F7F8F9', borderRadius: 12, padding: 15 }}>
-                    <Text style={{ fontSize: 16, fontFamily: 'bold', marginBottom: 15 }}>Информация о статусе</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-                      <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Одобрено:</Text>
-                      <Text style={{ fontSize: 14, fontFamily: 'medium', color: data?.approved ? '#50C878' : '#F44336' }}>
+            {/* Контакты и продавец */}
+            <View style={styles.contactSection}>
+              {data?.phone && (
+                <TouchableOpacity
+                  style={styles.phoneButton}
+                  onPress={() => {
+                    if (showRealContacts) makeCall(data.phone);
+                    else ensureAuthOrGo();
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <LinearGradient
+                    colors={['#F3B127', '#F26D1D']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.phoneButtonGradient}
+                  >
+                    <Ionicons name="call-outline" size={20} color="#FFFFFF" />
+                    <Text style={styles.phoneButtonText}>{phoneToShow}</Text>
+                    {!isAuthenticated && (
+                      <Text style={styles.phoneButtonHint}>Показать</Text>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ViewUser', { username: data?.author?.username })}
+                style={styles.sellerCard}
+                activeOpacity={0.7}
+              >
+                <Image
+                  style={styles.sellerAvatar}
+                  source={
+                    data?.author?.profile_image
+                      ? { uri: `https://market.qorgau-city.kz${data.author.profile_image}` }
+                      : require('../assets/profilePurple.png')
+                  }
+                />
+                <View style={styles.sellerInfo}>
+                  <Text style={styles.sellerLabel}>Продавец</Text>
+                  <Text style={styles.sellerName}>{data?.author?.username || 'Пользователь'}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#999" />
+              </TouchableOpacity>
+
+              {data?.geolocation && (
+                <View style={styles.locationCard}>
+                  <Ionicons name="location-outline" size={20} color="#F09235" />
+                  <View style={styles.locationInfo}>
+                    <Text style={styles.locationText}>{data.geolocation}</Text>
+                    {data?.adress && (
+                      <Text style={styles.addressText}>{data.adress.split(',')[0]}</Text>
+                    )}
+                  </View>
+                </View>
+              )}
+            </View>
+
+            {/* Социальные сети */}
+            {(data?.telegram ||
+              data?.site ||
+              data?.insta ||
+              data?.facebook ||
+              data?.phone_whatsapp ||
+              data?.twogis) && (
+              <View style={styles.socialSection}>
+                <Text style={styles.sectionTitle}>Контакты</Text>
+                {!isAuthenticated && (
+                  <TouchableOpacity
+                    onPress={() => ensureAuthOrGo()}
+                    style={styles.authPrompt}
+                  >
+                    <Ionicons name="lock-closed-outline" size={18} color="#F09235" />
+                    <Text style={styles.authPromptText}>
+                      Войдите, чтобы увидеть полные контакты
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                <View style={styles.socialGrid}>
+                  {data?.telegram && (
+                    <Social
+                      url={isAuthenticated ? data.telegram : undefined}
+                      label={isAuthenticated ? undefined : maskedLinkLabel(data.telegram)}
+                      image={require('../assets/telegram.png')}
+                      onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                    />
+                  )}
+                  {data?.site && (
+                    <Social
+                      url={isAuthenticated ? data.site : undefined}
+                      label={isAuthenticated ? undefined : maskedLinkLabel(data.site)}
+                      image={require('../assets/site.png')}
+                      onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                    />
+                  )}
+                  {data?.insta && (
+                    <Social
+                      url={isAuthenticated ? data.insta : undefined}
+                      label={isAuthenticated ? undefined : maskedLinkLabel(data.insta)}
+                      image={require('../assets/insta.png')}
+                      onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                    />
+                  )}
+                  {data?.facebook && (
+                    <Social
+                      url={isAuthenticated ? data.facebook : undefined}
+                      label={isAuthenticated ? undefined : maskedLinkLabel(data.facebook)}
+                      image={require('../assets/facebook.png')}
+                      onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                    />
+                  )}
+                  {data?.phone_whatsapp && (
+                    <Social
+                      url={isAuthenticated ? data.phone_whatsapp : undefined}
+                      label={isAuthenticated ? undefined : maskPhone(data.phone_whatsapp)}
+                      whatsapp
+                      image={require('../assets/whatsapp.png')}
+                      onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                    />
+                  )}
+                  {data?.twogis && (
+                    <Social
+                      url={isAuthenticated ? data.twogis : undefined}
+                      label={isAuthenticated ? undefined : maskedLinkLabel(data.twogis)}
+                      image={require('../assets/2gis.png')}
+                      onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                    />
+                  )}
+                </View>
+              </View>
+            )}
+
+            {/* Описание */}
+            {data?.content && (
+              <View style={styles.descriptionSection}>
+                <Text style={styles.sectionTitle}>Описание</Text>
+                <Text style={styles.descriptionText}>{data.content}</Text>
+              </View>
+            )}
+
+            {/* Характеристики */}
+            {Array.isArray(data?.fields) && data.fields.length > 1 && (
+              <View style={styles.specsSection}>
+                <Text style={styles.sectionTitle}>Характеристики</Text>
+                <View style={styles.specsList}>
+                  {data.fields.map((field, index) =>
+                    field.field_value ? (
+                      <View key={index} style={styles.specItem}>
+                        <Text style={styles.specLabel}>{field.field_name}</Text>
+                        <Text style={styles.specValue}>{field.field_value}</Text>
+                      </View>
+                    ) : null
+                  )}
+                </View>
+              </View>
+            )}
+
+            {/* Информация о статусе для админа/модерации */}
+            {isAdminView && (
+              <View style={styles.adminInfoSection}>
+                <Text style={styles.adminInfoTitle}>Информация о статусе</Text>
+                <View style={styles.adminInfoList}>
+                  <View style={styles.adminInfoItem}>
+                    <Text style={styles.adminInfoLabel}>Одобрено:</Text>
+                    <View style={[styles.statusBadge, { backgroundColor: data?.approved ? '#E8F5E9' : '#FFEBEE' }]}>
+                      <Text style={[styles.statusText, { color: data?.approved ? '#50C878' : '#F44336' }]}>
                         {data?.approved ? 'Да' : 'Нет'}
                       </Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-                      <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Активно:</Text>
-                      <Text style={{ fontSize: 14, fontFamily: 'medium', color: data?.isActive ? '#50C878' : '#9E9E9E' }}>
+                  </View>
+                  <View style={styles.adminInfoItem}>
+                    <Text style={styles.adminInfoLabel}>Активно:</Text>
+                    <View style={[styles.statusBadge, { backgroundColor: data?.isActive ? '#E8F5E9' : '#F5F5F5' }]}>
+                      <Text style={[styles.statusText, { color: data?.isActive ? '#50C878' : '#9E9E9E' }]}>
                         {data?.isActive ? 'Да' : 'Нет'}
                       </Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-                      <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Оплачено:</Text>
-                      <Text style={{ fontSize: 14, fontFamily: 'medium', color: data?.isPayed ? '#50C878' : '#FF9800' }}>
+                  </View>
+                  <View style={styles.adminInfoItem}>
+                    <Text style={styles.adminInfoLabel}>Оплачено:</Text>
+                    <View style={[styles.statusBadge, { backgroundColor: data?.isPayed ? '#E8F5E9' : '#FFF3E0' }]}>
+                      <Text style={[styles.statusText, { color: data?.isPayed ? '#50C878' : '#FF9800' }]}>
                         {data?.isPayed ? 'Да' : 'Нет'}
                       </Text>
                     </View>
-                    {data?.tariff && (
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-                        <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Тариф:</Text>
-                        <Text style={{ fontSize: 14, fontFamily: 'medium' }}>{data.tariff.name || 'Не указан'}</Text>
-                      </View>
-                    )}
-                    {data?.rejection_reason && (
-                      <View style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E0E0E0' }}>
-                        <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666', marginBottom: 5 }}>Причина отклонения:</Text>
-                        <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#F44336' }}>{data.rejection_reason}</Text>
-                      </View>
-                    )}
                   </View>
-                )}
+                  {data?.tariff && (
+                    <View style={styles.adminInfoItem}>
+                      <Text style={styles.adminInfoLabel}>Тариф:</Text>
+                      <Text style={styles.adminInfoValue}>{data.tariff.name || 'Не указан'}</Text>
+                    </View>
+                  )}
+                  {data?.rejection_reason && (
+                    <View style={styles.rejectionReasonBox}>
+                      <Text style={styles.rejectionReasonLabel}>Причина отклонения:</Text>
+                      <Text style={styles.rejectionReasonText}>{data.rejection_reason}</Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            )}
 
-                {/* Написать продавцу - показываем только в обычном режиме просмотра */}
-                {!isAdminView && data?.author?.username && auth?.user?.username && data.author.username !== auth.user.username ? (
-                  <View>
-                    <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 30 }}>Написать продавцу</Text>
-
-                    {!isAuthenticated ? (
-                      <View
-                        style={{
-                          borderWidth: 1,
-                          borderColor: '#F2D8BD',
-                          backgroundColor: '#FFF7EE',
-                          padding: 12,
-                          borderRadius: 10,
-                          marginTop: 10,
-                        }}
+            {/* Написать продавцу - показываем только в обычном режиме просмотра */}
+            {!isAdminView && data?.author?.username && auth?.user?.username && data.author.username !== auth.user.username && (
+              <View style={styles.messageSection}>
+                <Text style={styles.sectionTitle}>Написать продавцу</Text>
+                {!isAuthenticated ? (
+                  <View style={styles.authCard}>
+                    <Ionicons name="chatbubble-outline" size={24} color="#F09235" />
+                    <Text style={styles.authCardText}>
+                      Чтобы отправить сообщение продавцу, войдите в аккаунт
+                    </Text>
+                    <TouchableOpacity
+                      onPress={ensureAuthOrGo}
+                      style={styles.authButton}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.authButtonText}>Войти</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.messageInputContainer}>
+                    <TextInput
+                      style={styles.messageInput}
+                      onChangeText={onChangeMessage}
+                      numberOfLines={4}
+                      multiline={true}
+                      value={message}
+                      placeholder="Здравствуйте! Я интересуюсь вашим товаром/услугой. Могу я узнать больше о нем? Есть ли возможность договориться о встрече и проверить качество на месте?"
+                      placeholderTextColor="#999"
+                    />
+                    <TouchableOpacity
+                      onPress={fetchData}
+                      style={styles.sendButton}
+                      activeOpacity={0.8}
+                    >
+                      <LinearGradient
+                        colors={['#F3B127', '#F26D1D']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.sendButtonGradient}
                       >
-                        <Text style={{ fontFamily: 'regular', fontSize: 14, color: '#7A4A1F' }}>
-                          Чтобы отправить сообщение продавцу, войдите в аккаунт.
-                        </Text>
-                        <TouchableOpacity
-                          onPress={ensureAuthOrGo}
-                          style={{ marginTop: 10, alignSelf: 'flex-start', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: '#F09235', borderRadius: 8 }}
-                        >
-                          <Text style={{ color: '#fff', fontFamily: 'medium' }}>Войти</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ) : (
-                      <View>
-                        <TextInput
-                          style={{
-                            width: '100%',
-                            paddingHorizontal: 10,
-                            paddingTop: 15,
-                            marginTop: 10,
-                            height: 100,
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            borderColor: '#D6D6D6',
-                            fontFamily: 'regular',
-                            fontSize: 15,
-                          }}
-                          onChangeText={onChangeMessage}
-                          numberOfLines={4}
-                          multiline={true}
-                          value={message}
-                          placeholder="Здравствуйте! Я интересуюсь вашим товаром/услугой. Могу я узнать больше о нем? Есть ли возможность договориться о встрече и проверить качество на месте?"
-                        />
-                        <TouchableOpacity onPress={fetchData}>
-                          <Image source={require('../assets/send.png')} style={{ height: 24, width: 24, position: 'absolute', bottom: 10, right: 10 }} />
-                        </TouchableOpacity>
-                      </View>
-                    )}
+                        <Ionicons name="send" size={20} color="#FFFFFF" />
+                      </LinearGradient>
+                    </TouchableOpacity>
                   </View>
-                ) : null}
-
-                {Array.isArray(data?.fields) && data.fields.length > 1 ? (
-                  <View style={{ marginBottom: 30 }}>
-                    <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 30 }}>Характеристики</Text>
-                    {data.fields.map((field, index) =>
-                      field.field_value ? (
-                        <View key={index} style={{ flexDirection: 'row', marginTop: 20 }}>
-                          <Text style={{ width: '50%', color: '#9C9C9C' }}>{field.field_name}</Text>
-                          <Text style={{ width: '50%', color: '#17181D', fontFamily: 'medium' }}>{field.field_value}</Text>
-                        </View>
-                      ) : null
-                    )}
-                  </View>
-                ) : null}
-
-                {/* Похожие объявления - показываем только в обычном режиме просмотра */}
-                {!isAdminView && (
-                  <>
-                    <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 20 }}>Похожие объявления</Text>
-                    {Array.isArray(dataPost?.results) && (
-                      <View style={{ marginTop: 10 }} onLayout={(e) => setSimilarWidth(e.nativeEvent.layout.width)}>
-                        <ResponsiveProductGrid
-                          data={dataPost.results}
-                          containerWidth={similarWidth || undefined}
-                          scrollEnabled={false}
-                        />
-                      </View>
-                    )}
-                  </>
                 )}
               </View>
-            </View>
-          )}
-        </ScrollView>
-      </View>
+            )}
+
+            {/* Похожие объявления - показываем только в обычном режиме просмотра */}
+            {!isAdminView && (
+              <View style={styles.similarSection}>
+                <Text style={styles.sectionTitle}>Похожие объявления</Text>
+                {Array.isArray(dataPost?.results) && (
+                  <View style={styles.similarGrid} onLayout={(e) => setSimilarWidth(e.nativeEvent.layout.width)}>
+                    <ResponsiveProductGrid
+                      data={dataPost.results}
+                      containerWidth={similarWidth || undefined}
+                      scrollEnabled={false}
+                    />
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -494,6 +518,372 @@ function HeaderIcon(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 100,
+  },
+  content: {
+    paddingBottom: 100,
+  },
+  sliderContainer: {
+    marginBottom: 0,
+  },
+  mainContent: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  headerSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  titleSection: {
+    flex: 1,
+    marginRight: 12,
+  },
+  title: {
+    fontSize: 24,
+    fontFamily: 'bold',
+    color: '#1A1A1A',
+    lineHeight: 32,
+    marginBottom: 8,
+  },
+  categoryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  categoryText: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#F09235',
+    marginLeft: 4,
+  },
+  subcategoryText: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#666',
+  },
+  viewsSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  viewsText: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#666',
+    marginLeft: 6,
+  },
+  priceSection: {
+    marginBottom: 24,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  price: {
+    fontSize: 32,
+    fontFamily: 'bold',
+    color: '#1A1A1A',
+  },
+  contactSection: {
+    marginBottom: 24,
+  },
+  phoneButton: {
+    marginBottom: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  phoneButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+  },
+  phoneButtonText: {
+    fontSize: 18,
+    fontFamily: 'bold',
+    color: '#FFFFFF',
+    marginLeft: 10,
+    flex: 1,
+  },
+  phoneButtonHint: {
+    fontSize: 12,
+    fontFamily: 'regular',
+    color: '#FFFFFF',
+    opacity: 0.8,
+  },
+  sellerCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F7F8F9',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  sellerAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    marginRight: 12,
+  },
+  sellerInfo: {
+    flex: 1,
+  },
+  sellerLabel: {
+    fontSize: 12,
+    fontFamily: 'regular',
+    color: '#999',
+    marginBottom: 4,
+  },
+  sellerName: {
+    fontSize: 16,
+    fontFamily: 'bold',
+    color: '#1A1A1A',
+  },
+  locationCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF8F0',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#FFE5CC',
+  },
+  locationInfo: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  locationText: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#1A1A1A',
+    marginBottom: 4,
+  },
+  addressText: {
+    fontSize: 13,
+    fontFamily: 'regular',
+    color: '#666',
+  },
+  socialSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontFamily: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 16,
+  },
+  authPrompt: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF8F0',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#FFE5CC',
+  },
+  authPromptText: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#E65100',
+    marginLeft: 10,
+    flex: 1,
+  },
+  socialGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  descriptionSection: {
+    marginBottom: 24,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  descriptionText: {
+    fontSize: 16,
+    fontFamily: 'regular',
+    color: '#333',
+    lineHeight: 24,
+  },
+  specsSection: {
+    marginBottom: 24,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  specsList: {
+    gap: 16,
+  },
+  specItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+  },
+  specLabel: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: '#666',
+    flex: 1,
+  },
+  specValue: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#1A1A1A',
+    flex: 1,
+    textAlign: 'right',
+  },
+  adminInfoSection: {
+    backgroundColor: '#F7F8F9',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  adminInfoTitle: {
+    fontSize: 18,
+    fontFamily: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 16,
+  },
+  adminInfoList: {
+    gap: 12,
+  },
+  adminInfoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  adminInfoLabel: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: '#666',
+  },
+  adminInfoValue: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#1A1A1A',
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  statusText: {
+    fontSize: 12,
+    fontFamily: 'medium',
+  },
+  rejectionReasonBox: {
+    marginTop: 12,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  rejectionReasonLabel: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#666',
+    marginBottom: 8,
+  },
+  rejectionReasonText: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: '#F44336',
+    lineHeight: 20,
+  },
+  messageSection: {
+    marginBottom: 24,
+  },
+  authCard: {
+    backgroundColor: '#FFF8F0',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FFE5CC',
+  },
+  authCardText: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: '#E65100',
+    textAlign: 'center',
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  authButton: {
+    backgroundColor: '#F09235',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  authButtonText: {
+    fontSize: 16,
+    fontFamily: 'medium',
+    color: '#FFFFFF',
+  },
+  messageInputContainer: {
+    position: 'relative',
+  },
+  messageInput: {
+    width: '100%',
+    minHeight: 120,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 60,
+    borderWidth: 1,
+    borderRadius: 12,
+    borderColor: '#E0E0E0',
+    fontSize: 15,
+    fontFamily: 'regular',
+    color: '#1A1A1A',
+    backgroundColor: '#FAFAFA',
+  },
+  sendButton: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  sendButtonGradient: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  similarSection: {
+    marginBottom: 24,
+  },
+  similarGrid: {
+    marginTop: 12,
+  },
   Icon: {
     marginLeft: 13,
     width: 24,
