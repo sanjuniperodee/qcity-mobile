@@ -121,8 +121,8 @@ export const MessagesMainScreen = () => {
                 />
                 <View style={{ marginLeft: 10 }}>
                   <Text style={{ fontFamily: 'medium', fontSize: 16 }}>
-                    {(item.receiver_info.username === 'admin' && item.sender_info.username === auth.user.username) ||
-                    (item.sender_info.username === 'admin' && item.receiver_info.username === auth.user.username)
+                    {((item.receiver_info?.email === 'admin@mail.ru' || item.receiver_info?.username === 'admin') && item.sender_info.username === auth.user.username) ||
+                    ((item.sender_info?.email === 'admin@mail.ru' || item.sender_info?.username === 'admin') && item.receiver_info.username === auth.user.username)
                       ? t('messages.support')
                       : item.receiver_info.username === auth.user.username
                       ? item.sender_info.username
@@ -135,8 +135,8 @@ export const MessagesMainScreen = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
-              {(item.receiver_info.username === 'admin' && item.sender_info.username === auth.user.username) ||
-              (item.sender_info.username === 'admin' && item.receiver_info.username === auth.user.username) ? (
+              {((item.receiver_info?.email === 'admin@mail.ru' || item.receiver_info?.username === 'admin') && item.sender_info.username === auth.user.username) ||
+              ((item.sender_info?.email === 'admin@mail.ru' || item.sender_info?.username === 'admin') && item.receiver_info.username === auth.user.username) ? (
                 <View style={{ marginTop: 15, borderTopWidth: 1, opacity: 0.15, paddingTop: 15 }} />
               ) : null}
             </React.Fragment>
