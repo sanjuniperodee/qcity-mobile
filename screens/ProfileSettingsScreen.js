@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput,  TouchableOpacity, Image, Text,KeyboardAvoidingView,Alert,ActivityIndicator,Modal,Platform,StyleSheet,ScrollView,Dimensions } from 'react-native';
+import { View, TextInput, TouchableOpacity, Image, Text, KeyboardAvoidingView, Alert, ActivityIndicator, Modal, Platform, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import Container from '../components/ui/Container';
 import FormField from '../components/ui/FormField';
 import Button from '../components/ui/Button';
@@ -7,7 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { loginSuccess } from '../actions/authActions';
 import { logout } from '../actions/authActions';
 import { persistor } from '../store/index';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useUpdateUserProfileMutation } from '../api';
 import { parseApiError } from '../utils/apiError';
 import { useTranslation } from 'react-i18next';
@@ -219,117 +221,486 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
         }
       };
 
+    const currentLanguage = i18n.language;
+
     return (
       <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardView}
       >
         <Modal
-            animationType="slide"
-            transparent={true}
-            visible={isLoading}
-            onRequestClose={() => {
+          animationType="slide"
+          transparent={true}
+          visible={isLoading}
+          onRequestClose={() => {
             setIsLoading(false);
-            }}
+          }}
         >
-            <View style={styles.centeredView}>
+          <View style={styles.centeredView}>
             <View style={styles.modalView}>
-                <ActivityIndicator size="large" color="#0000ff" />
-                <Text style={styles.modalText}>{t('profile_settings.editing_profile')}</Text>
+              <ActivityIndicator size="large" color="#F09235" />
+              <Text style={styles.modalText}>{t('profile_settings.editing_profile')}</Text>
             </View>
-            </View>
+          </View>
         </Modal>
         <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: 40 }}
         >
-          <Container style={{ alignItems:'center' }}>
-            <View style={{ width:'100%', maxWidth: (Dimensions.get('window').width >= 1024 ? 480 : undefined), alignItems:'center' }}>
-            <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
+          {/* Заголовок с градиентом */}
+          <View style={styles.header}>
+            <LinearGradient
+              colors={['#F3B127', '#F26D1D']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.headerGradient}
+            >
+              <View style={styles.headerContent}>
+                <View style={styles.headerIcon}>
+                  <Ionicons name="settings" size={32} color="#FFFFFF" />
+                </View>
+                <View style={styles.headerText}>
+                  <Text style={styles.headerTitle}>Настройки профиля</Text>
+                  <Text style={styles.headerSubtitle}>Редактируйте свои данные</Text>
+                </View>
+              </View>
+            </LinearGradient>
+          </View>
+
+          <View style={styles.content}>
+            {/* Аватар */}
+            <View style={styles.avatarSection}>
+              <TouchableOpacity onPress={pickImage} style={styles.avatarContainer} activeOpacity={0.8}>
                 {image ? (
-                    <View >
-                        <Image style={{position:'absolute',alignSelf:'center',top:30,zIndex:1,height:50,width:50}} source={require('../assets/edit.png')}/>
-                        <Image source={{ uri: image }} style={{ width: 110, height: 110, borderRadius:100,borderWidth:1,borderColor:'#D6D6D6' }} />
+                  <View style={styles.avatarWrapper}>
+                    <Image source={{ uri: image }} style={styles.avatar} />
+                    <View style={styles.editAvatarBadge}>
+                      <Ionicons name="camera" size={16} color="#FFFFFF" />
                     </View>
+                  </View>
                 ) : (
-                    <View style={{ width: 110, height: 110, backgroundColor: '#F7F8F9', borderRadius: 100,borderWidth:1,borderColor:'#D6D6D6', justifyContent: 'center', alignItems: 'center' }}>
-                        <Image style={{height:25,width:25,marginTop:20}} source={require('../assets/plus.jpg')} />
-                        <Text style={{ fontFamily:'regular',fontSize:14,color:'#96949D',marginTop:10, }}>{t('register.profile_pic')}</Text>
-                    </View>
+                  <View style={styles.avatarPlaceholder}>
+                    <Ionicons name="person" size={48} color="#CCCCCC" />
+                    <Text style={styles.avatarPlaceholderText}>{t('register.profile_pic')}</Text>
+                  </View>
                 )}
-            </TouchableOpacity>
-
-            <View style={{marginTop:25, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.your_name')}</Text>
-                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeName} value={name} placeholder={t('profile_settings.enter_your_name')} />
-                {nameError ? <Text style={{ color: 'red', marginTop: 8 }}>{nameError}</Text> : null}
-            </View>
-            <View style={{marginTop:20, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.phone_number')}</Text>
-                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangePhone} value={phone} placeholder={t('profile_settings.enter_phone_number')} />
-                {phoneError ? <Text style={{ color: 'red', marginTop: 8 }}>{phoneError}</Text> : null}
-            </View>
-            <View style={{marginTop:20, width:'100%'}}>
-                <Text style={{fontFamily:'medium',fontSize:14,marginBottom:10}}>{t('profile_settings.email_for_login')}</Text>
-                <FormField dense={Dimensions.get('window').width >= 1024} onChangeText={onChangeEmail} value={email} placeholder={t('profile_settings.enter_email')} />
-                {emailError ? <Text style={{ color: 'red', marginTop: 8 }}>{emailError}</Text> : null}
-            </View>
-            {generalError ? <Text style={{ color: 'red', marginTop: 10, alignSelf:'flex-start' }}>{generalError}</Text> : null}
-
-            <View style={{marginTop:20,flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:10}}>
-                <TouchableOpacity onPress={() => {handleLanguage('kz')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
-                    <Text style={{color:'#F09235',fontSize:16,}}>{t('kaz')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {handleLanguage('ru')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
-                    <Text style={{color:'#F09235',fontSize:16,}}>{t('rus')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {handleLanguage('en')}} style={{paddingVertical:15,backgroundColor:'#F7F8F9',borderRadius:10,alignItems:'center',borderColor:'#D6D6D6',borderWidth:1,flex:1}}>
-                    <Text style={{color:'#F09235',fontSize:16,}}>{t('eng')}</Text>
-                </TouchableOpacity>
+              </TouchableOpacity>
             </View>
 
-            <View style={{marginTop:20,justifyContent:'center', width:'100%'}}>
-                <Button size={Dimensions.get('window').width >= 1024 ? 'xs' : 'md'} fullWidth onPress={handleProfileEdit}>{t('profile_settings.edit_profile')}</Button>
+            {/* Форма */}
+            <View style={styles.formSection}>
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldLabel}>{t('profile_settings.your_name')}</Text>
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="person-outline" size={20} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={onChangeName}
+                    value={name}
+                    placeholder={t('profile_settings.enter_your_name')}
+                    placeholderTextColor="#999"
+                  />
+                </View>
+                {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
+              </View>
+
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldLabel}>{t('profile_settings.phone_number')}</Text>
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="call-outline" size={20} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={onChangePhone}
+                    value={phone}
+                    placeholder={t('profile_settings.enter_phone_number')}
+                    placeholderTextColor="#999"
+                    keyboardType="phone-pad"
+                  />
+                </View>
+                {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
+              </View>
+
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldLabel}>{t('profile_settings.email_for_login')}</Text>
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="mail-outline" size={20} color="#999" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={onChangeEmail}
+                    value={email}
+                    placeholder={t('profile_settings.enter_email')}
+                    placeholderTextColor="#999"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </View>
+                {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+              </View>
+
+              {generalError ? <Text style={styles.generalErrorText}>{generalError}</Text> : null}
+
+              {/* Выбор языка */}
+              <View style={styles.languageSection}>
+                <Text style={styles.sectionTitle}>Язык приложения</Text>
+                <View style={styles.languageButtons}>
+                  <TouchableOpacity
+                    onPress={() => handleLanguage('kz')}
+                    style={[
+                      styles.languageButton,
+                      currentLanguage === 'kz' && styles.languageButtonActive
+                    ]}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[
+                      styles.languageButtonText,
+                      currentLanguage === 'kz' && styles.languageButtonTextActive
+                    ]}>
+                      {t('kaz')}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleLanguage('ru')}
+                    style={[
+                      styles.languageButton,
+                      currentLanguage === 'ru' && styles.languageButtonActive
+                    ]}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[
+                      styles.languageButtonText,
+                      currentLanguage === 'ru' && styles.languageButtonTextActive
+                    ]}>
+                      {t('rus')}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleLanguage('en')}
+                    style={[
+                      styles.languageButton,
+                      currentLanguage === 'en' && styles.languageButtonActive
+                    ]}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[
+                      styles.languageButtonText,
+                      currentLanguage === 'en' && styles.languageButtonTextActive
+                    ]}>
+                      {t('eng')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Кнопка сохранения */}
+              <TouchableOpacity
+                onPress={handleProfileEdit}
+                style={styles.saveButton}
+                activeOpacity={0.8}
+                disabled={isLoading}
+              >
+                <LinearGradient
+                  colors={['#F3B127', '#F26D1D']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.saveButtonGradient}
+                >
+                  {isLoading ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Text style={styles.saveButtonText}>{t('profile_settings.edit_profile')}</Text>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+
+              {/* Выход */}
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={styles.logoutButton}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="log-out-outline" size={20} color="#999" />
+                <Text style={styles.logoutButtonText}>{t('profile_settings.logout')}</Text>
+              </TouchableOpacity>
+
+              {/* Удаление аккаунта */}
+              <TouchableOpacity
+                onPress={handleDeleteAccount}
+                disabled={deleting}
+                style={[styles.deleteButton, deleting && styles.deleteButtonDisabled]}
+                activeOpacity={0.7}
+              >
+                {deleting ? (
+                  <ActivityIndicator size="small" color="#FF3B30" />
+                ) : (
+                  <>
+                    <Ionicons name="trash-outline" size={20} color="#FF3B30" />
+                    <Text style={styles.deleteButtonText}>{t('profile_settings.delete_account.button')}</Text>
+                  </>
+                )}
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={handleLogout} style={{marginTop:20}}><Text style={{fontFamily:'medium',opacity:.4}}>{t('profile_settings.logout')}</Text></TouchableOpacity>
-            <TouchableOpacity
-             onPress={handleDeleteAccount}
-             disabled={deleting}
-             style={{
-               marginTop:12,
-               paddingVertical:15,
-               width: width - 40,
-               backgroundColor:'#fff',
-               borderRadius:10,
-               alignItems:'center',
-               opacity: deleting ? 0.7 : 1
-             }}>
-             {deleting
-               ? <ActivityIndicator color="#fff" />
-               : <Text style={{color:'#ff3b30',fontSize:16,fontFamily:'medium'}}>{t('profile_settings.delete_account.button')}</Text>}
-           </TouchableOpacity>
-            </View>
-          </Container>
+          </View>
         </ScrollView>
-        </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
     );
   }
 
 
   const styles = StyleSheet.create({
+    keyboardView: {
+      flex: 1,
+      backgroundColor: '#F7F8F9',
+    },
+    container: {
+      flex: 1,
+      backgroundColor: '#F7F8F9',
+    },
+    scrollContent: {
+      paddingBottom: 40,
+    },
+    header: {
+      marginBottom: 20,
+      borderRadius: 0,
+      overflow: 'hidden',
+    },
+    headerGradient: {
+      padding: 20,
+      paddingTop: 30,
+      paddingBottom: 25,
+    },
+    headerContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    headerIcon: {
+      marginRight: 15,
+    },
+    headerText: {
+      flex: 1,
+    },
+    headerTitle: {
+      fontFamily: 'bold',
+      fontSize: 24,
+      color: '#FFFFFF',
+      marginBottom: 4,
+    },
+    headerSubtitle: {
+      fontFamily: 'regular',
+      fontSize: 14,
+      color: '#FFFFFF',
+      opacity: 0.9,
+    },
+    content: {
+      paddingHorizontal: 20,
+    },
+    avatarSection: {
+      alignItems: 'center',
+      marginBottom: 30,
+    },
+    avatarContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    avatarWrapper: {
+      position: 'relative',
+    },
+    avatar: {
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      borderWidth: 4,
+      borderColor: '#FFFFFF',
+      backgroundColor: '#F0F0F0',
+    },
+    editAvatarBadge: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: '#F09235',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 3,
+      borderColor: '#FFFFFF',
+    },
+    avatarPlaceholder: {
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      backgroundColor: '#F0F0F0',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: '#E0E0E0',
+      borderStyle: 'dashed',
+    },
+    avatarPlaceholderText: {
+      fontFamily: 'regular',
+      fontSize: 12,
+      color: '#999',
+      marginTop: 8,
+    },
+    formSection: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: 16,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      elevation: 2,
+    },
+    fieldContainer: {
+      marginBottom: 20,
+    },
+    fieldLabel: {
+      fontFamily: 'bold',
+      fontSize: 14,
+      color: '#1A1A1A',
+      marginBottom: 8,
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#F7F8F9',
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: '#E0E0E0',
+      paddingHorizontal: 16,
+      height: 52,
+    },
+    inputIcon: {
+      marginRight: 12,
+    },
+    input: {
+      flex: 1,
+      fontFamily: 'regular',
+      fontSize: 16,
+      color: '#1A1A1A',
+      paddingVertical: 0,
+    },
+    errorText: {
+      color: '#FF3B30',
+      fontFamily: 'regular',
+      fontSize: 12,
+      marginTop: 6,
+    },
+    generalErrorText: {
+      color: '#FF3B30',
+      fontFamily: 'regular',
+      fontSize: 14,
+      marginTop: 10,
+      marginBottom: 10,
+    },
+    languageSection: {
+      marginTop: 10,
+      marginBottom: 20,
+      paddingTop: 20,
+      borderTopWidth: 1,
+      borderTopColor: '#F0F0F0',
+    },
+    sectionTitle: {
+      fontFamily: 'bold',
+      fontSize: 14,
+      color: '#1A1A1A',
+      marginBottom: 12,
+    },
+    languageButtons: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    languageButton: {
+      flex: 1,
+      paddingVertical: 12,
+      backgroundColor: '#F7F8F9',
+      borderRadius: 12,
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#E0E0E0',
+    },
+    languageButtonActive: {
+      backgroundColor: '#FFF5E6',
+      borderColor: '#F09235',
+      borderWidth: 2,
+    },
+    languageButtonText: {
+      fontFamily: 'medium',
+      fontSize: 14,
+      color: '#999',
+    },
+    languageButtonTextActive: {
+      color: '#F09235',
+      fontFamily: 'bold',
+    },
+    saveButton: {
+      borderRadius: 12,
+      overflow: 'hidden',
+      marginTop: 10,
+      marginBottom: 16,
+      elevation: 2,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    saveButtonGradient: {
+      paddingVertical: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    saveButtonText: {
+      color: '#FFFFFF',
+      fontFamily: 'bold',
+      fontSize: 16,
+    },
+    logoutButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 14,
+      marginBottom: 12,
+    },
+    logoutButtonText: {
+      fontFamily: 'medium',
+      fontSize: 15,
+      color: '#999',
+      marginLeft: 8,
+    },
+    deleteButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 14,
+      backgroundColor: '#FFF5F5',
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: '#FFE0E0',
+    },
+    deleteButtonDisabled: {
+      opacity: 0.6,
+    },
+    deleteButtonText: {
+      fontFamily: 'medium',
+      fontSize: 15,
+      color: '#FF3B30',
+      marginLeft: 8,
+    },
     centeredView: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
       margin: 20,
       backgroundColor: 'white',
       borderRadius: 20,
       padding: 35,
-      paddingTop:50,
       alignItems: 'center',
-      shadowColor: '#666',
+      shadowColor: '#000',
       shadowOffset: {
         width: 0,
         height: 2,
@@ -339,9 +710,10 @@ const API_BASE = 'https://market.qorgau-city.kz/api';
       elevation: 5,
     },
     modalText: {
-      marginTop: 25,
-      fontFamily:'medium',
-      fontSize:16,
+      marginTop: 20,
+      fontFamily: 'medium',
+      fontSize: 16,
+      color: '#1A1A1A',
       textAlign: 'center',
     },
   });

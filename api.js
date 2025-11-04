@@ -59,7 +59,10 @@ export const api = createApi({
       providesTags: ['CategoriesList'],
     }),
     searchPosts: builder.query({
-      query: (searchQuery) => `search_posts/?q=${searchQuery}`,
+      query: (searchQuery) => ({
+        url: 'search_posts/',
+        params: { q: searchQuery },
+      }),
       providesTags: ['PostList'],
       keepUnusedDataFor: 0,
     }),
