@@ -12,6 +12,7 @@ import { ProfileApproveScreen } from '../screens/ProfileApproveScreen';
 import { ProfileNotActiveScreen } from '../screens/ProfileNotActiveScreen';
 import { ProfileNotPayedScreen } from '../screens/ProfileNotPayedScreen';
 import { ProfileDeletedScreen } from '../screens/ProfileDeletedScreen';
+import { ProfileRejectedScreen } from '../screens/ProfileRejectedScreen';
 import { ProfileadminScreen } from '../screens/ProfileadminScreen';
 import { ProfileSettingsScreen } from '../screens/ProfileSettingsScreen';
 import { ProfileFavouriteScreen } from '../screens/ProfileFavouriteScreen';
@@ -43,6 +44,7 @@ const ProfileStackNavigator = () => {
       <Stack.Screen name="notactive" component={ProfileNotActiveScreen} options={() => ({ headerTitle: 'Не активные' })}/>
       <Stack.Screen name="notpayed" component={ProfileNotPayedScreen} options={() => ({ headerTitle: 'Не оплаченные' })}/>
       <Stack.Screen name="deleted" component={ProfileDeletedScreen} options={() => ({ headerTitle: 'Удаленные' })}/>
+      <Stack.Screen name="rejected" component={ProfileRejectedScreen} options={() => ({ headerTitle: 'Отклоненные' })}/>
       <Stack.Screen name="admin" component={ProfileadminScreen} options={() => ({ headerTitle: 'Админ панель' })}/>
       <Stack.Screen name="ProfileSettings" component={ProfileSettingsScreen} options={() => ({ headerTitle: 'Настройки профиля' })}/>
 

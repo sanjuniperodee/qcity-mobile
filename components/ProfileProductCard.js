@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
-import { View, Text, Platform, Pressable, Animated, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Platform, Pressable, Animated, StyleSheet, Dimensions, Modal, TextInput, Alert } from 'react-native';
 import { colors, spacing, radius } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useDeactivatePostMutation, useActivatePostMutation, useDeletePostMutation, usePayPostMutation, useApprovePostMutation } from '../api';
+import { useDeactivatePostMutation, useActivatePostMutation, useDeletePostMutation, usePayPostMutation, useApprovePostMutation, useRejectPostMutation } from '../api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -18,8 +18,11 @@ export const ProfileProductCard = (props) => {
   const [deletePost]     = useDeletePostMutation();
   const [payPost]        = usePayPostMutation();
   const [approvePost]    = useApprovePostMutation();
+  const [rejectPost]     = useRejectPostMutation();
 
   const [hidden, setHidden] = useState(false);
+  const [rejectModalVisible, setRejectModalVisible] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const isVideo = props.media?.[0]?.type === 'video';
@@ -43,6 +46,7 @@ export const ProfileProductCard = (props) => {
       case 'NotActive': return 'Активировать';
       case 'Deleted':   return 'Восстановить';
       case 'Payed':     return 'Активировать';
+      case 'Rejected':  return 'Редактировать';
       default:          return 'Активировать';
     }
   }, [props.screen]);
@@ -62,8 +66,11 @@ export const ProfileProductCard = (props) => {
       else if (props.screen === 'NotActive') await activatePost(props.id);
       else if (props.screen === 'Deleted')   await deletePost(props.id);
       else if (props.screen === 'Payed')     await payPost(props.id);
+      else if (props.screen === 'Rejected')  navigation.navigate('edit', { post: props.id });
 
-      fadeOutAndHide();
+      if (props.screen !== 'Rejected') {
+        fadeOutAndHide();
+      }
     } catch (e) {
       console.error('Error handling post action:', e);
     }
@@ -73,13 +80,36 @@ export const ProfileProductCard = (props) => {
     navigation.navigate('PostTariffs', { id: props.id });
   };
 
-  const handleNotApprove = async () => {
+  const handleNotApprove = () => {
+    if (props.screen === 'Admin') {
+      // Для админа открываем модальное окно для ввода причины отклонения
+      setRejectModalVisible(true);
+    } else {
+      // Для обычных пользователей старая логика
+      deactivatePost(props.id).then(() => fadeOutAndHide()).catch(e => console.error(e));
+    }
+  };
+
+  const handleRejectConfirm = async () => {
+    if (!rejectionReason.trim()) {
+      Alert.alert('Ошибка', 'Пожалуйста, укажите причину отклонения');
+      return;
+    }
+    
     try {
-      await deactivatePost(props.id);
+      await rejectPost({ postId: props.id, rejection_reason: rejectionReason.trim() });
+      setRejectModalVisible(false);
+      setRejectionReason('');
       fadeOutAndHide();
     } catch (e) {
-      console.error(e);
+      console.error('Error rejecting post:', e);
+      Alert.alert('Ошибка', 'Не удалось отклонить объявление');
     }
+  };
+
+  const handleRejectCancel = () => {
+    setRejectModalVisible(false);
+    setRejectionReason('');
   };
 
   const handleDelete = async () => {
@@ -197,31 +227,33 @@ export const ProfileProductCard = (props) => {
       {!props.hideActions && (
         <View style={[styles.actionsWrap, isNarrow && styles.actionsWrapColumn]}>
           <Pressable
-            onPress={props.screen !== 'Payed' ? handleMainAction : undefined}
+            onPress={props.screen !== 'Payed' && props.screen !== 'Rejected' ? handleMainAction : props.screen === 'Rejected' ? handleMainAction : undefined}
             android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
-            style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
+            style={[styles.outlineBtn, isNarrow && styles.buttonFull, props.screen === 'Rejected' && styles.buttonFull]}
           >
             <Text style={styles.outlineBtnText}>{mainButtonText}</Text>
           </Pressable>
 
-          <Pressable
-            onPress={
-              props.screen === 'Admin'
-                ? handleNotApprove
-                : () => navigation.navigate('edit', { post: props.id })
-            }
-            android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
-            style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
-          >
-            <Text style={styles.outlineBtnText}>
-              {props.screen === 'Admin' ? 'Отклонить' : 'Редактировать'}
-            </Text>
-          </Pressable>
+          {props.screen !== 'Rejected' && (
+            <Pressable
+              onPress={
+                props.screen === 'Admin'
+                  ? handleNotApprove
+                  : () => navigation.navigate('edit', { post: props.id })
+              }
+              android_ripple={{ color: 'rgba(240,146,53,0.15)' }}
+              style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
+            >
+              <Text style={styles.outlineBtnText}>
+                {props.screen === 'Admin' ? 'Отклонить' : 'Редактировать'}
+              </Text>
+            </Pressable>
+          )}
         </View>
       )}
 
       {/* CTA-кнопка */}
-      {props.screen !== 'Admin' && (
+      {props.screen !== 'Admin' && props.screen !== 'Rejected' && (
         <Pressable
           onPress={handleAdvertise}
           style={styles.ctaWrap}
@@ -238,6 +270,44 @@ export const ProfileProductCard = (props) => {
           </LinearGradient>
         </Pressable>
       )}
+
+      {/* Модальное окно для отклонения поста */}
+      <Modal
+        visible={rejectModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={handleRejectCancel}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Отклонить объявление</Text>
+            <Text style={styles.modalSubtitle}>Укажите причину отклонения:</Text>
+            <TextInput
+              style={styles.modalInput}
+              multiline
+              numberOfLines={4}
+              placeholder="Введите причину отклонения..."
+              value={rejectionReason}
+              onChangeText={setRejectionReason}
+              textAlignVertical="top"
+            />
+            <View style={styles.modalButtons}>
+              <Pressable
+                onPress={handleRejectCancel}
+                style={[styles.modalButton, styles.modalButtonCancel]}
+              >
+                <Text style={styles.modalButtonCancelText}>Отмена</Text>
+              </Pressable>
+              <Pressable
+                onPress={handleRejectConfirm}
+                style={[styles.modalButton, styles.modalButtonConfirm]}
+              >
+                <Text style={styles.modalButtonConfirmText}>Отклонить</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Animated.View>
   );
 };
@@ -401,6 +471,68 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     color: '#F7F8F9',
+    fontSize: 16,
+    fontFamily: 'medium',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 24,
+    width: '85%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontFamily: 'medium',
+    color: '#141517',
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 15,
+    fontFamily: 'regular',
+    minHeight: 100,
+    marginBottom: 20,
+    backgroundColor: '#F9FAFB',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  modalButtonCancel: {
+    backgroundColor: '#F3F4F6',
+  },
+  modalButtonCancelText: {
+    color: '#6B7280',
+    fontSize: 16,
+    fontFamily: 'medium',
+  },
+  modalButtonConfirm: {
+    backgroundColor: '#F09235',
+  },
+  modalButtonConfirmText: {
+    color: '#fff',
     fontSize: 16,
     fontFamily: 'medium',
   },

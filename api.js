@@ -134,6 +134,11 @@ export const api = createApi({
       providesTags: ['PostList'],
       keepUnusedDataFor: 0,
     }),
+    getRejectedPosts: builder.query({
+      query: () => 'rejected_posts/',
+      providesTags: ['PostList'],
+      keepUnusedDataFor: 0,
+    }),
     getPostsByCategory: builder.query({
       query: ({category_id,page,limit}) => `posts/category/${category_id}?page=${page}&page_size=${limit}`,
       providesTags: (result, error, categoryId) => [
@@ -187,13 +192,24 @@ export const api = createApi({
         url: `posts/${postId}/approve/`,
         method: 'PATCH',
       }),
+      invalidatesTags: ['PostList'],
     }),
     
+    rejectPost: builder.mutation({
+      query: ({ postId, rejection_reason }) => ({
+        url: `posts/${postId}/reject/`,
+        method: 'PATCH',
+        body: { rejection_reason },
+      }),
+      invalidatesTags: ['PostList'],
+    }),
+
     deletePost: builder.mutation({
       query: (postId) => ({
         url: `posts/${postId}/delete/`,
         method: 'PATCH',
       }),
+      invalidatesTags: ['PostList'],
     }),
 
     payPost: builder.mutation({
@@ -201,6 +217,15 @@ export const api = createApi({
         url: `posts/${postId}/pay/`,
         method: 'PATCH',
       }),
+      invalidatesTags: ['PostList'],
+    }),
+
+    setFreeTariff: builder.mutation({
+      query: (postId) => ({
+        url: `posts/${postId}/set_free_tariff/`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['PostList'],
     }),
     updateUserProfile: builder.mutation({
       query: (userData) => ({
@@ -261,7 +286,10 @@ export const {
   useDeactivatePostMutation,
   useActivatePostMutation,
   useApprovePostMutation,
+  useRejectPostMutation,
   useDeletePostMutation,
   usePayPostMutation,
+  useSetFreeTariffMutation,
+  useGetRejectedPostsQuery,
   useUpdateUserProfileMutation,
 } = api;

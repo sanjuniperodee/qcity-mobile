@@ -117,6 +117,10 @@ export const ProfileMainScreen = () => {
           <Text style={styles.profileButtonText}>На модерации{typeof counts?.moderation === 'number' ? ` (${counts.moderation})` : ''}</Text>
           <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => { navigation.navigate('rejected' as never); }} style={styles.profileButton}>
+          <Text style={styles.profileButtonText}>Отклоненные{typeof counts?.rejected === 'number' ? ` (${counts.rejected})` : ''}</Text>
+          <Image style={styles.chevron} source={require('../assets/arrowRight.png')} />
+        </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Другое</Text>
         <TouchableOpacity onPress={() => { navigation.navigate('Terms' as never); }} style={styles.profileButton}>

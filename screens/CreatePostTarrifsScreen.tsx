@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, Image, Text, Alert, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
+import { useSetFreeTariffMutation } from '../api';
 import Purchases, {
   PurchasesOfferings,
   PurchasesPackage,
@@ -15,7 +16,7 @@ export const CreatePostTarrifsScreen = ({route}) => {
   console.log('id',id);
 
   const user = useSelector(state => state.auth.token);
-  
+  const [setFreeTariff, { isLoading: isSettingFreeTariff }] = useSetFreeTariffMutation();
 
   useEffect(() => {
     if (Platform.OS === 'web') return;
@@ -107,12 +108,23 @@ export const CreatePostTarrifsScreen = ({route}) => {
         </TouchableOpacity>
       ))}
       <TouchableOpacity 
-        onPress={()=>{navigation.navigate('PostCreated')}} 
-        style={{borderRadius:10,width:'100%',borderWidth:1,borderColor:'#D6D6D6',marginTop:20}}
+        onPress={async () => {
+          try {
+            await setFreeTariff(id).unwrap();
+            navigation.navigate('PostCreated');
+          } catch (error) {
+            console.error('Error setting free tariff:', error);
+            Alert.alert('Ошибка', 'Не удалось установить бесплатный тариф. Попробуйте еще раз.');
+          }
+        }}
+        disabled={isSettingFreeTariff}
+        style={{borderRadius:10,width:'100%',borderWidth:1,borderColor:'#D6D6D6',marginTop:20,opacity: isSettingFreeTariff ? 0.6 : 1}}
       >
         <Text style={{textAlign:'center',fontSize:24,fontWeight:'bold',color:'#444',marginTop:15}}>Бесплатное</Text>
         <Text style={{color:'#96949D',fontSize:14,textAlign:'center',fontFamily:'regular'}}>Размещение объявления</Text>
-        <Text style={{backgroundColor:'#D6D6D6',width:'100%',textAlign:'center',paddingVertical:5,marginTop:25,marginBottom:15,fontSize:24,fontWeight:'bold',color:'#F7F8F9'}}>0₸</Text>
+        <Text style={{backgroundColor:'#D6D6D6',width:'100%',textAlign:'center',paddingVertical:5,marginTop:25,marginBottom:15,fontSize:24,fontWeight:'bold',color:'#F7F8F9'}}>
+          {isSettingFreeTariff ? 'Загрузка...' : '0₸'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   )
