@@ -28,9 +28,14 @@ export const PostViewScreen = ({ route }) => {
   const navigation = useNavigation();
   const auth = useSelector((state) => state.auth);
   const isAuthenticated = !!auth?.isAuthenticated && !!auth?.token;
+  const user = auth?.user;
+  const isAdmin = user?.email === 'admin@mail.ru';
 
   const [message, onChangeMessage] = useState('');
-  const { id } = route.params;
+  const { id, viewMode, fromScreen } = route.params || {};
+  
+  // Определяем режим просмотра: admin/moderator - режим просмотра для админа/модерации
+  const isAdminView = viewMode === 'admin' || (fromScreen && ['Admin', 'Moderation', 'Rejected'].includes(fromScreen));
 
   const { data, error, isLoading, refetch } = useGetPostByIdQuery(id);
 
@@ -350,7 +355,45 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                 <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 30 }}>Описание</Text>
                 <Text style={{ fontSize: 16, fontFamily: 'regular', marginTop: 10 }}>{data?.content}</Text>
 
-                {data?.author?.username && auth?.user?.username && data.author.username !== auth.user.username ? (
+                {/* Информация о статусе для админа/модерации */}
+                {isAdminView && (
+                  <View style={{ marginTop: 30, backgroundColor: '#F7F8F9', borderRadius: 12, padding: 15 }}>
+                    <Text style={{ fontSize: 16, fontFamily: 'bold', marginBottom: 15 }}>Информация о статусе</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Одобрено:</Text>
+                      <Text style={{ fontSize: 14, fontFamily: 'medium', color: data?.approved ? '#50C878' : '#F44336' }}>
+                        {data?.approved ? 'Да' : 'Нет'}
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Активно:</Text>
+                      <Text style={{ fontSize: 14, fontFamily: 'medium', color: data?.isActive ? '#50C878' : '#9E9E9E' }}>
+                        {data?.isActive ? 'Да' : 'Нет'}
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Оплачено:</Text>
+                      <Text style={{ fontSize: 14, fontFamily: 'medium', color: data?.isPayed ? '#50C878' : '#FF9800' }}>
+                        {data?.isPayed ? 'Да' : 'Нет'}
+                      </Text>
+                    </View>
+                    {data?.tariff && (
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666' }}>Тариф:</Text>
+                        <Text style={{ fontSize: 14, fontFamily: 'medium' }}>{data.tariff.name || 'Не указан'}</Text>
+                      </View>
+                    )}
+                    {data?.rejection_reason && (
+                      <View style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#E0E0E0' }}>
+                        <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#666', marginBottom: 5 }}>Причина отклонения:</Text>
+                        <Text style={{ fontSize: 14, fontFamily: 'regular', color: '#F44336' }}>{data.rejection_reason}</Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+
+                {/* Написать продавцу - показываем только в обычном режиме просмотра */}
+                {!isAdminView && data?.author?.username && auth?.user?.username && data.author.username !== auth.user.username ? (
                   <View>
                     <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 30 }}>Написать продавцу</Text>
 
@@ -418,15 +461,20 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   </View>
                 ) : null}
 
-                <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 20 }}>Похожие объявления</Text>
-                {Array.isArray(dataPost?.results) && (
-                  <View style={{ marginTop: 10 }} onLayout={(e) => setSimilarWidth(e.nativeEvent.layout.width)}>
-                    <ResponsiveProductGrid
-                      data={dataPost.results}
-                      containerWidth={similarWidth || undefined}
-                      scrollEnabled={false}
-                    />
-                  </View>
+                {/* Похожие объявления - показываем только в обычном режиме просмотра */}
+                {!isAdminView && (
+                  <>
+                    <Text style={{ fontSize: 16, fontFamily: 'medium', marginTop: 20 }}>Похожие объявления</Text>
+                    {Array.isArray(dataPost?.results) && (
+                      <View style={{ marginTop: 10 }} onLayout={(e) => setSimilarWidth(e.nativeEvent.layout.width)}>
+                        <ResponsiveProductGrid
+                          data={dataPost.results}
+                          containerWidth={similarWidth || undefined}
+                          scrollEnabled={false}
+                        />
+                      </View>
+                    )}
+                  </>
                 )}
               </View>
             </View>

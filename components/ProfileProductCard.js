@@ -144,7 +144,11 @@ export const ProfileProductCard = (props) => {
       {/* Верхняя зона с медиа и краткой информацией */}
       <Pressable
         android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
-        onPress={() => navigation.navigate('ViewPost', { id: props.id })}
+        onPress={() => {
+          // Определяем режим просмотра в зависимости от экрана
+          const viewMode = (props.screen === 'Admin' || props.screen === 'Moderation' || props.screen === 'Rejected') ? 'admin' : 'view';
+          navigation.navigate('ViewPost', { id: props.id, viewMode, fromScreen: props.screen });
+        }}
         style={styles.topRow}
       >
         <View style={styles.mediaWrap}>
