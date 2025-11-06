@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
-import { useGetAdminApprovedPostsQuery, useGetAdminStatsQuery } from '../api';
+import { View, ScrollView, Text, StyleSheet, ActivityIndicator, RefreshControl, Modal, TextInput, Pressable, Alert } from 'react-native';
+import { useGetAdminApprovedPostsQuery, useGetAdminStatsQuery, useAdminDeletePostMutation } from '../api';
 import { ProfileProductCard } from '../components/ProfileProductCard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,7 +9,11 @@ export const AdminApprovedPostsScreen = () => {
   const { data: approvedPosts, isLoading, refetch, isFetching } = useGetAdminApprovedPostsQuery();
   const { data: stats } = useGetAdminStatsQuery();
   const video = useRef(null);
+  const [adminDeletePost] = useAdminDeletePostMutation();
   const [refreshing, setRefreshing] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deleteReason, setDeleteReason] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   useEffect(() => {
     video.current?.playAsync();
@@ -106,6 +110,16 @@ export const AdminApprovedPostsScreen = () => {
             )}
           </View>
         )}
+        <View style={styles.deleteButtonContainer}>
+          <Pressable
+            onPress={() => { setSelectedPostId(item.id); setDeleteModalVisible(true); }}
+            android_ripple={{ color: 'rgba(211,47,47,0.12)' }}
+            style={styles.deleteButton}
+          >
+            <Ionicons name="trash-outline" size={16} color="#D32F2F" />
+            <Text style={styles.deleteButtonText}>Удалить объявление</Text>
+          </Pressable>
+        </View>
       </View>
     );
   };
@@ -123,6 +137,7 @@ export const AdminApprovedPostsScreen = () => {
   const statsData = stats || { approved_posts: 0 };
 
   return (
+    <>
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
@@ -184,6 +199,47 @@ export const AdminApprovedPostsScreen = () => {
         )}
       </View>
     </ScrollView>
+
+    <Modal
+      visible={deleteModalVisible}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setDeleteModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Удалить объявление</Text>
+          <Text style={styles.modalSubtitle}>Укажите причину удаления:</Text>
+          <TextInput
+            style={styles.modalInput}
+            multiline
+            numberOfLines={4}
+            placeholder="Причина удаления"
+            value={deleteReason}
+            onChangeText={setDeleteReason}
+            textAlignVertical="top"
+          />
+          <View style={styles.modalButtons}>
+            <Pressable onPress={() => setDeleteModalVisible(false)} style={[styles.modalBtn, { borderColor: '#E0E0E0', backgroundColor: '#FFF' }]}>
+              <Text style={{ color: '#333', fontFamily: 'medium' }}>Отмена</Text>
+            </Pressable>
+            <Pressable
+              onPress={async () => {
+                if (!deleteReason.trim()) { Alert.alert('Ошибка', 'Укажите причину удаления'); return; }
+                try {
+                  await adminDeletePost({ postId: selectedPostId, reason: deleteReason.trim() });
+                  setDeleteModalVisible(false); setDeleteReason(''); setSelectedPostId(null); refetch();
+                } catch (e) { Alert.alert('Ошибка', 'Не удалось удалить объявление'); }
+              }}
+              style={[styles.modalBtn, { backgroundColor: '#D32F2F', borderColor: '#D32F2F' }]}
+            >
+              <Text style={{ color: '#FFF', fontFamily: 'bold' }}>Удалить</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+    </>
   );
 };
 
@@ -371,5 +427,63 @@ const styles = StyleSheet.create({
     color: '#999999',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    width: '100%',
+    maxWidth: 460,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 16,
+  },
+  modalTitle: { fontFamily: 'bold', fontSize: 18, marginBottom: 6 },
+  modalSubtitle: { fontFamily: 'regular', fontSize: 13, color: '#666', marginBottom: 10 },
+  modalInput: {
+    height: 110,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 10,
+    padding: 10,
+    fontFamily: 'regular',
+    fontSize: 14,
+    color: '#1A1A1A',
+    backgroundColor: '#F9FAFB',
+  },
+  modalButtons: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12, gap: 10 },
+  modalBtn: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 8, borderWidth: 1 },
+  deleteButtonContainer: {
+    padding: 15,
+    paddingTop: 12,
+    backgroundColor: '#FFF5F5',
+    borderTopWidth: 1,
+    borderTopColor: '#F5C6CB',
+  },
+  deleteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#F5C6CB',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  deleteButtonText: {
+    marginLeft: 8,
+    color: '#D32F2F',
+    fontFamily: 'bold',
+    fontSize: 14,
   },
 });
