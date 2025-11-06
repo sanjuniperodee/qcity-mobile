@@ -66,7 +66,14 @@ export const ProfileProductCard = (props) => {
       else if (props.screen === 'NotActive') await activatePost(props.id);
       else if (props.screen === 'Deleted')   await deletePost(props.id);
       else if (props.screen === 'Payed')     await payPost(props.id);
-      else if (props.screen === 'Rejected')  navigation.navigate('edit', { post: props.id });
+      else if (props.screen === 'Rejected') {
+        navigation.navigate('edit', {
+          postId: props.id,
+          post: props.id, // для обратной совместимости
+          from: 'Rejected',
+          rejection_reason: props.rejection_reason || '',
+        });
+      }
 
       if (props.screen !== 'Rejected') {
         fadeOutAndHide();

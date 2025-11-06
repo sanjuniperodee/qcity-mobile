@@ -250,6 +250,23 @@ export const api = createApi({
       }),
       invalidatesTags: ['PostList'],
     }),
+
+    updatePostWithImages: builder.mutation({
+      query: ({ postId, formData }) => ({
+        url: `posts/edit/${postId}/`,
+        method: 'POST',
+        body: formData,
+      }),
+      invalidatesTags: ['PostList'],
+    }),
+
+    deletePostImage: builder.mutation({
+      query: ({ postId, imageId }) => ({
+        url: `posts/${postId}/images/${imageId}/`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['PostList'],
+    }),
     updateUserProfile: builder.mutation({
       query: (userData) => ({
         url: 'update-profile/',
@@ -317,6 +334,8 @@ export const {
   useDeletePostMutation,
   usePayPostMutation,
   useSetFreeTariffMutation,
+  useUpdatePostWithImagesMutation,
+  useDeletePostImageMutation,
   useGetRejectedPostsQuery,
   useUpdateUserProfileMutation,
 } = api;

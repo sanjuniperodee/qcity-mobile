@@ -70,6 +70,7 @@ export const ProfileRejectedScreen = () => {
           delivery={item.delivery}
           city={item.geolocation}
           date={item.date}
+          rejection_reason={item.rejection_reason}
         />
         {item.rejection_reason && (
           <View style={styles.rejectionReasonContainer}>
