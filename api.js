@@ -7,13 +7,29 @@ export const api = createApi({
   refetchOnMountOrArgChange: true,
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://market.qorgau-city.kz/api/',
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: (headers, { getState, extra, endpoint }) => {
       const token = getState().auth.token;
       if (token) {
         headers.set('Authorization', `Token ${token}`);
       }
-
+      
+      // Не устанавливаем Content-Type для FormData - браузер установит автоматически
+      // RTK Query автоматически не установит Content-Type для FormData
+      
       return headers;
+    },
+    // Используем fetch напрямую для FormData
+    fetchFn: async (input, init) => {
+      // Если body - это FormData, не устанавливаем Content-Type
+      if (init?.body instanceof FormData) {
+        // Удаляем Content-Type, если он был установлен
+        if (init.headers) {
+          const headers = new Headers(init.headers);
+          headers.delete('Content-Type');
+          init.headers = headers;
+        }
+      }
+      return fetch(input, init);
     },
   }),
   tagTypes: ['PostList','PostListMap', 'CategoriesList','Favourites'],
@@ -252,11 +268,16 @@ export const api = createApi({
     }),
 
     updatePostWithImages: builder.mutation({
-      query: ({ postId, formData }) => ({
-        url: `posts/edit/${postId}/`,
-        method: 'POST',
-        body: formData,
-      }),
+      query: ({ postId, formData }) => {
+        console.log('updatePostWithImages mutation called with postId:', postId);
+        return {
+          url: `posts/edit/${postId}/`,
+          method: 'POST',
+          body: formData,
+          // RTK Query автоматически не установит Content-Type для FormData
+          // Браузер установит правильный Content-Type с boundary автоматически
+        };
+      },
       invalidatesTags: ['PostList'],
     }),
 

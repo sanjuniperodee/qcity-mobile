@@ -207,16 +207,21 @@ export const EditPostScreen = ({route}) => {
 
 
   const sendPostRequest = async () => {
+    console.log('sendPostRequest called');
+    
     if (!category?.id) {
+      console.log('No category selected');
       setGeneralError('Выберите категорию');
       return;
     }
 
     if (!postData?.id) {
+      console.log('No post ID found');
       setGeneralError('Ошибка: не найден ID поста');
       return;
     }
 
+    console.log('Creating FormData, postId:', postData.id);
     const formData = new FormData();
 
     formData.append('title', title);
@@ -288,33 +293,43 @@ export const EditPostScreen = ({route}) => {
     });
 
     try {
+      console.log('Starting update request...');
       setLoading(true);
       setGeneralError('');
       
-      await updatePostWithImages({
+      console.log('Calling updatePostWithImages with postId:', postData.id);
+      const result = await updatePostWithImages({
         postId: postData.id,
         formData: formData,
       }).unwrap();
 
+      console.log('Update successful:', result);
       setLoading(false);
       setGeneralError('');
       
       // Навигация на экран успеха
+      console.log('Navigating to PostCreated');
       navigation.navigate('PostCreated');
     } catch (error) {
+      console.error('Update error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       setLoading(false);
       // Обработка ошибок RTK Query
       if (error.data) {
         // Если есть детали ошибки
         if (typeof error.data === 'object') {
           const errorMessage = error.data.detail || error.data.message || JSON.stringify(error.data);
+          console.log('Error message:', errorMessage);
           setGeneralError(errorMessage);
         } else {
+          console.log('Error data (string):', error.data);
           setGeneralError(error.data);
         }
       } else if (error.message) {
+        console.log('Error message:', error.message);
         setGeneralError(error.message);
       } else {
+        console.log('Unknown error');
         setGeneralError('Произошла ошибка при обновлении поста');
       }
     }
