@@ -248,7 +248,7 @@ export const ProfileProductCard = (props) => {
             <Text style={styles.outlineBtnText}>{mainButtonText}</Text>
           </Pressable>
 
-          {props.screen !== 'Rejected' && props.screen !== 'Admin' && (
+          {props.screen !== 'Rejected' && (
             <Pressable
               onPress={
                 props.screen === 'Admin'
