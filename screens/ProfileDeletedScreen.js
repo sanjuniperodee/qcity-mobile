@@ -47,7 +47,9 @@ export const ProfileDeletedScreen = () => {
           <View style={styles.postHeaderLeft}>
             <View style={styles.statusBadge}>
               <View style={styles.statusDot} />
-              <Text style={styles.statusText}>Удалено</Text>
+              <Text style={styles.statusText}>
+                {item.admin_delete_reason ? 'Удалено администратором' : 'Удалено'}
+              </Text>
             </View>
             {item.date && (
               <Text style={styles.postDate}>
@@ -73,6 +75,16 @@ export const ProfileDeletedScreen = () => {
           city={item.geolocation}
           date={item.date}
         />
+
+        {item.admin_delete_reason ? (
+          <View style={styles.reasonCard}>
+            <View style={styles.reasonHeader}>
+              <Ionicons name="alert-circle-outline" size={18} color="#D32F2F" />
+              <Text style={styles.reasonTitle}>Причина удаления администратором:</Text>
+            </View>
+            <Text style={styles.reasonText}>{item.admin_delete_reason}</Text>
+          </View>
+        ) : null}
       </View>
     );
   };
@@ -315,5 +327,32 @@ const styles = StyleSheet.create({
     color: '#999999',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  reasonCard: {
+    backgroundColor: '#FFF5F5',
+    borderLeftWidth: 4,
+    borderLeftColor: '#D32F2F',
+    borderRadius: 8,
+    padding: 12,
+    marginHorizontal: 15,
+    marginTop: 10,
+    marginBottom: 12,
+  },
+  reasonHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  reasonTitle: {
+    fontFamily: 'medium',
+    fontSize: 13,
+    color: '#D32F2F',
+    marginLeft: 6,
+  },
+  reasonText: {
+    fontFamily: 'regular',
+    fontSize: 13,
+    color: '#555',
+    lineHeight: 19,
   },
 });

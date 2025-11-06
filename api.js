@@ -267,6 +267,15 @@ export const api = createApi({
       }),
       invalidatesTags: ['PostList'],
     }),
+
+    adminDeletePost: builder.mutation({
+      query: ({ postId, reason }) => ({
+        url: `posts/${postId}/admin_delete/`,
+        method: 'PATCH',
+        body: { reason },
+      }),
+      invalidatesTags: ['PostList'],
+    }),
     updateUserProfile: builder.mutation({
       query: (userData) => ({
         url: 'update-profile/',
@@ -336,6 +345,7 @@ export const {
   useSetFreeTariffMutation,
   useUpdatePostWithImagesMutation,
   useDeletePostImageMutation,
+  useAdminDeletePostMutation,
   useGetRejectedPostsQuery,
   useUpdateUserProfileMutation,
 } = api;

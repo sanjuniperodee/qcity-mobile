@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useDeactivatePostMutation, useActivatePostMutation, useDeletePostMutation, usePayPostMutation, useApprovePostMutation, useRejectPostMutation } from '../api';
+import { useDeactivatePostMutation, useActivatePostMutation, useDeletePostMutation, usePayPostMutation, useApprovePostMutation, useRejectPostMutation, useAdminDeletePostMutation } from '../api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -19,10 +19,13 @@ export const ProfileProductCard = (props) => {
   const [payPost]        = usePayPostMutation();
   const [approvePost]    = useApprovePostMutation();
   const [rejectPost]     = useRejectPostMutation();
+  const [adminDeletePost] = useAdminDeletePostMutation();
 
   const [hidden, setHidden] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [adminDeleteVisible, setAdminDeleteVisible] = useState(false);
+  const [adminDeleteReason, setAdminDeleteReason] = useState('');
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const isVideo = props.media?.[0]?.type === 'video';
@@ -245,7 +248,7 @@ export const ProfileProductCard = (props) => {
             <Text style={styles.outlineBtnText}>{mainButtonText}</Text>
           </Pressable>
 
-          {props.screen !== 'Rejected' && (
+          {props.screen !== 'Rejected' && props.screen !== 'Admin' && (
             <Pressable
               onPress={
                 props.screen === 'Admin'
@@ -258,6 +261,16 @@ export const ProfileProductCard = (props) => {
               <Text style={styles.outlineBtnText}>
                 {props.screen === 'Admin' ? 'Отклонить' : 'Редактировать'}
               </Text>
+            </Pressable>
+          )}
+
+          {props.screen === 'Admin' && (
+            <Pressable
+              onPress={() => setAdminDeleteVisible(true)}
+              android_ripple={{ color: 'rgba(240,53,53,0.12)' }}
+              style={[styles.outlineBtn, isNarrow && styles.buttonFull]}
+            >
+              <Text style={[styles.outlineBtnText, { color: '#D32F2F' }]}>Удалить</Text>
             </Pressable>
           )}
         </View>
@@ -327,6 +340,50 @@ export const ProfileProductCard = (props) => {
                 style={[styles.modalButton, styles.modalButtonConfirm]}
               >
                 <Text style={styles.modalButtonConfirmText}>Отклонить</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Модальное окно для удаления админом */}
+      <Modal
+        visible={adminDeleteVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setAdminDeleteVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Удалить объявление</Text>
+            <Text style={styles.modalSubtitle}>Укажите причину удаления:</Text>
+            <TextInput
+              style={styles.modalInput}
+              multiline
+              numberOfLines={4}
+              placeholder="Введите причину удаления..."
+              value={adminDeleteReason}
+              onChangeText={setAdminDeleteReason}
+              textAlignVertical="top"
+            />
+            <View style={styles.modalButtons}>
+              <Pressable
+                onPress={() => setAdminDeleteVisible(false)}
+                style={[styles.outlineBtn, styles.modalButton]}
+              >
+                <Text style={styles.outlineBtnText}>Отмена</Text>
+              </Pressable>
+              <Pressable
+                onPress={async () => {
+                  if (!adminDeleteReason.trim()) return Alert.alert('Ошибка', 'Укажите причину');
+                  await adminDeletePost({ postId: props.id, reason: adminDeleteReason.trim() });
+                  setAdminDeleteVisible(false);
+                  setAdminDeleteReason('');
+                  fadeOutAndHide();
+                }}
+                style={[styles.primaryBtn, styles.modalButton]}
+              >
+                <Text style={styles.primaryBtnText}>Удалить</Text>
               </Pressable>
             </View>
           </View>
