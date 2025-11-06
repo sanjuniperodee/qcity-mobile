@@ -4,13 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useSelector } from 'react-redux';
 import { Video,ResizeMode } from 'expo-av';
-import { useGetCategoriesListQuery } from '../api';
+import { useGetCategoriesListQuery, useUpdatePostWithImagesMutation } from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGetPostByIdQuery } from '../api';
 import { parseApiError } from '../utils/apiError';
 import { TextInputMask } from 'react-native-masked-text';
 import {useTranslation} from 'react-i18next'
 import { InputMap } from '../components/InputMap';
+import { Ionicons } from '@expo/vector-icons';
 
 export const EditPostScreen = ({route}) => {
   const post_id = route?.params?.post;
@@ -20,6 +21,8 @@ export const EditPostScreen = ({route}) => {
   const {t} = useTranslation();
   const [loading,setLoading] = useState(false)
   const [generalError, setGeneralError] = useState('')
+  const [updatePostWithImages] = useUpdatePostWithImagesMutation();
+  const [deletedImageIds, setDeletedImageIds] = useState([]);
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const { data, error, isLoading } = useGetCategoriesListQuery();
@@ -83,7 +86,8 @@ export const EditPostScreen = ({route}) => {
       onChangeTitle(postData.title);
       onChangeCost(postData.cost);
       onChangeContent(postData.content);
-      setImages(postData.images); // Assuming images is an array of { image: url }
+      setImages(postData.images || []); // Assuming images is an array of { image: url }
+      setDeletedImageIds([]); // Сброс удаленных изображений при загрузке данных
 
       onChangePhone(postData.phone);
       onChangeWhatsapp(postData.phone_whatsapp);
@@ -190,9 +194,29 @@ export const EditPostScreen = ({route}) => {
     }
   };
 
+  const handleDeleteImage = (image, index) => {
+    if (image.id) {
+      // Существующее изображение - добавить в deletedImageIds
+      setDeletedImageIds(prev => [...prev, image.id]);
+      setImages(prev => prev.filter((_, i) => i !== index));
+    } else {
+      // Новое изображение - просто удалить из массива
+      setImages(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
 
   const sendPostRequest = async () => {
-    const apiUrl = `https://market.qorgau-city.kz/api/posts/edit/${postData.id}/`; 
+    if (!category?.id) {
+      setGeneralError('Выберите категорию');
+      return;
+    }
+
+    if (!postData?.id) {
+      setGeneralError('Ошибка: не найден ID поста');
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append('title', title);
@@ -213,6 +237,11 @@ export const EditPostScreen = ({route}) => {
     formData.append('facebook', facebook);
     formData.append('tiktok', tiktok);
     formData.append('twogis', twogis);
+
+    // Отправка deleted_image_ids
+    if (deletedImageIds.length > 0) {
+      formData.append('deleted_image_ids', JSON.stringify(deletedImageIds));
+    }
 
     const fieldsData = category.id === 6 ? [
       { field_name: 'Марка', field_value: brand },
@@ -241,47 +270,53 @@ export const EditPostScreen = ({route}) => {
       formData.append(`fields[${index}][field_value]`, field.field_value);
     });
 
-    images.forEach((image, index) => {
-        if (image.uri && image.uri.startsWith('file://')) {
-            console.log('Uploading newly picked image');
-            const file = {
-                uri: image.uri,
-                name: image.fileName || `image_${index}.jpg`,
-                type: image.type || 'image',
-            };
+    // Отправка только новых изображений (без id)
+    let newImageIndex = 0;
+    images.forEach((image) => {
+      if (image.uri && image.uri.startsWith('file://') && !image.id) {
+        // Только новые изображения
+        const file = {
+          uri: image.uri,
+          name: image.fileName || `image_${newImageIndex}.jpg`,
+          type: image.type || 'image',
+        };
 
-            formData.append(`images[${index}][image]`, file);
-            formData.append(`images[${index}][type]`, image.type);
-        }
+        formData.append(`images[${newImageIndex}][image]`, file);
+        formData.append(`images[${newImageIndex}][type]`, image.type || 'image');
+        newImageIndex++;
+      }
     });
 
-    
-
     try {
-      setLoading(true)
-      const response = await fetch(apiUrl, {
-        method: 'PATCH',
-        body: formData,
-        headers: {
-            'Authorization':`Token ${user}`
-        },
-      });
+      setLoading(true);
+      setGeneralError('');
+      
+      await updatePostWithImages({
+        postId: postData.id,
+        formData: formData,
+      }).unwrap();
 
-      if (response.ok) {
-        setLoading(false)
-        setGeneralError('')
-      } else {
-        setLoading(false);
-        try {
-          const parsed = await parseApiError(response);
-          setGeneralError(parsed.message);
-        } catch (e) {
-          setGeneralError('Произошла ошибка');
-        }
-      }
+      setLoading(false);
+      setGeneralError('');
+      
+      // Навигация на экран успеха
+      navigation.navigate('PostCreated');
     } catch (error) {
       setLoading(false);
-      setGeneralError('Сеть недоступна');
+      // Обработка ошибок RTK Query
+      if (error.data) {
+        // Если есть детали ошибки
+        if (typeof error.data === 'object') {
+          const errorMessage = error.data.detail || error.data.message || JSON.stringify(error.data);
+          setGeneralError(errorMessage);
+        } else {
+          setGeneralError(error.data);
+        }
+      } else if (error.message) {
+        setGeneralError(error.message);
+      } else {
+        setGeneralError('Произошла ошибка при обновлении поста');
+      }
     }
   };
 
@@ -335,6 +370,18 @@ export const EditPostScreen = ({route}) => {
       
   <View style={{ marginTop: 20,marginBottom:150, width: '90%', alignSelf: 'center' }}>
     {generalError ? <Text style={{ color: 'red', marginBottom: 10 }}>{generalError}</Text> : null}
+    
+    {/* Баннер с причиной отклонения */}
+    {route.params?.rejection_reason && (
+      <View style={styles.rejectionBanner}>
+        <Ionicons name="alert-circle" size={20} color="#F44336" />
+        <View style={styles.rejectionTextContainer}>
+          <Text style={styles.rejectionTitle}>Причина отклонения:</Text>
+          <Text style={styles.rejectionText}>{route.params.rejection_reason}</Text>
+        </View>
+      </View>
+    )}
+
     <Text style={{ fontSize: 16, fontFamily: 'bold' }}>Добавьте фотографии</Text>
     <ScrollView horizontal={true} contentContainerStyle={{flexDirection:'row',alignItems:'center',marginTop:10,paddingBottom:15}}>
         <TouchableOpacity style={{ marginRight: 10 }} onPress={pickImage}>
@@ -345,25 +392,39 @@ export const EditPostScreen = ({route}) => {
         <FlatList
         data={images}
         horizontal
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-            item.type === 'image' ? <Image source={{ uri: item.image ? item.image : item.uri }} style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#D6D6D6', marginRight: 10 }} /> :
-        
-            <View>
-                <Video
-                isMuted={true}
-                ref={video}
-                style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#D6D6D6', marginRight: 10 }}
-                source={{
-                    uri: item.uri,
-                }}
-                useNativeControls
-                resizeMode={ResizeMode.COVER}
-                isLooping
-                onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+        keyExtractor={(item, index) => (item.id ? item.id.toString() : `new-${index}`)}
+        renderItem={({ item, index }) => {
+          const imageUri = item.image || item.uri;
+          const isImage = item.type === 'image' || !item.type || (item.uri && !item.uri.includes('video'));
+          
+          return (
+            <View style={{ position: 'relative', marginRight: 10 }}>
+              {isImage ? (
+                <Image 
+                  source={{ uri: imageUri }} 
+                  style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#D6D6D6' }} 
                 />
+              ) : (
+                <Video
+                  isMuted={true}
+                  ref={video}
+                  style={{ width: 110, height: 110, borderRadius: 5, borderWidth: 1, borderColor: '#D6D6D6' }}
+                  source={{ uri: item.uri }}
+                  useNativeControls
+                  resizeMode={ResizeMode.COVER}
+                  isLooping
+                  onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+                />
+              )}
+              <TouchableOpacity
+                onPress={() => handleDeleteImage(item, index)}
+                style={styles.deleteImageButton}
+              >
+                <Ionicons name="close-circle" size={24} color="#F44336" />
+              </TouchableOpacity>
             </View>
-        )}
+          );
+        }}
         />
     </ScrollView>
     <Text style={{fontFamily:'bold',fontSize:16,marginTop:10}}>{t('title.header')}</Text>
@@ -999,6 +1060,45 @@ const styles = StyleSheet.create({
       fontFamily:'medium',
       fontSize:16,
       textAlign: 'center',
+    },
+    rejectionBanner: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      backgroundColor: '#FFEBEE',
+      borderRadius: 8,
+      padding: 12,
+      marginBottom: 20,
+      borderLeftWidth: 4,
+      borderLeftColor: '#F44336',
+    },
+    rejectionTextContainer: {
+      flex: 1,
+      marginLeft: 10,
+    },
+    rejectionTitle: {
+      fontFamily: 'bold',
+      fontSize: 14,
+      color: '#F44336',
+      marginBottom: 4,
+    },
+    rejectionText: {
+      fontFamily: 'regular',
+      fontSize: 13,
+      color: '#C62828',
+      lineHeight: 18,
+    },
+    deleteImageButton: {
+      position: 'absolute',
+      top: -8,
+      right: -8,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 12,
+      padding: 2,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
     },
   });
   
