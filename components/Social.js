@@ -5,11 +5,15 @@ export const Social = (props) => {
         if (props.url) {
             if(props.whatsapp){
                 Linking.openURL('https://wa.me/' + props.url).catch((err) => {
-                    Alert.alert('Ошибка', 'Не правильный адрес');
+                    // Обработка отмены - не вызываем навигацию
+                    console.log('WhatsApp cancelled or failed:', err);
+                    // Просто игнорируем ошибку, остаемся на странице
                 });
             } else{
                 Linking.openURL(props.url).catch((err) => {
-                    Alert.alert('Ошибка', 'Не правильный адрес');
+                    // Обработка отмены - не вызываем навигацию
+                    console.log('URL cancelled or failed:', err);
+                    // Просто игнорируем ошибку, остаемся на странице
                 });
             }
         } else {

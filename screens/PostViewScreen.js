@@ -104,10 +104,17 @@ export const PostViewScreen = ({ route }) => {
         if (!supported) {
           Alert.alert('Телефонный номер не доступен');
         } else {
-          return Linking.openURL(phoneNumber);
+          return Linking.openURL(phoneNumber).catch((err) => {
+            // Обработка отмены - не вызываем навигацию
+            console.log('Call cancelled or failed:', err);
+            // Просто игнорируем ошибку, остаемся на странице
+          });
         }
       })
-      .catch((err) => console.warn(err));
+      .catch((err) => {
+        // Обработка ошибок без навигации
+        console.warn('Cannot open phone URL:', err);
+      });
   };
 
   const maskPhone = (phone) => {
