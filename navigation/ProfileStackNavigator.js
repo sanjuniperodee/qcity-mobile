@@ -22,6 +22,7 @@ import { ProfileFavouriteScreen } from '../screens/ProfileFavouriteScreen';
 import { EditPostScreen } from '../screens/EditPostScreen';
 import {CreatePostTarrifsScreen} from '../screens/CreatePostTarrifsScreen'
 import {CreatePostPayScreen} from '../screens/CreatePostPayScreen'
+import {CreatePostSuccessScreen} from '../screens/CreatePostSuccessScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,7 @@ const ProfileStackNavigator = () => {
 
         <Stack.Screen name='PostTariffs' component={CreatePostTarrifsScreen} options={() => ({ headerTitle: 'Тарифы' })}/>
         <Stack.Screen name='Pay' component={CreatePostPayScreen} options={() => ({ headerTitle: 'Тарифы' })}/>
+        <Stack.Screen name='PostCreated' component={CreatePostSuccessScreen} options={() => ({ headerTitle: 'Успешно' })}/>
     </Stack.Navigator>
   );
 };
