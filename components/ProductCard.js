@@ -1,9 +1,10 @@
 import React, { useRef,useState,useEffect } from 'react';
-import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator, StyleSheet } from 'react-native';
 import { colors, spacing, radius } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { Video, InterruptionModeAndroid, InterruptionModeIOS, ResizeMode } from 'expo-av';
 import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
 import { useAddToFavouritesMutation, useRemoveFromFavouritesMutation,useListFavouritesQuery } from '../api';
 
 export const ProductCard = (props) => {
@@ -32,6 +33,21 @@ export const ProductCard = (props) => {
       setIsFavourite(true);
     }
   };
+
+  const handleCardPress = async () => {
+    // Останавливаем видео перед навигацией, если оно воспроизводится
+    if (props.media[0]?.type === 'video' && video.current) {
+      try {
+        const status = await video.current.getStatusAsync();
+        if (status.isLoaded && status.isPlaying) {
+          await video.current.pauseAsync();
+        }
+      } catch (error) {
+        console.log('Error stopping video:', error);
+      }
+    }
+    navigation.push('ViewPost', { id: props.id });
+  };
   
 
 
@@ -40,7 +56,7 @@ export const ProductCard = (props) => {
 
     return (
         <TouchableOpacity 
-          onPress={()=>{navigation.push('ViewPost',{id:props.id})}} 
+          onPress={handleCardPress}
           style={{
             width: '100%',
             height: 'max-content',
@@ -85,35 +101,47 @@ export const ProductCard = (props) => {
               </View>
             </View>
             {props.media[0]?.type === 'video' ? 
-              <View style={{position:'relative', width:'100%', aspectRatio:1, borderRadius:8, overflow:'hidden'}}>
+              <View style={{position:'relative', width:'100%', aspectRatio:1, borderRadius:8, overflow:'hidden', backgroundColor:'#000000'}}>
                 {props.tariff === 1 && (
-                  <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
+                  <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:3,}}>
                     <Text style={{fontFamily: 'bold', fontSize: 12, color: '#fff'}}>ТОП</Text>
                   </View>  
                 )}
-                <TouchableOpacity style={{backgroundColor:'rgba(255,255,255,0.6)',padding:5,borderRadius:10,position:'absolute',top:5,right:5,zIndex:2}} onPress={toggleFavourite}>
+                <TouchableOpacity 
+                  style={{backgroundColor:'rgba(255,255,255,0.6)',padding:5,borderRadius:10,position:'absolute',top:5,right:5,zIndex:3}} 
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    toggleFavourite();
+                  }}
+                >
                   <Image
                     source={isFavourite ? require('../assets/Heart.png') : require('../assets/Favorite.png')}
                     style={{ height: 23, width: 25, objectFit:'contain' }}
                   />
                 </TouchableOpacity>
+                {/* Визуальный индикатор видео */}
+                <View style={styles.videoBadge}>
+                  <Ionicons name="videocam" size={14} color="#FFFFFF" />
+                  <Text style={styles.videoBadgeText}>ВИДЕО</Text>
+                </View>
                 <Video
-                ref={video}
-                playsInSilentModeIOS={false}
-                allowsRecordingIOS={false}
-                interruptionModeIOS={InterruptionModeIOS.DoNotMix}
-                interruptionModeAndroid= {InterruptionModeAndroid.DoNotMix}
-                shouldDuckAndroid= {true}
-                staysActiveInBackground= {false}
-                style={{ width: '100%', height: '100%' }}
-                source={{
+                  ref={video}
+                  playsInSilentModeIOS={false}
+                  allowsRecordingIOS={false}
+                  interruptionModeIOS={InterruptionModeIOS.DoNotMix}
+                  interruptionModeAndroid={InterruptionModeAndroid.DoNotMix}
+                  shouldDuckAndroid={true}
+                  staysActiveInBackground={false}
+                  style={{ width: '100%', height: '100%' }}
+                  source={{
                     uri: `https://market.qorgau-city.kz${props.media[0].image}`,
-                }}
-                volume={1.0}
-                resizeMode={ResizeMode.CONTAIN}
-                useNativeControls
-                isLooping
-                isMuted={false}
+                  }}
+                  volume={1.0}
+                  resizeMode={ResizeMode.CONTAIN}
+                  useNativeControls
+                  isLooping={false}
+                  isMuted={false}
+                  shouldPlay={false}
                 />
               </View>
             :
@@ -189,4 +217,25 @@ export const ProductCard = (props) => {
         </TouchableOpacity>
     );
   }
+
+const styles = StyleSheet.create({
+  videoBadge: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+    zIndex: 2,
+  },
+  videoBadgeText: {
+    color: '#FFFFFF',
+    fontFamily: 'bold',
+    fontSize: 10,
+    marginLeft: 4,
+  },
+});
   
