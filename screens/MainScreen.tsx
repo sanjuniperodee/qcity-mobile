@@ -9,6 +9,7 @@ import { ProductCard } from '../components/ProductCard';
 import { ResponsiveProductGrid } from '../components/ResponsiveProductGrid';
 import { useGetPostListQuery, useGetPostListCityQuery } from '../api';
 import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import * as NotificationsModule from 'expo-notifications';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -97,6 +98,7 @@ export const HomeScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const route = useRoute();
+  const currentLanguage = i18n.language;
 
   const listRef = useRef<FlatList>(null);
   useScrollToTop(listRef);
@@ -171,6 +173,23 @@ export const HomeScreen = () => {
   const data = isAllKazakhstan ? allData : cityData;
   const isLoading = isAllKazakhstan ? (isLoadingAll || isFetchingAll) : (isLoadingCity || isFetchingCity);
   const refetchActive = isAllKazakhstan ? refetchAll : refetchCity;
+
+  // Обновление данных при смене языка
+  const prevLanguageRef = useRef(currentLanguage);
+  useEffect(() => {
+    if (prevLanguageRef.current !== currentLanguage) {
+      prevLanguageRef.current = currentLanguage;
+      setPage(1);
+      setPosts([]);
+      setFirstLoaded(false);
+      // Принудительно обновляем данные при смене языка
+      if (isAllKazakhstan) {
+        refetchAll();
+      } else {
+        refetchCity();
+      }
+    }
+  }, [currentLanguage, isAllKazakhstan, refetchAll, refetchCity]); // eslint-disable-line
 
   const handleSelectCity = (city: string) => {
     if (city === selectedCity) { setVisible(false); return; }
