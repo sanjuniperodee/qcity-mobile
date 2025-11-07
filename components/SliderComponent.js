@@ -1,13 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { View, Dimensions, FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import ImageViewing from 'react-native-image-viewing';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 export const SliderComponent = ({ data }) => {
+  const navigation = useNavigation();
   const videoRefs = useRef({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageViewerVisible, setImageViewerVisible] = useState(false);
@@ -45,6 +47,62 @@ export const SliderComponent = ({ data }) => {
       }));
     }
   };
+
+  const stopAllVideos = useCallback(async () => {
+    try {
+      const videoRefsArray = Object.values(videoRefs.current);
+      const stopPromises = videoRefsArray.map(async (videoRef) => {
+        if (videoRef) {
+          try {
+            const status = await videoRef.getStatusAsync();
+            if (status.isLoaded && status.isPlaying) {
+              await videoRef.pauseAsync();
+              await videoRef.setPositionAsync(0);
+            }
+          } catch (error) {
+            console.log('Error stopping video:', error);
+          }
+        }
+      });
+      await Promise.all(stopPromises);
+      setPlayingVideos({});
+    } catch (error) {
+      console.log('Error stopping all videos:', error);
+    }
+  }, []);
+
+  // Остановка всех видео при изменении данных (переход на другое объявление)
+  // Используем длину массива и первый элемент для отслеживания изменений
+  const dataKey = data?.length ? `${data.length}-${data[0]?.image}` : 'empty';
+  useEffect(() => {
+    stopAllVideos();
+    // Очищаем refs при изменении данных
+    videoRefs.current = {};
+  }, [dataKey, stopAllVideos]);
+
+  // Остановка всех видео при уходе со страницы через навигацию
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      stopAllVideos();
+    });
+    return unsubscribe;
+  }, [navigation, stopAllVideos]);
+
+  // Остановка всех видео при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      stopAllVideos();
+    };
+  }, [stopAllVideos]);
+
+  // Остановка всех видео при уходе со страницы
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        stopAllVideos();
+      };
+    }, [stopAllVideos])
+  );
 
   const renderItem = ({ item, index }) => {
     if (item.type === 'image') {
