@@ -48,6 +48,18 @@ export const SliderComponent = ({ data }) => {
     }
   };
 
+  const handleVideoLoad = async (index) => {
+    // Убеждаемся, что видео загружено и готово к воспроизведению
+    const videoRef = videoRefs.current[index];
+    if (videoRef) {
+      try {
+        await videoRef.setStatusAsync({ shouldPlay: false });
+      } catch (error) {
+        console.log('Error setting video status:', error);
+      }
+    }
+  };
+
   const stopAllVideos = useCallback(async () => {
     try {
       const videoRefsArray = Object.values(videoRefs.current);
@@ -130,21 +142,26 @@ export const SliderComponent = ({ data }) => {
             source={{ uri: item.image }}
             style={styles.video}
             resizeMode={ResizeMode.CONTAIN}
-            useNativeControls
-            isLooping
+            useNativeControls={true}
+            isLooping={false}
+            playsInSilentModeIOS={true}
+            allowsExternalPlayback={false}
+            shouldPlay={false}
             onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(index, status)}
+            onLoad={() => handleVideoLoad(index)}
           />
           {/* Визуальный индикатор видео */}
-          <View style={styles.videoBadge}>
+          <View style={styles.videoBadge} pointerEvents="none">
             <Ionicons name="videocam" size={16} color="#FFFFFF" />
             <Text style={styles.videoBadgeText}>ВИДЕО</Text>
           </View>
-          {/* Кнопка воспроизведения (если видео не воспроизводится) */}
+          {/* Кнопка воспроизведения (если видео не воспроизводится и нативные элементы управления скрыты) */}
           {!isPlaying && (
             <TouchableOpacity
               style={styles.playButton}
               onPress={() => handleVideoPress(index)}
               activeOpacity={0.8}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
             >
               <View style={styles.playButtonCircle}>
                 <Ionicons name="play" size={40} color="#FFFFFF" />
@@ -221,7 +238,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 5,
+    zIndex: 1, // Уменьшен zIndex, чтобы не перекрывать нативные элементы управления
   },
   playButtonCircle: {
     width: 80,
