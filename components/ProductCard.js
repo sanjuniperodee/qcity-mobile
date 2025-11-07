@@ -1,5 +1,5 @@
 import React, { useRef,useState,useEffect } from 'react';
-import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { colors, spacing, radius } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { Video, InterruptionModeAndroid, InterruptionModeIOS, ResizeMode } from 'expo-av';
@@ -24,6 +24,17 @@ export const ProductCard = (props) => {
     }
   }, [userFavourites, isLoadingFavourites, props.id]);
 
+  // Останавливаем видео при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      if (props.media[0]?.type === 'video' && video.current) {
+        video.current.pauseAsync().catch((error) => {
+          console.log('Error pausing video on unmount:', error);
+        });
+      }
+    };
+  }, [props.media]);
+
   const toggleFavourite = async () => {
     if (isFavourite) {
       await removeFromFavourites(props.id);
@@ -39,14 +50,19 @@ export const ProductCard = (props) => {
     if (props.media[0]?.type === 'video' && video.current) {
       try {
         const status = await video.current.getStatusAsync();
-        if (status.isLoaded && status.isPlaying) {
+        if (status.isLoaded) {
+          // Останавливаем видео независимо от того, воспроизводится ли оно
           await video.current.pauseAsync();
+          await video.current.setPositionAsync(0); // Сбрасываем позицию в начало
         }
       } catch (error) {
         console.log('Error stopping video:', error);
       }
     }
-    navigation.push('ViewPost', { id: props.id });
+    // Небольшая задержка для гарантии остановки видео перед навигацией
+    setTimeout(() => {
+      navigation.push('ViewPost', { id: props.id });
+    }, 100);
   };
   
 
@@ -124,25 +140,28 @@ export const ProductCard = (props) => {
                   <Ionicons name="videocam" size={14} color="#FFFFFF" />
                   <Text style={styles.videoBadgeText}>ВИДЕО</Text>
                 </View>
-                <Video
-                  ref={video}
-                  playsInSilentModeIOS={false}
-                  allowsRecordingIOS={false}
-                  interruptionModeIOS={InterruptionModeIOS.DoNotMix}
-                  interruptionModeAndroid={InterruptionModeAndroid.DoNotMix}
-                  shouldDuckAndroid={true}
-                  staysActiveInBackground={false}
-                  style={{ width: '100%', height: '100%' }}
-                  source={{
-                    uri: `https://market.qorgau-city.kz${props.media[0].image}`,
-                  }}
-                  volume={1.0}
-                  resizeMode={ResizeMode.CONTAIN}
-                  useNativeControls
-                  isLooping={false}
-                  isMuted={false}
-                  shouldPlay={false}
-                />
+                {/* Обертка для видео с pointerEvents="none" чтобы предотвратить нажатие на видео */}
+                <View style={{ width: '100%', height: '100%', pointerEvents: 'none' }}>
+                  <Video
+                    ref={video}
+                    playsInSilentModeIOS={false}
+                    allowsRecordingIOS={false}
+                    interruptionModeIOS={InterruptionModeIOS.DoNotMix}
+                    interruptionModeAndroid={InterruptionModeAndroid.DoNotMix}
+                    shouldDuckAndroid={true}
+                    staysActiveInBackground={false}
+                    style={{ width: '100%', height: '100%' }}
+                    source={{
+                      uri: `https://market.qorgau-city.kz${props.media[0].image}`,
+                    }}
+                    volume={1.0}
+                    resizeMode={ResizeMode.CONTAIN}
+                    useNativeControls={false}
+                    isLooping={false}
+                    isMuted={false}
+                    shouldPlay={false}
+                  />
+                </View>
               </View>
             :
             <View style={{position:'relative', width:'100%', aspectRatio:1, borderRadius:8, overflow:'hidden'}}>
