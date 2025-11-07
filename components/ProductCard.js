@@ -34,14 +34,6 @@ export const ProductCard = (props) => {
   };
   
 
-  useEffect(() => {
-    if (props.isVisible) {
-      video.current?.playAsync();
-    } else {
-      video.current?.pauseAsync();
-    }
-  }, [props.isVisible]);
-
 
   const [isImageLoading, setImageLoading] = useState(true);
 

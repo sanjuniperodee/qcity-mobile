@@ -35,12 +35,13 @@ export const ProfileProductCard = (props) => {
   const isNarrow = SCREEN_WIDTH < 410;    // узкие телефоны → кнопки в столбец
   
 
-  useEffect(() => {
-    if (isVideo) {
-      video.current?.playAsync();
-      video.current?.setStatusAsync({ isMuted: true });
-    }
-  }, [isVideo]);
+  // Убрано автоматическое воспроизведение - пользователь должен запустить видео сам
+  // useEffect(() => {
+  //   if (isVideo) {
+  //     video.current?.playAsync();
+  //     video.current?.setStatusAsync({ isMuted: true });
+  //   }
+  // }, [isVideo]);
 
   const mainButtonText = useMemo(() => {
     switch (props.screen) {
@@ -167,15 +168,14 @@ export const ProfileProductCard = (props) => {
               <View style={styles.mediaInner}>
                 <Video
                   ref={video}
-                  isMuted
+                  isMuted={false}
+                  volume={1.0}
                   source={{ uri: mediaUri }}
                   style={styles.media}
-                  resizeMode={ResizeMode.COVER}
+                  resizeMode={ResizeMode.CONTAIN}
+                  useNativeControls
                   isLooping
                 />
-                <View style={styles.playOverlay}>
-                  <View style={styles.playTriangle} />
-                </View>
               </View>
             ) : (
               <Image

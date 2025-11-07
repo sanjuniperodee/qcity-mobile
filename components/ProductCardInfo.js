@@ -9,19 +9,6 @@ export const ProductCardInfo = (props) => {
   const navigation = useNavigation()
   const video = useRef(null);
 
-  useEffect(() => {
-    video.current?.playAsync();
-    video.current?.setStatusAsync({ isMuted: true });
-    const checkAndMuteVideo = async () => {
-      const status = await video.current?.getStatusAsync();
-      if (!status?.isMuted) {
-        await video.current?.setIsMutedAsync(true);
-      }
-    };
-  
-    checkAndMuteVideo();
-  }, []);
-
   const shadowStyle = {
     ...Platform.select({
       ios: {
@@ -57,9 +44,10 @@ export const ProductCardInfo = (props) => {
                 source={{
                     uri: `https://market.qorgau-city.kz${props.media[0].image}`,
                 }}
-                volume={0.0}
-                isMuted={true}
-                resizeMode={ResizeMode.COVER}
+                volume={1.0}
+                isMuted={false}
+                resizeMode={ResizeMode.CONTAIN}
+                useNativeControls
                 isLooping
                 />
             :

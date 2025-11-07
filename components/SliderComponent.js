@@ -8,7 +8,6 @@ const { width } = Dimensions.get('window');
 
 export const SliderComponent = ({ data }) => {
   const video = useRef(null);
-  const [isMuted, setIsMuted] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageViewerVisible, setImageViewerVisible] = useState(false);
 
@@ -34,11 +33,12 @@ export const SliderComponent = ({ data }) => {
       return (
         <View key={index} style={{ width, height: 410 }}>
           <Video
-            isMuted={isMuted}
+            isMuted={false}
+            volume={1.0}
             ref={video}
             source={{ uri: item.image }}
             style={{ width, height: 410 }}
-            resizeMode={ResizeMode.COVER}
+            resizeMode={ResizeMode.CONTAIN}
             useNativeControls
             isLooping
           />
