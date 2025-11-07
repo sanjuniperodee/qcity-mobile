@@ -124,27 +124,12 @@ export const HomeScreen = () => {
   const effectiveCity = selectedCity || allKazakhstanText;
   const isAllKazakhstan = effectiveCity === allKazakhstanText;
   
-  // Автоматический refetch при смене языка
-  useEffect(() => {
-    if (isAllKazakhstan) {
-      refetchAll();
-    } else {
-      refetchCity();
-    }
-  }, [t]); // eslint-disable-line
-
-  // Сброс данных при смене города и автоматический refetch
+  // Сброс данных при смене города
   useEffect(() => {
     setPage(1);
     setPosts([]);
     setFirstLoaded(false);
-    // Автоматический refetch при смене города
-    if (isAllKazakhstan) {
-      refetchAll();
-    } else {
-      refetchCity();
-    }
-  }, [effectiveCity, isAllKazakhstan]); // eslint-disable-line
+  }, [effectiveCity, isAllKazakhstan]);
 
   const [visibleItems, setVisibleItems] = useState<Array<string | number>>([]);
   const [modalVisible, setModalVisible] = useState(false);
