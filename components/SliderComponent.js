@@ -1,19 +1,33 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, Dimensions, FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { View, FlatList, TouchableOpacity, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import ImageViewing from 'react-native-image-viewing';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-
-const { width } = Dimensions.get('window');
+import { useResponsive } from '../hooks/useResponsive';
 
 export const SliderComponent = ({ data }) => {
   const navigation = useNavigation();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { isWeb } = useResponsive();
   const videoRefs = useRef({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageViewerVisible, setImageViewerVisible] = useState(false);
   const [playingVideos, setPlayingVideos] = useState({});
+
+  // Вычисляем адаптивные размеры
+  const sliderDimensions = useMemo(() => {
+    const maxWidth = isWeb ? 800 : windowWidth;
+    const sliderWidth = Math.min(windowWidth, maxWidth);
+    const sliderHeight = sliderWidth * 1.8; // Сохраняем соотношение сторон для вертикальных видео
+    
+    return {
+      width: sliderWidth,
+      height: sliderHeight,
+      maxWidth,
+    };
+  }, [windowWidth, isWeb]);
 
   const openImageViewer = (index) => {
     const imageIndex = data.filter(item => item.type === 'image').findIndex(img => img.image === data[index].image);
@@ -121,7 +135,7 @@ export const SliderComponent = ({ data }) => {
       return (
         <TouchableOpacity key={index} onPress={() => openImageViewer(index)}>
           <Image
-            style={{ width, height: width * 1.8 }} // Та же высота, что и у видео
+            style={{ width: sliderDimensions.width, height: sliderDimensions.height }}
             source={{ uri: item.image }}
             resizeMode="cover"
           />
@@ -130,7 +144,7 @@ export const SliderComponent = ({ data }) => {
     } else if (item.type === 'video') {
       const isPlaying = playingVideos[index];
       return (
-        <View key={index} style={styles.videoContainer}>
+        <View key={index} style={[styles.videoContainer, { width: sliderDimensions.width, height: sliderDimensions.height }]}>
           <Video
             isMuted={false}
             volume={1.0}
@@ -176,17 +190,20 @@ export const SliderComponent = ({ data }) => {
 
   return (
     <>
-      <FlatList
-        data={data}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        pagingEnabled
-        snapToAlignment="center"
-        decelerationRate="fast"
-        snapToInterval={width}
-      />
+      <View style={[styles.container, isWeb && styles.containerWeb]}>
+        <FlatList
+          data={data}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderItem}
+          pagingEnabled
+          snapToAlignment="center"
+          decelerationRate="fast"
+          snapToInterval={sliderDimensions.width}
+          contentContainerStyle={isWeb && styles.flatListContentWeb}
+        />
+      </View>
       <ImageViewing
         images={data.filter(item => item.type === 'image').map(item => ({ uri: item.image }))}
         imageIndex={currentImageIndex}
@@ -199,9 +216,18 @@ export const SliderComponent = ({ data }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+  containerWeb: {
+    alignItems: 'center',
+    maxWidth: 800,
+    alignSelf: 'center',
+  },
+  flatListContentWeb: {
+    alignItems: 'center',
+  },
   videoContainer: {
-    width: width,
-    height: width * 1.8, // Увеличена высота для вертикальных видео (9:16 соотношение)
     backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
