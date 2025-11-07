@@ -117,10 +117,11 @@ export const ProductCard = (props) => {
                 source={{
                     uri: `https://market.qorgau-city.kz${props.media[0].image}`,
                 }}
-                volume={0.0}
-                resizeMode={ResizeMode.COVER}
+                volume={1.0}
+                resizeMode={ResizeMode.CONTAIN}
+                useNativeControls
                 isLooping
-                isMuted={true}
+                isMuted={false}
                 />
               </View>
             :

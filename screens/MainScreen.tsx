@@ -123,6 +123,28 @@ export const HomeScreen = () => {
   const allKazakhstanText = t('location.all_kazakhstan');
   const effectiveCity = selectedCity || allKazakhstanText;
   const isAllKazakhstan = effectiveCity === allKazakhstanText;
+  
+  // Автоматический refetch при смене языка
+  useEffect(() => {
+    if (isAllKazakhstan) {
+      refetchAll();
+    } else {
+      refetchCity();
+    }
+  }, [t]); // eslint-disable-line
+
+  // Сброс данных при смене города и автоматический refetch
+  useEffect(() => {
+    setPage(1);
+    setPosts([]);
+    setFirstLoaded(false);
+    // Автоматический refetch при смене города
+    if (isAllKazakhstan) {
+      refetchAll();
+    } else {
+      refetchCity();
+    }
+  }, [effectiveCity, isAllKazakhstan]); // eslint-disable-line
 
   const [visibleItems, setVisibleItems] = useState<Array<string | number>>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -141,9 +163,9 @@ export const HomeScreen = () => {
   // === RTK Query
   const baseQueryOpts = {
     skip: false,
-    refetchOnFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMountOrArgChange: false as const,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMountOrArgChange: true,
     pollingInterval: 0,
   };
 

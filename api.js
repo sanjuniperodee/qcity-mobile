@@ -48,13 +48,14 @@ export const api = createApi({
         console.log(`Querying with page: ${page}, limit: ${limit}`);
         return `posts/?page=${page}&page_size=${limit}`;
       },
-      keepUnusedDataFor: 120,
+      keepUnusedDataFor: 30,
       providesTags: ['PostList'],
     }),
     getPostListCity: builder.query({
       query: ({ page, limit, city }) => {
         return `posts_city/?page=${page}&page_size=${limit}&city=${encodeURIComponent(city)}`;
       },
+      keepUnusedDataFor: 30,
       providesTags: ['PostList'],
     }),    
     getPostListMap: builder.query({
