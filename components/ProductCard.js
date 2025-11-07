@@ -24,17 +24,6 @@ export const ProductCard = (props) => {
     }
   }, [userFavourites, isLoadingFavourites, props.id]);
 
-  // Останавливаем видео при размонтировании компонента
-  useEffect(() => {
-    return () => {
-      if (props.media[0]?.type === 'video' && video.current) {
-        video.current.pauseAsync().catch((error) => {
-          console.log('Error pausing video on unmount:', error);
-        });
-      }
-    };
-  }, [props.media]);
-
   const toggleFavourite = async () => {
     if (isFavourite) {
       await removeFromFavourites(props.id);
@@ -45,24 +34,8 @@ export const ProductCard = (props) => {
     }
   };
 
-  const handleCardPress = async () => {
-    // Останавливаем видео перед навигацией, если оно воспроизводится
-    if (props.media[0]?.type === 'video' && video.current) {
-      try {
-        const status = await video.current.getStatusAsync();
-        if (status.isLoaded) {
-          // Останавливаем видео независимо от того, воспроизводится ли оно
-          await video.current.pauseAsync();
-          await video.current.setPositionAsync(0); // Сбрасываем позицию в начало
-        }
-      } catch (error) {
-        console.log('Error stopping video:', error);
-      }
-    }
-    // Небольшая задержка для гарантии остановки видео перед навигацией
-    setTimeout(() => {
-      navigation.push('ViewPost', { id: props.id });
-    }, 100);
+  const handleCardPress = () => {
+    navigation.push('ViewPost', { id: props.id });
   };
   
 
