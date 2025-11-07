@@ -180,13 +180,39 @@ export const EditPostScreen = ({route}) => {
     if (!result.canceled) {
       const selectedFile = result.assets[0];
       const fileSize = selectedFile.fileSize;
-      const maxSize = 10 * 1024 * 1024; // Максимальный размер файла (6 МБ в байтах)
+      const maxSize = 10 * 1024 * 1024; // Максимальный размер файла (10 МБ в байтах)
   
       if (fileSize > maxSize) {
-        alert("Файл слишком большой","Размер файла не должен превышать 10 МБ.");
-      } else {
-        setImages((prevImages) => [...prevImages, result.assets[0]]);
+        Alert.alert("Файл слишком большой","Размер файла не должен превышать 10 МБ.");
+        return;
       }
+
+      // Валидация длительности видео (максимум 35 секунд)
+      if (selectedFile.type === 'video') {
+        const videoDuration = selectedFile.duration || 0;
+        const maxDurationSeconds = 35;
+        
+        // expo-image-picker обычно возвращает duration в миллисекундах для видео
+        // Но на разных платформах может быть по-разному
+        // Проверяем: если duration > 1000, предполагаем миллисекунды, иначе секунды
+        const videoDurationSeconds = videoDuration > 1000 ? videoDuration / 1000 : videoDuration;
+        
+        if (videoDurationSeconds > maxDurationSeconds) {
+          Alert.alert(
+            t('video.too_long_title', { defaultValue: 'Видео слишком длинное' }),
+            t('video.too_long_message', { 
+              defaultValue: 'Видео дольше 35 секунд. Обрежьте видео до 35 секунд или меньше.' 
+            }) + '\n\n' + 
+            t('video.too_long_message_kz', { 
+              defaultValue: 'Бейне 35 секундтен ұзын. Видеоны 35 секундке дейін қысқартыңыз.' 
+            }),
+            [{ text: t('common.ok', { defaultValue: 'OK' }) }]
+          );
+          return;
+        }
+      }
+      
+      setImages((prevImages) => [...prevImages, result.assets[0]]);
 
       if(result.assets[0].type == 'video') {
         video.current.playAsync()

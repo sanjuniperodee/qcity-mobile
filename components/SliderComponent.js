@@ -121,7 +121,7 @@ export const SliderComponent = ({ data }) => {
       return (
         <TouchableOpacity key={index} onPress={() => openImageViewer(index)}>
           <Image
-            style={{ width, height: width * 1.2 }} // Та же высота, что и у видео
+            style={{ width, height: width * 1.8 }} // Та же высота, что и у видео
             source={{ uri: item.image }}
             resizeMode="cover"
           />
@@ -201,7 +201,7 @@ export const SliderComponent = ({ data }) => {
 const styles = StyleSheet.create({
   videoContainer: {
     width: width,
-    height: width * 1.2, // Увеличена высота для вертикальных видео
+    height: width * 1.8, // Увеличена высота для вертикальных видео (9:16 соотношение)
     backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',

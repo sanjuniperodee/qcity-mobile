@@ -272,6 +272,29 @@ export const CreatePostScreen = () => {
         setImages((prev) => [...prev, imageToAdd]);
         if (!cardImage) setCardImage(imageToAdd);
       } else if (coarseType === 'video') {
+        // Валидация длительности видео (максимум 35 секунд)
+        const videoDuration = asset.duration || 0;
+        const maxDurationSeconds = 35;
+        
+        // expo-image-picker обычно возвращает duration в миллисекундах для видео
+        // Но на разных платформах может быть по-разному
+        // Проверяем: если duration > 1000, предполагаем миллисекунды, иначе секунды
+        const videoDurationSeconds = videoDuration > 1000 ? videoDuration / 1000 : videoDuration;
+        
+        if (videoDurationSeconds > maxDurationSeconds) {
+          Alert.alert(
+            t('video.too_long_title', { defaultValue: 'Видео слишком длинное' }),
+            t('video.too_long_message', { 
+              defaultValue: 'Видео дольше 35 секунд. Обрежьте видео до 35 секунд или меньше.' 
+            }) + '\n\n' + 
+            t('video.too_long_message_kz', { 
+              defaultValue: 'Бейне 35 секундтен ұзын. Видеоны 35 секундке дейін қысқартыңыз.' 
+            }),
+            [{ text: t('common.ok', { defaultValue: 'OK' }) }]
+          );
+          return;
+        }
+        
         const videoToAdd = { uri: asset.uri, type: 'video', fileName };
         setImages((prev) => [...prev, videoToAdd]);
         video.current?.playAsync();

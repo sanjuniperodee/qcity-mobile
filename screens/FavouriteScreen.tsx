@@ -186,6 +186,8 @@ export const FavouriteScreen = () => {
         ProductCardComponent={ProductCard}
         containerWidth={SCREEN_WIDTH}
         scrollEnabled={true}
+        allowAutoPreview={true}
+        visibleItems={visibleItems}
       />
     </View>
   );

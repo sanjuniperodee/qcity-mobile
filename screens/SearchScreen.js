@@ -25,7 +25,7 @@ export const SearchScreen = () => {
   const [viewableItems, setViewableItems] = useState([]);
   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 });
   const handleViewableItemsChanged = useRef(({ viewableItems }) => {
-    setViewableItems(viewableItems.map((item) => item.key));
+    setViewableItems(viewableItems.map((item) => item.item.id));
   });
 
   const {
@@ -133,7 +133,8 @@ export const SearchScreen = () => {
             delivery={item.delivery}
             city={item.geolocation}
             date={item.date}
-            isInView={viewableItems.includes(item.id.toString())}
+            allowAutoPreview={true}
+            isVisible={viewableItems.includes(item.id)}
           />
         )}
         onViewableItemsChanged={handleViewableItemsChanged.current}

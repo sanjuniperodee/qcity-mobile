@@ -16,7 +16,9 @@ export const ResponsiveProductGrid = ({
   ListFooterComponent,
   ProductCardComponent,
   containerWidth,
-  scrollEnabled
+  scrollEnabled,
+  allowAutoPreview = false,
+  visibleItems = []
 }) => {
   const [screenWidth, setScreenWidth] = useState(containerWidth || Dimensions.get('window').width);
   
@@ -87,7 +89,8 @@ export const ResponsiveProductGrid = ({
             date: item.date,
             extra_fields: item.extra_fields,
             tariff: item.tariff || 0,
-            isVisible: true
+            allowAutoPreview: allowAutoPreview,
+            isVisible: visibleItems.includes(item.id)
           })}
         </View>
       )}

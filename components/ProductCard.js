@@ -16,6 +16,11 @@ export const ProductCard = (props) => {
   const [isFavourite, setIsFavourite] = useState(false);
   const [addToFavourites, { isLoading: isAdding }] = useAddToFavouritesMutation();
   const [removeFromFavourites, { isLoading: isRemoving }] = useRemoveFromFavouritesMutation();
+  
+  // Автопревью видео
+  const allowAutoPreview = props.allowAutoPreview || false;
+  const isVisible = props.isVisible || false;
+  const shouldPlayVideo = allowAutoPreview && isVisible && props.media?.[0]?.type === 'video';
 
   useEffect(() => {    
     if (userFavourites && !isLoadingFavourites) {
@@ -23,6 +28,45 @@ export const ProductCard = (props) => {
       setIsFavourite(isFav);
     }
   }, [userFavourites, isLoadingFavourites, props.id]);
+
+  // Управление автопревью видео
+  useEffect(() => {
+    if (!allowAutoPreview || props.media?.[0]?.type !== 'video' || !video.current) return;
+
+    const videoRef = video.current;
+    
+    const handleVisibility = async () => {
+      try {
+        if (shouldPlayVideo) {
+          // Видео видимо - запускаем воспроизведение
+          const status = await videoRef.getStatusAsync();
+          if (status.isLoaded && !status.isPlaying) {
+            await videoRef.playAsync();
+          }
+        } else {
+          // Видео не видимо - ставим на паузу
+          const status = await videoRef.getStatusAsync();
+          if (status.isLoaded && status.isPlaying) {
+            await videoRef.pauseAsync();
+          }
+        }
+      } catch (error) {
+        // Игнорируем ошибки, если видео еще не загружено
+        console.log('Video visibility error:', error);
+      }
+    };
+
+    handleVisibility();
+  }, [shouldPlayVideo, allowAutoPreview, props.media]);
+
+  // Остановка видео при размонтировании
+  useEffect(() => {
+    return () => {
+      if (allowAutoPreview && props.media?.[0]?.type === 'video' && video.current) {
+        video.current.pauseAsync().catch(() => {});
+      }
+    };
+  }, [allowAutoPreview, props.media]);
 
   const toggleFavourite = async () => {
     if (isFavourite) {
@@ -117,8 +161,9 @@ export const ProductCard = (props) => {
                 <View style={{ width: '100%', height: '100%', pointerEvents: 'none' }}>
                   <Video
                     ref={video}
-                    playsInSilentModeIOS={false}
+                    playsInSilentModeIOS={allowAutoPreview ? true : false}
                     allowsRecordingIOS={false}
+                    allowsExternalPlayback={false}
                     interruptionModeIOS={InterruptionModeIOS.DoNotMix}
                     interruptionModeAndroid={InterruptionModeAndroid.DoNotMix}
                     shouldDuckAndroid={true}
@@ -127,12 +172,12 @@ export const ProductCard = (props) => {
                     source={{
                       uri: `https://market.qorgau-city.kz${props.media[0].image}`,
                     }}
-                    volume={1.0}
+                    volume={0}
                     resizeMode={ResizeMode.CONTAIN}
-                    useNativeControls={false}
-                    isLooping={false}
-                    isMuted={false}
-                    shouldPlay={false}
+                    useNativeControls={allowAutoPreview ? false : false}
+                    isLooping={allowAutoPreview ? true : false}
+                    isMuted={true}
+                    shouldPlay={shouldPlayVideo}
                   />
                 </View>
               </View>

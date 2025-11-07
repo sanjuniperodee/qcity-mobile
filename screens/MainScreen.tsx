@@ -442,6 +442,8 @@ export const HomeScreen = () => {
         }
         containerWidth={SCREEN_WIDTH}
         scrollEnabled={true}
+        allowAutoPreview={true}
+        visibleItems={visibleItems}
       />
     </>
   );
