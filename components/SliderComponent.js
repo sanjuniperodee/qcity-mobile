@@ -109,7 +109,7 @@ export const SliderComponent = ({ data }) => {
       return (
         <TouchableOpacity key={index} onPress={() => openImageViewer(index)}>
           <Image
-            style={{ width, height: 410 }}
+            style={{ width, aspectRatio: 1 }}
             source={{ uri: item.image }}
             resizeMode="cover"
           />
@@ -184,7 +184,7 @@ export const SliderComponent = ({ data }) => {
 const styles = StyleSheet.create({
   videoContainer: {
     width: width,
-    height: 410,
+    aspectRatio: 1, // Квадратный контейнер, как у изображений
     backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
