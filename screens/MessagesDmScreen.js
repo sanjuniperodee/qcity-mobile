@@ -108,6 +108,59 @@ export const MessagesDmScreen = ({route}) => {
         };
     }, [connection_id, user?.token]);
 
+    // Загрузка сообщений через REST API при монтировании компонента
+    useEffect(() => {
+        const fetchMessages = async () => {
+            if (!user?.token || !connection_id) {
+                console.log('Missing token or connection_id for REST fetch');
+                return;
+            }
+
+            try {
+                console.log('Fetching messages via REST API for connection_id:', connection_id);
+                // Используем существующий эндпоинт для получения сообщений
+                const response = await fetch(
+                    `https://market.qorgau-city.kz/api/connection/${connection_id}/messages/`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Token ${user.token}`,
+                        },
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('REST API messages received:', result);
+
+                if (result.messages && Array.isArray(result.messages)) {
+                    const formattedMessages = result.messages.map(msg => ({
+                        _id: msg._id,
+                        text: msg.text,
+                        createdAt: new Date(msg.created),
+                        user: {
+                            _id: msg.user._id,
+                            name: msg.user.username,
+                            avatar: msg.user.profile_image 
+                                ? `https://market.qorgau-city.kz${msg.user.profile_image}`
+                                : undefined
+                        }
+                    }));
+                    console.log('Setting messages from REST API:', formattedMessages.length);
+                    setMessages(formattedMessages);
+                }
+            } catch (error) {
+                console.error('Error fetching messages via REST API:', error);
+            }
+        };
+
+        fetchMessages();
+    }, [connection_id, user?.token]);
+
     // Загрузка данных поста
     useEffect(() => {
         if (post_id && post_id !== 0) {
