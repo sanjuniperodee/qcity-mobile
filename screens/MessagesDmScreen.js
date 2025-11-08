@@ -2,7 +2,7 @@ import { useGetPostByIdQuery } from '../api';
 import { Video, ResizeMode } from 'expo-av';
 import React, { useEffect, useState, useRef } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import { View,Text, TextInput, TouchableOpacity, Platform, Image,Dimensions } from 'react-native';
+import { View,Text, TextInput, TouchableOpacity, Platform, Image,Dimensions, KeyboardAvoidingView } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import uuid from 'react-native-uuid';
@@ -106,60 +106,67 @@ export const MessagesDmScreen = ({route}) => {
     socket.addEventListener('disconnect', handleSocketDisconnect);
 
     return (
-        <View style={{ height:height - 180, marginBottom: 0, flex: 1 }}>
-            {data ? 
-                <View style={{marginTop:20,width:'90%',alignSelf:'center'}}>
-                    <View style={{marginBottom:10}}>
-                    <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F09235',borderRadius:10,position:'relative',alignItems:'center'}}>
-                    {data.images[0].type === 'video' ? 
-                            <Video
-                            isMuted={true}
-                            ref={video}
-                            style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}}
-                            source={{
-                                uri: `${data.images[0].image}`,
-                            }}
-                            resizeMode={ResizeMode.COVER}
-                            isLooping
-                            />
-                        :
-                            <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`${data.images[0].image}`}}/>
-                        }
-                    <View style={{paddingHorizontal:7}}>
-                        <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-                            <View style={{width:190}}>
-                            <Text style={{marginTop:5,fontSize:14,minHeight:20,fontFamily:'bold'}}>{data.title}</Text>
-                            <Text style={{fontFamily:'medium',fontSize:12,marginTop:5,}}>{data.cost}</Text>
-                            </View>
-                        </View>
-                        <View style={{flexDirection:'row',marginTop:4}}>
-                                <View style={{borderRadius:2,overflow:'hidden',marginRight:2}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{data.condition}</Text>
+        <KeyboardAvoidingView 
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        >
+            <View style={{ flex: 1 }}>
+                {data && data.images && data.images.length > 0 ? 
+                    <View style={{marginTop:20,width:'90%',alignSelf:'center'}}>
+                        <View style={{marginBottom:10}}>
+                        <View style={{flexDirection:'row',borderWidth:1,borderColor:'#F09235',borderRadius:10,position:'relative',alignItems:'center'}}>
+                        {data.images[0].type === 'video' ? 
+                                <Video
+                                isMuted={true}
+                                ref={video}
+                                style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}}
+                                source={{
+                                    uri: `${data.images[0].image}`,
+                                }}
+                                resizeMode={ResizeMode.COVER}
+                                isLooping
+                                />
+                            :
+                                <Image style={{width:120,height:120,borderTopLeftRadius:5,borderTopRightRadius:5,marginRight:10}} source={{uri:`${data.images[0].image}`}}/>
+                            }
+                        <View style={{paddingHorizontal:7}}>
+                            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+                                <View style={{width:190}}>
+                                <Text style={{marginTop:5,fontSize:14,minHeight:20,fontFamily:'bold'}}>{data.title}</Text>
+                                <Text style={{fontFamily:'medium',fontSize:12,marginTop:5,}}>{data.cost}</Text>
                                 </View>
-                                {data.mortage ?
-                                <View style={{borderRadius:2,overflow:'hidden',marginRight:4}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{t('messages.installment')}</Text>
-                                </View> : null}
-                                {data.delivery ?
-                                <View style={{borderRadius:2,overflow:'hidden'}}>
-                                <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>{t('messages.delivery')}</Text>
-                                </View> : null}
                             </View>
-                        <Text style={{fontFamily:'regular',fontSize:10,color:'#96949D',marginTop:5}}>{data.geolocation}</Text>
-                        <Text style={{fontFamily:'regular',fontSize:10,color:'#96949D',marginTop:5}}>{data.date}</Text>
+                            <View style={{flexDirection:'row',marginTop:4}}>
+                                    <View style={{borderRadius:2,overflow:'hidden',marginRight:2}}>
+                                    <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{data.condition}</Text>
+                                    </View>
+                                    {data.mortage ?
+                                    <View style={{borderRadius:2,overflow:'hidden',marginRight:4}}>
+                                    <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:3}}>{t('messages.installment')}</Text>
+                                    </View> : null}
+                                    {data.delivery ?
+                                    <View style={{borderRadius:2,overflow:'hidden'}}>
+                                    <Text style={{fontFamily:'bold-italic',backgroundColor:'#D6D6D6',fontSize:9.5,color:'#fff',paddingHorizontal:5}}>{t('messages.delivery')}</Text>
+                                    </View> : null}
+                                </View>
+                            <Text style={{fontFamily:'regular',fontSize:10,color:'#96949D',marginTop:5}}>{data.geolocation}</Text>
+                            <Text style={{fontFamily:'regular',fontSize:10,color:'#96949D',marginTop:5}}>{data.date}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </View> : null }
-            <GiftedChat
-                messages={messages}
-                onSend={onSend}
-                isAnimated
-                user={{
-                    _id: user.user.id,
-                }}
-            />
-        </View>
+                </View> : null }
+                <GiftedChat
+                    messages={messages}
+                    onSend={onSend}
+                    isAnimated
+                    user={{
+                        _id: user.user.id,
+                    }}
+                    style={{ flex: 1 }}
+                />
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 

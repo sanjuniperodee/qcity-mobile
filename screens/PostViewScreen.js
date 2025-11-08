@@ -155,6 +155,20 @@ export const PostViewScreen = ({ route }) => {
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
+      
+      const result = await response.json();
+      
+      // Навигация в чат после успешного создания connection
+      if (result.connection_id) {
+        navigation.navigate('MessagesTab', {
+          screen: 'MessagesDm',
+          params: {
+            connection_id: result.connection_id,
+            receiver: result.receiver,
+            post_id: result.post_id || data?.id,
+          },
+        });
+      }
     } catch (error) {
       console.error('create_connection error:', error);
     }

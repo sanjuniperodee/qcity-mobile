@@ -333,6 +333,9 @@ export const EditPostScreen = ({route}) => {
       setLoading(false);
       setGeneralError('');
       
+      // Обновляем данные поста после успешного обновления
+      await refetch();
+      
       // Навигация на экран успеха
       console.log('Navigating to PostCreated');
       navigation.navigate('PostCreated');

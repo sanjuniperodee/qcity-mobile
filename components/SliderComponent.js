@@ -159,6 +159,7 @@ export const SliderComponent = ({ data }) => {
             useNativeControls={true}
             isLooping={false}
             playsInSilentModeIOS={true}
+            playsInline={true}
             allowsExternalPlayback={false}
             shouldPlay={false}
             onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(index, status)}
