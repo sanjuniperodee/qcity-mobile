@@ -145,10 +145,12 @@ export const MessagesDmScreen = ({route}) => {
         }
     }, [connection_id, receiver, user]);
 
+    console.log('MessagesDmScreen render - messages count:', messages.length, 'connection_id:', connection_id);
+
     return (
         <KeyboardAvoidingView 
             style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
             <View style={styles.content}>
@@ -198,8 +200,8 @@ export const MessagesDmScreen = ({route}) => {
                         </View>
                     </View> : null 
                 }
-                {/* GiftedChat - всегда отображается */}
-                <View style={styles.chatContainer}>
+                {/* GiftedChat - всегда отображается и занимает оставшееся пространство */}
+                <View style={styles.chatWrapper}>
                     <GiftedChat
                         messages={messages}
                         onSend={onSend}
@@ -214,6 +216,12 @@ export const MessagesDmScreen = ({route}) => {
                         placeholder="Введите сообщение..."
                         showUserAvatar={true}
                         alwaysShowSend={true}
+                        minInputToolbarHeight={60}
+                        renderEmpty={() => (
+                            <View style={styles.emptyChat}>
+                                <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
+                            </View>
+                        )}
                     />
                 </View>
             </View>
@@ -234,6 +242,7 @@ const styles = StyleSheet.create({
         width: '90%',
         alignSelf: 'center',
         marginBottom: 10,
+        maxHeight: 150,
     },
     postCardContent: {
         marginBottom: 10,
@@ -246,12 +255,12 @@ const styles = StyleSheet.create({
         position: 'relative',
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
+        padding: 5,
     },
     postImage: {
-        width: 120,
-        height: 120,
-        borderTopLeftRadius: 5,
-        borderTopRightRadius: 5,
+        width: 100,
+        height: 100,
+        borderRadius: 5,
         marginRight: 10,
     },
     postInfo: {
@@ -264,7 +273,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     postTitleContainer: {
-        width: 190,
+        flex: 1,
     },
     postTitle: {
         marginTop: 5,
@@ -280,11 +289,13 @@ const styles = StyleSheet.create({
     postTags: {
         flexDirection: 'row',
         marginTop: 4,
+        flexWrap: 'wrap',
     },
     tag: {
         borderRadius: 2,
         overflow: 'hidden',
         marginRight: 2,
+        marginBottom: 2,
     },
     tagText: {
         fontFamily: 'bold-italic',
@@ -305,9 +316,24 @@ const styles = StyleSheet.create({
         color: '#96949D',
         marginTop: 5,
     },
-    chatContainer: {
+    chatWrapper: {
         flex: 1,
-        minHeight: 200,
+        backgroundColor: '#FFFFFF',
+    },
+    emptyChat: {
+        position: 'absolute',
+        top: '50%',
+        left: 0,
+        right: 0,
+        alignItems: 'center',
+        zIndex: 1,
+    },
+    emptyChatText: {
+        fontSize: 16,
+        fontFamily: 'regular',
+        color: '#999',
+        textAlign: 'center',
     },
 });
+
 
