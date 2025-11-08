@@ -8,9 +8,11 @@ import { useTranslation } from 'react-i18next';
 import uuid from 'react-native-uuid';
 
 export const MessagesDmScreen = ({route}) => {
-    const connection_id = route.params.connection_id
-    const receiver = route.params.receiver
-    const post_id = route.params.post_id
+    // Безопасное получение параметров из route
+    const connection_id = route?.params?.connection_id;
+    const receiver = route?.params?.receiver;
+    const post_id = route?.params?.post_id;
+    
     const { data, error, isLoading,refetch } = useGetPostByIdQuery(post_id || 0, { skip: !post_id || post_id === 0 });
     const user = useSelector(state => state.auth);
     const { t } = useTranslation();
@@ -272,6 +274,28 @@ export const MessagesDmScreen = ({route}) => {
 
     console.log('MessagesDmScreen render - messages count:', messages.length, 'connection_id:', connection_id);
 
+    // Проверяем наличие обязательных параметров и данных
+    if (!connection_id) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.emptyChat}>
+                    <Text style={styles.emptyChatText}>Ошибка: отсутствует connection_id</Text>
+                </View>
+            </View>
+        );
+    }
+
+    // Проверяем, что user загружен
+    if (!user || !user.user || !user.user.id) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.emptyChat}>
+                    <Text style={styles.emptyChatText}>Загрузка...</Text>
+                </View>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             <KeyboardAvoidingView 
@@ -328,37 +352,27 @@ export const MessagesDmScreen = ({route}) => {
                     }
                     {/* GiftedChat - всегда отображается и занимает оставшееся пространство */}
                     <View style={styles.chatWrapper}>
-                        {user && user.user && user.user.id ? (
-                            <GiftedChat
-                                messages={messages}
-                                onSend={onSend}
-                                isAnimated
-                                user={{
-                                    _id: user.user.id,
-                                    name: user.user.username || 'User',
-                                    avatar: user.user.profile_image 
-                                        ? `https://market.qorgau-city.kz${user.user.profile_image}`
-                                        : undefined
-                                }}
-                                placeholder="Введите сообщение..."
-                                showUserAvatar={true}
-                                alwaysShowSend={true}
-                                minInputToolbarHeight={60}
-                                renderInputToolbar={(props) => {
-                                    // Убеждаемся, что input toolbar всегда отображается
-                                    return <GiftedChat.InputToolbar {...props} />;
-                                }}
-                                renderEmpty={() => (
-                                    <View style={styles.emptyChat}>
-                                        <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
-                                    </View>
-                                )}
-                            />
-                        ) : (
-                            <View style={styles.emptyChat}>
-                                <Text style={styles.emptyChatText}>Загрузка...</Text>
-                            </View>
-                        )}
+                        <GiftedChat
+                            messages={messages}
+                            onSend={onSend}
+                            isAnimated
+                            user={{
+                                _id: user.user.id,
+                                name: user.user.username || 'User',
+                                avatar: user.user.profile_image 
+                                    ? `https://market.qorgau-city.kz${user.user.profile_image}`
+                                    : undefined
+                            }}
+                            placeholder="Введите сообщение..."
+                            showUserAvatar={true}
+                            alwaysShowSend={true}
+                            minInputToolbarHeight={60}
+                            renderEmpty={() => (
+                                <View style={styles.emptyChat}>
+                                    <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
+                                </View>
+                            )}
+                        />
                     </View>
                 </View>
             </KeyboardAvoidingView>
