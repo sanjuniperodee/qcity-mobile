@@ -18,10 +18,13 @@ export const MessagesDmScreen = ({route}) => {
     const video = useRef(null);
     const socketRef = useRef(null);
     const restApiLoadedRef = useRef(false); // Флаг для отслеживания загрузки через REST API
+    const isMountedRef = useRef(true); // Флаг для отслеживания монтирования компонента
     const {height, width} = Dimensions.get('window')
 
     // Создание и управление WebSocket
     useEffect(() => {
+        isMountedRef.current = true;
+        
         if (!user?.token || !connection_id) {
             console.log('Missing token or connection_id');
             return;
@@ -64,7 +67,9 @@ export const MessagesDmScreen = ({route}) => {
                         }
                     }));
                     console.log('Setting messages from message.list:', receivedMessages.length);
-                    setMessages(receivedMessages);
+                    if (isMountedRef.current) {
+                        setMessages(receivedMessages);
+                    }
 
                 // Handle message.send response - обновляем список сообщений (бэкенд отправляет полный список)
                 } else if (rawData.source === 'message.send' && rawData.data) {
@@ -83,7 +88,9 @@ export const MessagesDmScreen = ({route}) => {
                             }
                         }));
                         console.log('Updating messages from message.send:', receivedMessages.length);
-                        setMessages(receivedMessages);
+                        if (isMountedRef.current) {
+                            setMessages(receivedMessages);
+                        }
                     } 
                     // Если есть только одно новое сообщение, добавляем его
                     else if (rawData.data.message) {
@@ -100,14 +107,16 @@ export const MessagesDmScreen = ({route}) => {
                             }
                         };
                         console.log('Adding new message from message.send:', newMessage._id);
-                        setMessages((prevMessages) => {
-                            // Проверяем, нет ли уже такого сообщения (избегаем дубликатов)
-                            const exists = prevMessages.some(msg => msg._id === newMessage._id);
-                            if (exists) {
-                                return prevMessages;
-                            }
-                            return GiftedChat.append(prevMessages, newMessage);
-                        });
+                        if (isMountedRef.current) {
+                            setMessages((prevMessages) => {
+                                // Проверяем, нет ли уже такого сообщения (избегаем дубликатов)
+                                const exists = prevMessages.some(msg => msg._id === newMessage._id);
+                                if (exists) {
+                                    return prevMessages;
+                                }
+                                return GiftedChat.append(prevMessages, newMessage);
+                            });
+                        }
                     }
                 } else {
                     console.log('WebSocket message format not recognized:', rawData);
@@ -128,9 +137,14 @@ export const MessagesDmScreen = ({route}) => {
 
         // Очистка при размонтировании или изменении connection_id
         return () => {
+            isMountedRef.current = false;
             console.log('Cleaning up WebSocket');
             if (socketRef.current) {
-                socketRef.current.close();
+                try {
+                    socketRef.current.close();
+                } catch (error) {
+                    console.error('Error closing WebSocket:', error);
+                }
                 socketRef.current = null;
             }
         };
@@ -186,8 +200,10 @@ export const MessagesDmScreen = ({route}) => {
                         }
                     }));
                     console.log('Setting messages from REST API:', formattedMessages.length);
-                    setMessages(formattedMessages);
-                    restApiLoadedRef.current = true;
+                    if (isMountedRef.current) {
+                        setMessages(formattedMessages);
+                        restApiLoadedRef.current = true;
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching messages via REST API:', error);
@@ -196,17 +212,25 @@ export const MessagesDmScreen = ({route}) => {
 
         // Сбрасываем флаг при изменении connection_id
         restApiLoadedRef.current = false;
+        isMountedRef.current = true;
         fetchMessages();
+        
+        return () => {
+            isMountedRef.current = false;
+        };
     }, [connection_id, user?.token]);
 
     // Загрузка данных поста
     useEffect(() => {
         if (post_id && post_id !== 0) {
-            refetch();
-            video.current?.playAsync();
-            video.current?.setStatusAsync({ isMuted: true });
+            // refetch вызывается автоматически RTK Query при изменении post_id
+            // Не нужно вызывать его вручную, чтобы избежать отмененных запросов
+            if (video.current) {
+                video.current.playAsync().catch(console.error);
+                video.current.setStatusAsync({ isMuted: true }).catch(console.error);
+            }
         }
-    }, [post_id, refetch]);
+    }, [post_id]); // Убрал refetch из зависимостей, чтобы избежать бесконечного цикла
 
     const onSend = useCallback((newMessages) => {
         const messageText = newMessages[0].text;
@@ -228,7 +252,9 @@ export const MessagesDmScreen = ({route}) => {
             },
         };
 
-        setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessage));
+        if (isMountedRef.current) {
+            setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessage));
+        }
 
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
             socketRef.current.send(
