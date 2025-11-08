@@ -43,11 +43,14 @@ export const MessagesDmScreen = ({route}) => {
 
         socket.addEventListener('message', (event) => {
             try {
-                const data = JSON.parse(event.data);
-                console.log('WebSocket message received:', data.source);
+                const rawData = JSON.parse(event.data);
+                console.log('WebSocket message received (full):', JSON.stringify(rawData, null, 2));
+                console.log('WebSocket message source:', rawData.source);
+                console.log('WebSocket message data:', rawData.data);
 
-                if (data.source === 'message.list' && data.data && data.data.messages) {
-                    const receivedMessages = data.data.messages.map(msg => ({
+                // Handle message.list response
+                if (rawData.source === 'message.list' && rawData.data && rawData.data.messages) {
+                    const receivedMessages = rawData.data.messages.map(msg => ({
                         _id: msg._id,
                         text: msg.text,
                         createdAt: new Date(msg.created),
@@ -59,11 +62,12 @@ export const MessagesDmScreen = ({route}) => {
                                 : undefined
                         }
                     }));
-                    console.log('Setting messages:', receivedMessages.length);
+                    console.log('Setting messages from message.list:', receivedMessages.length);
                     setMessages(receivedMessages);
 
-                } else if (data.source === 'message.send' && data.data && data.data.messages) {
-                    const receivedMessages = data.data.messages.map(msg => ({
+                // Handle message.send response
+                } else if (rawData.source === 'message.send' && rawData.data && rawData.data.messages) {
+                    const receivedMessages = rawData.data.messages.map(msg => ({
                         _id: msg._id,
                         text: msg.text,
                         createdAt: new Date(msg.created),
@@ -75,10 +79,14 @@ export const MessagesDmScreen = ({route}) => {
                                 : undefined
                         }
                     }));
+                    console.log('Setting messages from message.send:', receivedMessages.length);
                     setMessages(receivedMessages);
+                } else {
+                    console.log('WebSocket message format not recognized:', rawData);
                 }
             } catch (error) {
                 console.error('Error parsing WebSocket message:', error);
+                console.error('Raw event data:', event.data);
             }
         });
 
@@ -202,27 +210,33 @@ export const MessagesDmScreen = ({route}) => {
                 }
                 {/* GiftedChat - всегда отображается и занимает оставшееся пространство */}
                 <View style={styles.chatWrapper}>
-                    <GiftedChat
-                        messages={messages}
-                        onSend={onSend}
-                        isAnimated
-                        user={{
-                            _id: user.user.id,
-                            name: user.user.username,
-                            avatar: user.user.profile_image 
-                                ? `https://market.qorgau-city.kz${user.user.profile_image}`
-                                : undefined
-                        }}
-                        placeholder="Введите сообщение..."
-                        showUserAvatar={true}
-                        alwaysShowSend={true}
-                        minInputToolbarHeight={60}
-                        renderEmpty={() => (
-                            <View style={styles.emptyChat}>
-                                <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
-                            </View>
-                        )}
-                    />
+                    {user && user.user && user.user.id ? (
+                        <GiftedChat
+                            messages={messages}
+                            onSend={onSend}
+                            isAnimated
+                            user={{
+                                _id: user.user.id,
+                                name: user.user.username,
+                                avatar: user.user.profile_image 
+                                    ? `https://market.qorgau-city.kz${user.user.profile_image}`
+                                    : undefined
+                            }}
+                            placeholder="Введите сообщение..."
+                            showUserAvatar={true}
+                            alwaysShowSend={true}
+                            minInputToolbarHeight={60}
+                            renderEmpty={() => (
+                                <View style={styles.emptyChat}>
+                                    <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
+                                </View>
+                            )}
+                        />
+                    ) : (
+                        <View style={styles.emptyChat}>
+                            <Text style={styles.emptyChatText}>Загрузка...</Text>
+                        </View>
+                    )}
                 </View>
             </View>
         </KeyboardAvoidingView>
@@ -319,6 +333,8 @@ const styles = StyleSheet.create({
     chatWrapper: {
         flex: 1,
         backgroundColor: '#FFFFFF',
+        minHeight: 400,
+        width: '100%',
     },
     emptyChat: {
         position: 'absolute',
