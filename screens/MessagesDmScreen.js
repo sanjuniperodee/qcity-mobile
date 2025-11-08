@@ -296,86 +296,104 @@ export const MessagesDmScreen = ({route}) => {
         );
     }
 
-    return (
-        <View style={styles.container}>
-            <KeyboardAvoidingView 
-                style={styles.keyboardAvoidingView}
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-            >
-                <View style={styles.content}>
-                    {/* Карточка объявления - показываем только если post_id существует и не равен 0 */}
-                    {post_id && post_id !== 0 && data && data.images && data.images.length > 0 ? 
-                        <View style={styles.postCard}>
-                            <View style={styles.postCardContent}>
-                                <View style={styles.postCardInner}>
-                                    {data.images[0].type === 'video' ? 
-                                        <Video
-                                            isMuted={true}
-                                            ref={video}
-                                            style={styles.postImage}
-                                            source={{
-                                                uri: `${data.images[0].image}`,
-                                            }}
-                                            resizeMode={ResizeMode.COVER}
-                                            isLooping
-                                        />
-                                    :
-                                        <Image style={styles.postImage} source={{uri:`${data.images[0].image}`}}/>
-                                    }
-                                    <View style={styles.postInfo}>
-                                        <View style={styles.postHeader}>
-                                            <View style={styles.postTitleContainer}>
-                                                <Text style={styles.postTitle}>{data.title}</Text>
-                                                <Text style={styles.postCost}>{data.cost}</Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.postTags}>
-                                            <View style={styles.tag}>
-                                                <Text style={styles.tagText}>{data.condition}</Text>
-                                            </View>
-                                            {data.mortage ?
-                                                <View style={styles.tag}>
-                                                    <Text style={styles.tagText}>{t('messages.installment')}</Text>
-                                                </View> : null}
-                                            {data.delivery ?
-                                                <View style={styles.tag}>
-                                                    <Text style={styles.tagText}>{t('messages.delivery')}</Text>
-                                                </View> : null}
-                                        </View>
-                                        <Text style={styles.postLocation}>{data.geolocation}</Text>
-                                        {data.date && <Text style={styles.postDate}>{data.date}</Text>}
+    const content = (
+        <View style={styles.content}>
+            {/* Карточка объявления - показываем только если post_id существует и не равен 0 */}
+            {post_id && post_id !== 0 && data && data.images && data.images.length > 0 ? 
+                <View style={styles.postCard}>
+                    <View style={styles.postCardContent}>
+                        <View style={styles.postCardInner}>
+                            {data.images[0].type === 'video' ? 
+                                <Video
+                                    isMuted={true}
+                                    ref={video}
+                                    style={styles.postImage}
+                                    source={{
+                                        uri: `${data.images[0].image}`,
+                                    }}
+                                    resizeMode={ResizeMode.COVER}
+                                    isLooping
+                                />
+                            :
+                                <Image style={styles.postImage} source={{uri:`${data.images[0].image}`}}/>
+                            }
+                            <View style={styles.postInfo}>
+                                <View style={styles.postHeader}>
+                                    <View style={styles.postTitleContainer}>
+                                        <Text style={styles.postTitle}>{data.title}</Text>
+                                        <Text style={styles.postCost}>{data.cost}</Text>
                                     </View>
                                 </View>
-                            </View>
-                        </View> : null 
-                    }
-                    {/* GiftedChat - всегда отображается и занимает оставшееся пространство */}
-                    <View style={styles.chatWrapper}>
-                        <GiftedChat
-                            messages={messages}
-                            onSend={onSend}
-                            isAnimated
-                            user={{
-                                _id: user.user.id,
-                                name: user.user.username || 'User',
-                                avatar: user.user.profile_image 
-                                    ? `https://market.qorgau-city.kz${user.user.profile_image}`
-                                    : undefined
-                            }}
-                            placeholder="Введите сообщение..."
-                            showUserAvatar={true}
-                            alwaysShowSend={true}
-                            minInputToolbarHeight={60}
-                            renderEmpty={() => (
-                                <View style={styles.emptyChat}>
-                                    <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
+                                <View style={styles.postTags}>
+                                    <View style={styles.tag}>
+                                        <Text style={styles.tagText}>{data.condition}</Text>
+                                    </View>
+                                    {data.mortage ?
+                                        <View style={styles.tag}>
+                                            <Text style={styles.tagText}>{t('messages.installment')}</Text>
+                                        </View> : null}
+                                    {data.delivery ?
+                                        <View style={styles.tag}>
+                                            <Text style={styles.tagText}>{t('messages.delivery')}</Text>
+                                        </View> : null}
                                 </View>
-                            )}
-                        />
+                                <Text style={styles.postLocation}>{data.geolocation}</Text>
+                                {data.date && <Text style={styles.postDate}>{data.date}</Text>}
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
+                </View> : null 
+            }
+            {/* GiftedChat - всегда отображается и занимает оставшееся пространство */}
+            <View style={styles.chatWrapper}>
+                <GiftedChat
+                    messages={messages}
+                    onSend={onSend}
+                    isAnimated
+                    user={{
+                        _id: user.user.id,
+                        name: user.user.username || 'User',
+                        avatar: user.user.profile_image 
+                            ? `https://market.qorgau-city.kz${user.user.profile_image}`
+                            : undefined
+                    }}
+                    placeholder="Введите сообщение..."
+                    showUserAvatar={true}
+                    alwaysShowSend={true}
+                    minInputToolbarHeight={60}
+                    textInputStyle={{
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: 20,
+                        borderWidth: 1,
+                        borderColor: '#E0E0E0',
+                        paddingHorizontal: 15,
+                        paddingVertical: 10,
+                        marginHorizontal: 5,
+                        fontSize: 16,
+                    }}
+                    renderEmpty={() => (
+                        <View style={styles.emptyChat}>
+                            <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
+                        </View>
+                    )}
+                />
+            </View>
+        </View>
+    );
+
+    return (
+        <View style={styles.container}>
+            {Platform.OS === 'ios' ? (
+                <KeyboardAvoidingView 
+                    style={styles.keyboardAvoidingView}
+                    behavior="padding"
+                    keyboardVerticalOffset={90}
+                >
+                    {content}
+                </KeyboardAvoidingView>
+            ) : (
+                content
+            )}
         </View>
     );
 };
@@ -474,12 +492,17 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFFFFF',
         width: '100%',
+        position: 'relative',
     },
     emptyChat: {
-        flex: 1,
+        position: 'absolute',
+        top: '40%',
+        left: 0,
+        right: 0,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 50,
+        zIndex: 0,
+        pointerEvents: 'none',
     },
     emptyChatText: {
         fontSize: 16,
