@@ -17,6 +17,7 @@ export const MessagesDmScreen = ({route}) => {
     const [messages, setMessages] = useState([]);
     const video = useRef(null);
     const socketRef = useRef(null);
+    const restApiLoadedRef = useRef(false); // Флаг для отслеживания загрузки через REST API
     const {height, width} = Dimensions.get('window')
 
     // Создание и управление WebSocket
@@ -48,7 +49,7 @@ export const MessagesDmScreen = ({route}) => {
                 console.log('WebSocket message source:', rawData.source);
                 console.log('WebSocket message data:', rawData.data);
 
-                // Handle message.list response
+                // Handle message.list response - загружаем полный список сообщений
                 if (rawData.source === 'message.list' && rawData.data && rawData.data.messages) {
                     const receivedMessages = rawData.data.messages.map(msg => ({
                         _id: msg._id,
@@ -65,22 +66,49 @@ export const MessagesDmScreen = ({route}) => {
                     console.log('Setting messages from message.list:', receivedMessages.length);
                     setMessages(receivedMessages);
 
-                // Handle message.send response
-                } else if (rawData.source === 'message.send' && rawData.data && rawData.data.messages) {
-                    const receivedMessages = rawData.data.messages.map(msg => ({
-                        _id: msg._id,
-                        text: msg.text,
-                        createdAt: new Date(msg.created),
-                        user: {
-                            _id: msg.user._id,
-                            name: msg.user.username,
-                            avatar: msg.user.profile_image 
-                                ? `https://market.qorgau-city.kz${msg.user.profile_image}`
-                                : undefined
-                        }
-                    }));
-                    console.log('Setting messages from message.send:', receivedMessages.length);
-                    setMessages(receivedMessages);
+                // Handle message.send response - обновляем список сообщений (бэкенд отправляет полный список)
+                } else if (rawData.source === 'message.send' && rawData.data) {
+                    // Если есть полный список сообщений, обновляем его
+                    if (rawData.data.messages && Array.isArray(rawData.data.messages)) {
+                        const receivedMessages = rawData.data.messages.map(msg => ({
+                            _id: msg._id,
+                            text: msg.text,
+                            createdAt: new Date(msg.created),
+                            user: {
+                                _id: msg.user._id,
+                                name: msg.user.username,
+                                avatar: msg.user.profile_image 
+                                    ? `https://market.qorgau-city.kz${msg.user.profile_image}`
+                                    : undefined
+                            }
+                        }));
+                        console.log('Updating messages from message.send:', receivedMessages.length);
+                        setMessages(receivedMessages);
+                    } 
+                    // Если есть только одно новое сообщение, добавляем его
+                    else if (rawData.data.message) {
+                        const newMessage = {
+                            _id: rawData.data.message._id,
+                            text: rawData.data.message.text,
+                            createdAt: new Date(rawData.data.message.created),
+                            user: {
+                                _id: rawData.data.message.user._id,
+                                name: rawData.data.message.user.username,
+                                avatar: rawData.data.message.user.profile_image 
+                                    ? `https://market.qorgau-city.kz${rawData.data.message.user.profile_image}`
+                                    : undefined
+                            }
+                        };
+                        console.log('Adding new message from message.send:', newMessage._id);
+                        setMessages((prevMessages) => {
+                            // Проверяем, нет ли уже такого сообщения (избегаем дубликатов)
+                            const exists = prevMessages.some(msg => msg._id === newMessage._id);
+                            if (exists) {
+                                return prevMessages;
+                            }
+                            return GiftedChat.append(prevMessages, newMessage);
+                        });
+                    }
                 } else {
                     console.log('WebSocket message format not recognized:', rawData);
                 }
@@ -108,11 +136,18 @@ export const MessagesDmScreen = ({route}) => {
         };
     }, [connection_id, user?.token]);
 
-    // Загрузка сообщений через REST API при монтировании компонента
+    // Загрузка сообщений через REST API при монтировании компонента (только один раз)
     useEffect(() => {
         const fetchMessages = async () => {
             if (!user?.token || !connection_id) {
                 console.log('Missing token or connection_id for REST fetch');
+                return;
+            }
+
+            // Загружаем через REST API только один раз при монтировании
+            // WebSocket будет обновлять сообщения в реальном времени
+            if (restApiLoadedRef.current) {
+                console.log('REST API already loaded, skipping fetch');
                 return;
             }
 
@@ -152,12 +187,15 @@ export const MessagesDmScreen = ({route}) => {
                     }));
                     console.log('Setting messages from REST API:', formattedMessages.length);
                     setMessages(formattedMessages);
+                    restApiLoadedRef.current = true;
                 }
             } catch (error) {
                 console.error('Error fetching messages via REST API:', error);
             }
         };
 
+        // Сбрасываем флаг при изменении connection_id
+        restApiLoadedRef.current = false;
         fetchMessages();
     }, [connection_id, user?.token]);
 
@@ -209,90 +247,96 @@ export const MessagesDmScreen = ({route}) => {
     console.log('MessagesDmScreen render - messages count:', messages.length, 'connection_id:', connection_id);
 
     return (
-        <KeyboardAvoidingView 
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-        >
-            <View style={styles.content}>
-                {/* Карточка объявления - показываем только если post_id существует и не равен 0 */}
-                {post_id && post_id !== 0 && data && data.images && data.images.length > 0 ? 
-                    <View style={styles.postCard}>
-                        <View style={styles.postCardContent}>
-                            <View style={styles.postCardInner}>
-                                {data.images[0].type === 'video' ? 
-                                    <Video
-                                        isMuted={true}
-                                        ref={video}
-                                        style={styles.postImage}
-                                        source={{
-                                            uri: `${data.images[0].image}`,
-                                        }}
-                                        resizeMode={ResizeMode.COVER}
-                                        isLooping
-                                    />
-                                :
-                                    <Image style={styles.postImage} source={{uri:`${data.images[0].image}`}}/>
-                                }
-                                <View style={styles.postInfo}>
-                                    <View style={styles.postHeader}>
-                                        <View style={styles.postTitleContainer}>
-                                            <Text style={styles.postTitle}>{data.title}</Text>
-                                            <Text style={styles.postCost}>{data.cost}</Text>
+        <View style={styles.container}>
+            <KeyboardAvoidingView 
+                style={styles.keyboardAvoidingView}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+            >
+                <View style={styles.content}>
+                    {/* Карточка объявления - показываем только если post_id существует и не равен 0 */}
+                    {post_id && post_id !== 0 && data && data.images && data.images.length > 0 ? 
+                        <View style={styles.postCard}>
+                            <View style={styles.postCardContent}>
+                                <View style={styles.postCardInner}>
+                                    {data.images[0].type === 'video' ? 
+                                        <Video
+                                            isMuted={true}
+                                            ref={video}
+                                            style={styles.postImage}
+                                            source={{
+                                                uri: `${data.images[0].image}`,
+                                            }}
+                                            resizeMode={ResizeMode.COVER}
+                                            isLooping
+                                        />
+                                    :
+                                        <Image style={styles.postImage} source={{uri:`${data.images[0].image}`}}/>
+                                    }
+                                    <View style={styles.postInfo}>
+                                        <View style={styles.postHeader}>
+                                            <View style={styles.postTitleContainer}>
+                                                <Text style={styles.postTitle}>{data.title}</Text>
+                                                <Text style={styles.postCost}>{data.cost}</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                    <View style={styles.postTags}>
-                                        <View style={styles.tag}>
-                                            <Text style={styles.tagText}>{data.condition}</Text>
+                                        <View style={styles.postTags}>
+                                            <View style={styles.tag}>
+                                                <Text style={styles.tagText}>{data.condition}</Text>
+                                            </View>
+                                            {data.mortage ?
+                                                <View style={styles.tag}>
+                                                    <Text style={styles.tagText}>{t('messages.installment')}</Text>
+                                                </View> : null}
+                                            {data.delivery ?
+                                                <View style={styles.tag}>
+                                                    <Text style={styles.tagText}>{t('messages.delivery')}</Text>
+                                                </View> : null}
                                         </View>
-                                        {data.mortage ?
-                                            <View style={styles.tag}>
-                                                <Text style={styles.tagText}>{t('messages.installment')}</Text>
-                                            </View> : null}
-                                        {data.delivery ?
-                                            <View style={styles.tag}>
-                                                <Text style={styles.tagText}>{t('messages.delivery')}</Text>
-                                            </View> : null}
+                                        <Text style={styles.postLocation}>{data.geolocation}</Text>
+                                        {data.date && <Text style={styles.postDate}>{data.date}</Text>}
                                     </View>
-                                    <Text style={styles.postLocation}>{data.geolocation}</Text>
-                                    {data.date && <Text style={styles.postDate}>{data.date}</Text>}
                                 </View>
                             </View>
-                        </View>
-                    </View> : null 
-                }
-                {/* GiftedChat - всегда отображается и занимает оставшееся пространство */}
-                <View style={styles.chatWrapper}>
-                    {user && user.user && user.user.id ? (
-                        <GiftedChat
-                            messages={messages}
-                            onSend={onSend}
-                            isAnimated
-                            user={{
-                                _id: user.user.id,
-                                name: user.user.username,
-                                avatar: user.user.profile_image 
-                                    ? `https://market.qorgau-city.kz${user.user.profile_image}`
-                                    : undefined
-                            }}
-                            placeholder="Введите сообщение..."
-                            showUserAvatar={true}
-                            alwaysShowSend={true}
-                            minInputToolbarHeight={60}
-                            renderEmpty={() => (
-                                <View style={styles.emptyChat}>
-                                    <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
-                                </View>
-                            )}
-                        />
-                    ) : (
-                        <View style={styles.emptyChat}>
-                            <Text style={styles.emptyChatText}>Загрузка...</Text>
-                        </View>
-                    )}
+                        </View> : null 
+                    }
+                    {/* GiftedChat - всегда отображается и занимает оставшееся пространство */}
+                    <View style={styles.chatWrapper}>
+                        {user && user.user && user.user.id ? (
+                            <GiftedChat
+                                messages={messages}
+                                onSend={onSend}
+                                isAnimated
+                                user={{
+                                    _id: user.user.id,
+                                    name: user.user.username || 'User',
+                                    avatar: user.user.profile_image 
+                                        ? `https://market.qorgau-city.kz${user.user.profile_image}`
+                                        : undefined
+                                }}
+                                placeholder="Введите сообщение..."
+                                showUserAvatar={true}
+                                alwaysShowSend={true}
+                                minInputToolbarHeight={60}
+                                renderInputToolbar={(props) => {
+                                    // Убеждаемся, что input toolbar всегда отображается
+                                    return <GiftedChat.InputToolbar {...props} />;
+                                }}
+                                renderEmpty={() => (
+                                    <View style={styles.emptyChat}>
+                                        <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
+                                    </View>
+                                )}
+                            />
+                        ) : (
+                            <View style={styles.emptyChat}>
+                                <Text style={styles.emptyChatText}>Загрузка...</Text>
+                            </View>
+                        )}
+                    </View>
                 </View>
-            </View>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </View>
     );
 };
 
@@ -300,6 +344,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
+    },
+    keyboardAvoidingView: {
+        flex: 1,
     },
     content: {
         flex: 1,
@@ -386,16 +433,13 @@ const styles = StyleSheet.create({
     chatWrapper: {
         flex: 1,
         backgroundColor: '#FFFFFF',
-        minHeight: 400,
         width: '100%',
     },
     emptyChat: {
-        position: 'absolute',
-        top: '50%',
-        left: 0,
-        right: 0,
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 1,
+        paddingTop: 50,
     },
     emptyChatText: {
         fontSize: 16,
