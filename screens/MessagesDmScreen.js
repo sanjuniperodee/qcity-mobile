@@ -5,6 +5,7 @@ import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 import { View, Text, TextInput, TouchableOpacity, Platform, Image, Dimensions, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import uuid from 'react-native-uuid';
 
 export const MessagesDmScreen = ({route}) => {
@@ -373,7 +374,7 @@ export const MessagesDmScreen = ({route}) => {
                     renderEmpty={() => null}
                     listViewProps={{
                         style: { flex: 1, paddingBottom: 0 },
-                        contentContainerStyle: { flexGrow: 1, paddingBottom: 0 },
+                        contentContainerStyle: { flexGrow: 1, paddingBottom: 100 },
                     }}
                     renderInputToolbar={(props) => {
                         // Явно рендерим input toolbar, чтобы он всегда был виден
@@ -403,7 +404,7 @@ export const MessagesDmScreen = ({route}) => {
                                 style={styles.sendContainer}
                             >
                                 <View style={styles.sendButton}>
-                                    <Text style={styles.sendButtonText}>Отправить</Text>
+                                    <Ionicons name="send" size={20} color="#FFFFFF" />
                                 </View>
                             </TouchableOpacity>
                         );
@@ -534,17 +535,22 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'visible',
-        paddingBottom: 80, // Отступ снизу для нижней навигационной панели
+        paddingBottom: 100, // Отступ снизу для предотвращения перекрытия сообщениями поля ввода
     },
     inputToolbarContainer: {
         backgroundColor: '#FFFFFF',
         borderTopWidth: 1,
-        borderTopColor: '#E0E0E0',
-        paddingBottom: Platform.OS === 'ios' ? 20 : 0,
-        minHeight: 60,
-        paddingHorizontal: 5,
-        paddingVertical: 8,
+        borderTopColor: '#F0F0F0',
+        paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+        minHeight: 70,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
         alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 3,
     },
     inputToolbarPrimary: {
         backgroundColor: '#FFFFFF',
@@ -552,42 +558,45 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     textInput: {
-        backgroundColor: '#F5F5F5',
-        borderRadius: 25,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 22,
         borderWidth: 1,
-        borderColor: '#E0E0E0',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
+        borderColor: '#F0F0F0',
+        paddingHorizontal: 18,
+        paddingVertical: 12,
         marginHorizontal: 0,
-        marginLeft: 5,
-        marginRight: 5,
+        marginLeft: 0,
+        marginRight: 8,
         fontSize: 16,
         fontFamily: 'regular',
         color: '#000000',
         flex: 1,
         maxHeight: 100,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
     },
     sendContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 0,
-        marginBottom: 5,
-        paddingRight: 5,
+        marginBottom: 0,
+        paddingRight: 0,
     },
     sendButton: {
-        backgroundColor: '#F3B127',
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        paddingVertical: 10,
+        backgroundColor: '#F09235',
+        borderRadius: 22,
+        width: 44,
+        height: 44,
         justifyContent: 'center',
         alignItems: 'center',
-        minWidth: 90,
-    },
-    sendButtonText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontFamily: 'regular',
-        fontWeight: '600',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 3,
     },
     emptyChat: {
         position: 'absolute',
