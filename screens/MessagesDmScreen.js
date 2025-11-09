@@ -394,13 +394,21 @@ export const MessagesDmScreen = ({route}) => {
                             return null;
                         }
                         return (
-                            <Send {...props} containerStyle={styles.sendContainer}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (props.onSend) {
+                                        props.onSend([{ text: props.text.trim() }], true);
+                                    }
+                                }}
+                                style={styles.sendContainer}
+                            >
                                 <View style={styles.sendButton}>
                                     <Text style={styles.sendButtonText}>Отправить</Text>
                                 </View>
-                            </Send>
+                            </TouchableOpacity>
                         );
                     }}
+                    renderActions={() => null}
                     isKeyboardInternallyHandled={false}
                 />
             </View>
@@ -534,7 +542,7 @@ const styles = StyleSheet.create({
         borderTopColor: '#E0E0E0',
         paddingBottom: Platform.OS === 'ios' ? 20 : 0,
         minHeight: 60,
-        paddingHorizontal: 10,
+        paddingHorizontal: 5,
         paddingVertical: 8,
         alignItems: 'center',
     },
@@ -550,7 +558,9 @@ const styles = StyleSheet.create({
         borderColor: '#E0E0E0',
         paddingHorizontal: 15,
         paddingVertical: 10,
-        marginHorizontal: 5,
+        marginHorizontal: 0,
+        marginLeft: 5,
+        marginRight: 5,
         fontSize: 16,
         fontFamily: 'regular',
         color: '#000000',
@@ -560,17 +570,18 @@ const styles = StyleSheet.create({
     sendContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 5,
+        marginRight: 0,
         marginBottom: 5,
+        paddingRight: 5,
     },
     sendButton: {
         backgroundColor: '#F3B127',
         borderRadius: 20,
-        paddingHorizontal: 20,
+        paddingHorizontal: 16,
         paddingVertical: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        minWidth: 80,
+        minWidth: 90,
     },
     sendButtonText: {
         color: '#FFFFFF',
