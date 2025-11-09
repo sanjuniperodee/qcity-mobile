@@ -368,20 +368,16 @@ export const MessagesDmScreen = ({route}) => {
                     placeholder="Введите сообщение..."
                     showUserAvatar={true}
                     alwaysShowSend={true}
-                    minInputToolbarHeight={60}
+                    minInputToolbarHeight={70}
                     bottomOffset={0}
                     textInputStyle={styles.textInput}
                     renderEmpty={() => null}
                     listViewProps={{
                         style: { flex: 1, paddingBottom: 0 },
-                        contentContainerStyle: { flexGrow: 1, paddingBottom: 100 },
+                        contentContainerStyle: { flexGrow: 1, paddingBottom: 120 },
                     }}
                     renderInputToolbar={(props) => {
-                        // Явно рендерим input toolbar, чтобы он всегда был виден
-                        if (!props) {
-                            return null;
-                        }
-                        // Принудительно показываем input toolbar
+                        if (!props) return null;
                         return (
                             <InputToolbar 
                                 {...props} 
@@ -391,11 +387,7 @@ export const MessagesDmScreen = ({route}) => {
                         );
                     }}
                     renderSend={(props) => {
-                        if (!props) {
-                            return null;
-                        }
-                        // Показываем кнопку только если есть текст
-                        if (!props.text || props.text.trim() === '') {
+                        if (!props || !props.text || props.text.trim() === '') {
                             return null;
                         }
                         return (
@@ -406,7 +398,7 @@ export const MessagesDmScreen = ({route}) => {
                                     }
                                 }}
                                 style={styles.sendContainer}
-                                activeOpacity={0.7}
+                                activeOpacity={0.8}
                             >
                                 <View style={styles.sendButton}>
                                     <Ionicons name="paper-plane" size={20} color="#FFFFFF" />
@@ -540,71 +532,62 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'visible',
-        paddingBottom: 100, // Отступ снизу для предотвращения перекрытия сообщениями поля ввода
+        paddingBottom: 100,
     },
     inputToolbarContainer: {
         backgroundColor: '#FFFFFF',
-        borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
-        paddingBottom: Platform.OS === 'ios' ? 20 : 10,
-        minHeight: 70,
+        borderTopWidth: 0,
+        paddingTop: 8,
+        paddingBottom: Platform.OS === 'ios' ? 24 : 12,
         paddingHorizontal: 16,
-        paddingVertical: 10,
+        minHeight: 70,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 5,
     },
     inputToolbarPrimary: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'transparent',
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
         justifyContent: 'space-between',
     },
     textInput: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 22,
+        backgroundColor: '#F8F8F8',
+        borderRadius: 24,
         borderWidth: 1,
-        borderColor: '#F0F0F0',
+        borderColor: '#E8E8E8',
         paddingHorizontal: 20,
-        paddingVertical: 14,
-        marginHorizontal: 0,
-        marginLeft: 0,
+        paddingVertical: 12,
         marginRight: 12,
         fontSize: 16,
         fontFamily: 'regular',
-        color: '#000000',
+        color: '#1A1A1A',
         flex: 1,
+        minHeight: 48,
         maxHeight: 100,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 1,
+        lineHeight: 20,
     },
     sendContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 0,
-        marginBottom: 0,
-        paddingRight: 0,
         marginLeft: 0,
     },
     sendButton: {
         backgroundColor: '#F09235',
-        borderRadius: 22,
-        width: 44,
-        height: 44,
+        borderRadius: 24,
+        width: 48,
+        height: 48,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: '#F09235',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 3,
+        elevation: 4,
     },
     emptyChat: {
         position: 'absolute',
