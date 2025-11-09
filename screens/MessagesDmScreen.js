@@ -61,8 +61,8 @@ export const MessagesDmScreen = ({route}) => {
 
                 // Handle message.list response - загружаем полный список сообщений
                 if (rawData.source === 'message.list' && rawData.data && rawData.data.messages) {
-                    // Бэкенд теперь возвращает сообщения в порядке возрастания (старые первыми)
-                    // GiftedChat ожидает старые сообщения первыми, поэтому используем массив как есть
+                    // Бэкенд возвращает сообщения в порядке возрастания (старые первыми)
+                    // GiftedChat с inverted={true} ожидает старые сообщения первыми
                     const receivedMessages = rawData.data.messages.map(msg => ({
                         _id: msg._id,
                         text: msg.text,
@@ -199,8 +199,8 @@ export const MessagesDmScreen = ({route}) => {
                 console.log('REST API messages received:', result);
 
                 if (result.messages && Array.isArray(result.messages)) {
-                    // Бэкенд теперь возвращает сообщения в порядке возрастания (старые первыми)
-                    // GiftedChat ожидает старые сообщения первыми, поэтому используем массив как есть
+                    // Бэкенд возвращает сообщения в порядке возрастания (старые первыми)
+                    // GiftedChat с inverted={true} ожидает старые сообщения первыми
                     const formattedMessages = result.messages.map(msg => ({
                         _id: msg._id,
                         text: msg.text,
@@ -456,7 +456,6 @@ export const MessagesDmScreen = ({route}) => {
                     renderInputToolbar={() => null}
                     renderActions={() => null}
                     isKeyboardInternallyHandled={false}
-                    inverted={true}
                 />
             </View>
             {/* Кастомный Input Toolbar - вынесен за пределы chatWrapper */}
