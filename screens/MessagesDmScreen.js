@@ -450,12 +450,13 @@ export const MessagesDmScreen = ({route}) => {
                     showUserAvatar={true}
                     renderEmpty={() => null}
                     listViewProps={{
-                        style: { flex: 1, paddingBottom: 0 },
-                        contentContainerStyle: { flexGrow: 1, paddingBottom: 100 },
+                        style: { flex: 1 },
+                        contentContainerStyle: { flexGrow: 1, paddingBottom: 20 },
                     }}
                     renderInputToolbar={() => null}
                     renderActions={() => null}
                     isKeyboardInternallyHandled={false}
+                    inverted={true}
                 />
             </View>
             {/* Кастомный Input Toolbar - вынесен за пределы chatWrapper */}
@@ -677,7 +678,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'visible',
-        paddingBottom: 80,
     },
     customInputToolbar: {
         backgroundColor: '#FFFFFF',
