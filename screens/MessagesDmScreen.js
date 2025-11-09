@@ -399,13 +399,11 @@ export const MessagesDmScreen = ({route}) => {
                         }
                         // Принудительно показываем input toolbar
                         return (
-                            <View style={styles.inputToolbarWrapper}>
-                                <InputToolbar 
-                                    {...props} 
-                                    containerStyle={[styles.inputToolbarContainer, props.containerStyle]}
-                                    primaryStyle={styles.inputToolbarPrimary}
-                                />
-                            </View>
+                            <InputToolbar 
+                                {...props} 
+                                containerStyle={[styles.inputToolbarContainer, props.containerStyle]}
+                                primaryStyle={styles.inputToolbarPrimary}
+                            />
                         );
                     }}
                     isKeyboardInternallyHandled={false}
@@ -543,18 +541,6 @@ const styles = StyleSheet.create({
         minHeight: 60,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        position: 'relative',
-        zIndex: 1000,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-    },
-    inputToolbarWrapper: {
-        position: 'relative',
-        zIndex: 1000,
-        backgroundColor: '#FFFFFF',
-        width: '100%',
     },
     inputToolbarPrimary: {
         backgroundColor: '#FFFFFF',
