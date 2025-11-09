@@ -1,7 +1,7 @@
 import { useGetPostByIdQuery } from '../api';
 import { Video, ResizeMode } from 'expo-av';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
+import { GiftedChat } from 'react-native-gifted-chat';
 import { View, Text, TextInput, TouchableOpacity, Platform, Image, Dimensions, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +18,12 @@ export const MessagesDmScreen = ({route}) => {
     const user = useSelector(state => state.auth);
     const { t } = useTranslation();
     const [messages, setMessages] = useState([]);
+    const [inputText, setInputText] = useState('');
     const video = useRef(null);
     const socketRef = useRef(null);
     const restApiLoadedRef = useRef(false); // Флаг для отслеживания загрузки через REST API
     const isMountedRef = useRef(true); // Флаг для отслеживания монтирования компонента
+    const inputRef = useRef(null);
     const {height, width} = Dimensions.get('window')
 
     // Создание и управление WebSocket
@@ -239,6 +241,46 @@ export const MessagesDmScreen = ({route}) => {
         }
     }, [post_id]); // Убрал refetch из зависимостей, чтобы избежать бесконечного цикла
 
+    const handleSendMessage = useCallback(() => {
+        const messageText = inputText.trim();
+        
+        if (messageText === '' || !socketRef.current) {
+            return;
+        }
+            
+        const newMessage = {
+            _id: uuid.v4(),
+            text: messageText,
+            createdAt: new Date(),
+            user: {
+                _id: user.user.id,
+                name: user.user.username,
+                avatar: user.user.profile_image 
+                    ? `https://market.qorgau-city.kz${user.user.profile_image}`
+                    : undefined
+            },
+        };
+
+        if (isMountedRef.current) {
+            setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessage));
+            setInputText(''); // Очищаем поле ввода
+        }
+
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            socketRef.current.send(
+                JSON.stringify({
+                    source: 'message.send',
+                    connectionId: connection_id,
+                    user_receiver: receiver, 
+                    message: messageText,
+                    post_id: post_id || 0,
+                })
+            );
+        } else {
+            console.error('WebSocket is not open');
+        }
+    }, [connection_id, receiver, user, inputText]);
+
     const onSend = useCallback((newMessages) => {
         const messageText = newMessages[0].text;
         
@@ -270,7 +312,7 @@ export const MessagesDmScreen = ({route}) => {
                     connectionId: connection_id,
                     user_receiver: receiver, 
                     message: messageText,
-                    post_id: post_id || 0,  // Добавляем post_id в данные
+                    post_id: post_id || 0,
                 })
             );
         } else {
@@ -365,50 +407,47 @@ export const MessagesDmScreen = ({route}) => {
                             ? `https://market.qorgau-city.kz${user.user.profile_image}`
                             : undefined
                     }}
-                    placeholder="Введите сообщение..."
                     showUserAvatar={true}
-                    alwaysShowSend={true}
-                    minInputToolbarHeight={70}
-                    bottomOffset={0}
-                    textInputStyle={styles.textInput}
                     renderEmpty={() => null}
                     listViewProps={{
                         style: { flex: 1, paddingBottom: 0 },
-                        contentContainerStyle: { flexGrow: 1, paddingBottom: 120 },
+                        contentContainerStyle: { flexGrow: 1, paddingBottom: 100 },
                     }}
-                    renderInputToolbar={(props) => {
-                        if (!props) return null;
-                        return (
-                            <InputToolbar 
-                                {...props} 
-                                containerStyle={[styles.inputToolbarContainer, props.containerStyle]}
-                                primaryStyle={styles.inputToolbarPrimary}
-                            />
-                        );
-                    }}
-                    renderSend={(props) => {
-                        if (!props || !props.text || props.text.trim() === '') {
-                            return null;
-                        }
-                        return (
-                            <TouchableOpacity
-                                onPress={() => {
-                                    if (props.onSend) {
-                                        props.onSend([{ text: props.text.trim() }], true);
-                                    }
-                                }}
-                                style={styles.sendContainer}
-                                activeOpacity={0.8}
-                            >
-                                <View style={styles.sendButton}>
-                                    <Ionicons name="paper-plane" size={20} color="#FFFFFF" />
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    }}
+                    renderInputToolbar={() => null}
                     renderActions={() => null}
                     isKeyboardInternallyHandled={false}
                 />
+                {/* Кастомный Input Toolbar */}
+                <View style={styles.customInputToolbar}>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            ref={inputRef}
+                            style={styles.customTextInput}
+                            placeholder="Введите сообщение..."
+                            placeholderTextColor="#999"
+                            value={inputText}
+                            onChangeText={setInputText}
+                            multiline
+                            maxLength={1000}
+                            textAlignVertical="center"
+                        />
+                        <TouchableOpacity
+                            onPress={handleSendMessage}
+                            disabled={inputText.trim() === ''}
+                            style={[
+                                styles.customSendButton,
+                                inputText.trim() === '' && styles.customSendButtonDisabled
+                            ]}
+                            activeOpacity={0.7}
+                        >
+                            <Ionicons 
+                                name="paper-plane" 
+                                size={20} 
+                                color={inputText.trim() === '' ? '#CCCCCC' : '#FFFFFF'} 
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
         </View>
     );
@@ -532,55 +571,47 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'visible',
-        paddingBottom: 100,
     },
-    inputToolbarContainer: {
+    customInputToolbar: {
         backgroundColor: '#FFFFFF',
-        borderTopWidth: 0,
         paddingTop: 8,
         paddingBottom: Platform.OS === 'ios' ? 24 : 12,
         paddingHorizontal: 16,
-        minHeight: 70,
-        alignItems: 'center',
+        borderTopWidth: 1,
+        borderTopColor: '#F0F0F0',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: -2 },
         shadowOpacity: 0.08,
         shadowRadius: 8,
         elevation: 5,
     },
-    inputToolbarPrimary: {
-        backgroundColor: 'transparent',
+    inputContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-end',
         width: '100%',
-        justifyContent: 'space-between',
     },
-    textInput: {
+    customTextInput: {
+        flex: 1,
         backgroundColor: '#F8F8F8',
         borderRadius: 24,
         borderWidth: 1,
         borderColor: '#E8E8E8',
         paddingHorizontal: 20,
-        paddingVertical: 12,
+        paddingTop: 12,
+        paddingBottom: 12,
         marginRight: 12,
         fontSize: 16,
         fontFamily: 'regular',
         color: '#1A1A1A',
-        flex: 1,
         minHeight: 48,
         maxHeight: 100,
         lineHeight: 20,
     },
-    sendContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 0,
-    },
-    sendButton: {
-        backgroundColor: '#F09235',
-        borderRadius: 24,
+    customSendButton: {
         width: 48,
         height: 48,
+        borderRadius: 24,
+        backgroundColor: '#F09235',
         justifyContent: 'center',
         alignItems: 'center',
         shadowColor: '#F09235',
@@ -588,6 +619,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 4,
+    },
+    customSendButtonDisabled: {
+        backgroundColor: '#E0E0E0',
+        shadowOpacity: 0,
+        elevation: 0,
     },
     emptyChat: {
         position: 'absolute',
