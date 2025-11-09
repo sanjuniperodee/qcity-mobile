@@ -399,11 +399,19 @@ export const MessagesDmScreen = ({route}) => {
                             return null;
                         }
                         return (
-                            <Send {...props} containerStyle={styles.sendContainer}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (props.onSend) {
+                                        props.onSend([{ text: props.text.trim() }], true);
+                                    }
+                                }}
+                                style={styles.sendContainer}
+                                activeOpacity={0.7}
+                            >
                                 <View style={styles.sendButton}>
-                                    <Ionicons name="send" size={20} color="#FFFFFF" />
+                                    <Ionicons name="paper-plane" size={20} color="#FFFFFF" />
                                 </View>
-                            </Send>
+                            </TouchableOpacity>
                         );
                     }}
                     renderActions={() => null}
