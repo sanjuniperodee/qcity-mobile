@@ -387,7 +387,7 @@ export const MessagesDmScreen = ({route}) => {
                             <View style={styles.postHeader}>
                                 <Text style={styles.postTitle} numberOfLines={2}>{data.title}</Text>
                                 <View style={styles.priceContainer}>
-                                    <Text style={styles.postCost}>{data.cost}</Text>
+                                    <Text style={styles.postCost}>{data.cost} ₸</Text>
                                 </View>
                             </View>
                             
