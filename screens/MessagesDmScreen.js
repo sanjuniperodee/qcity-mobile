@@ -62,7 +62,7 @@ export const MessagesDmScreen = ({route}) => {
                 // Handle message.list response - загружаем полный список сообщений
                 if (rawData.source === 'message.list' && rawData.data && rawData.data.messages) {
                     // Бэкенд возвращает сообщения в порядке возрастания (старые первыми)
-                    // GiftedChat с inverted={true} ожидает старые сообщения первыми
+                    // GiftedChat ожидает сообщения в порядке от старых к новым для правильного отображения
                     const receivedMessages = rawData.data.messages.map(msg => ({
                         _id: msg._id,
                         text: msg.text,
@@ -77,15 +77,15 @@ export const MessagesDmScreen = ({route}) => {
                     }));
                     console.log('Setting messages from message.list:', receivedMessages.length);
                     if (isMountedRef.current) {
-                        setMessages(receivedMessages);
+                        // Переворачиваем массив, чтобы новые сообщения были снизу
+                        setMessages(receivedMessages.reverse());
                     }
 
                 // Handle message.send response - обновляем список сообщений (бэкенд отправляет полный список)
                 } else if (rawData.source === 'message.send' && rawData.data) {
                     // Если есть полный список сообщений, обновляем его
                     if (rawData.data.messages && Array.isArray(rawData.data.messages)) {
-                        // Бэкенд теперь возвращает сообщения в порядке возрастания (старые первыми)
-                        // GiftedChat ожидает старые сообщения первыми, поэтому используем массив как есть
+                        // Бэкенд возвращает сообщения в порядке возрастания (старые первыми)
                         const receivedMessages = rawData.data.messages.map(msg => ({
                             _id: msg._id,
                             text: msg.text,
@@ -100,7 +100,8 @@ export const MessagesDmScreen = ({route}) => {
                         }));
                         console.log('Updating messages from message.send:', receivedMessages.length);
                         if (isMountedRef.current) {
-                            setMessages(receivedMessages);
+                            // Переворачиваем массив, чтобы новые сообщения были снизу
+                            setMessages(receivedMessages.reverse());
                         }
                     } 
                     // Если есть только одно новое сообщение, добавляем его
@@ -200,7 +201,6 @@ export const MessagesDmScreen = ({route}) => {
 
                 if (result.messages && Array.isArray(result.messages)) {
                     // Бэкенд возвращает сообщения в порядке возрастания (старые первыми)
-                    // GiftedChat с inverted={true} ожидает старые сообщения первыми
                     const formattedMessages = result.messages.map(msg => ({
                         _id: msg._id,
                         text: msg.text,
@@ -215,7 +215,8 @@ export const MessagesDmScreen = ({route}) => {
                     }));
                     console.log('Setting messages from REST API:', formattedMessages.length);
                     if (isMountedRef.current) {
-                        setMessages(formattedMessages);
+                        // Переворачиваем массив, чтобы новые сообщения были снизу
+                        setMessages(formattedMessages.reverse());
                         restApiLoadedRef.current = true;
                     }
                 }
@@ -456,6 +457,7 @@ export const MessagesDmScreen = ({route}) => {
                     renderInputToolbar={() => null}
                     renderActions={() => null}
                     isKeyboardInternallyHandled={false}
+                    inverted={true}
                 />
             </View>
             {/* Кастомный Input Toolbar - вынесен за пределы chatWrapper */}
