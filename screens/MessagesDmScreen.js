@@ -391,22 +391,19 @@ export const MessagesDmScreen = ({route}) => {
                         );
                     }}
                     renderSend={(props) => {
-                        if (!props || !props.text || props.text.trim() === '') {
+                        if (!props) {
+                            return null;
+                        }
+                        // Показываем кнопку только если есть текст
+                        if (!props.text || props.text.trim() === '') {
                             return null;
                         }
                         return (
-                            <TouchableOpacity
-                                onPress={() => {
-                                    if (props.onSend) {
-                                        props.onSend([{ text: props.text.trim() }], true);
-                                    }
-                                }}
-                                style={styles.sendContainer}
-                            >
+                            <Send {...props} containerStyle={styles.sendContainer}>
                                 <View style={styles.sendButton}>
                                     <Ionicons name="send" size={20} color="#FFFFFF" />
                                 </View>
-                            </TouchableOpacity>
+                            </Send>
                         );
                     }}
                     renderActions={() => null}
@@ -543,7 +540,7 @@ const styles = StyleSheet.create({
         borderTopColor: '#F0F0F0',
         paddingBottom: Platform.OS === 'ios' ? 20 : 10,
         minHeight: 70,
-        paddingHorizontal: 12,
+        paddingHorizontal: 16,
         paddingVertical: 10,
         alignItems: 'center',
         shadowColor: '#000',
@@ -556,6 +553,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         flexDirection: 'row',
         alignItems: 'center',
+        width: '100%',
+        justifyContent: 'space-between',
     },
     textInput: {
         backgroundColor: '#FFFFFF',
@@ -566,7 +565,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         marginHorizontal: 0,
         marginLeft: 0,
-        marginRight: 8,
+        marginRight: 12,
         fontSize: 16,
         fontFamily: 'regular',
         color: '#000000',
@@ -584,6 +583,7 @@ const styles = StyleSheet.create({
         marginRight: 0,
         marginBottom: 0,
         paddingRight: 0,
+        marginLeft: 0,
     },
     sendButton: {
         backgroundColor: '#F09235',
