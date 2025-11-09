@@ -1,7 +1,7 @@
 import { useGetPostByIdQuery } from '../api';
 import { Video, ResizeMode } from 'expo-av';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { View,Text, TextInput, TouchableOpacity, Platform, Image,Dimensions, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -273,6 +273,8 @@ export const MessagesDmScreen = ({route}) => {
     }, [connection_id, receiver, user]);
 
     console.log('MessagesDmScreen render - messages count:', messages.length, 'connection_id:', connection_id);
+    console.log('MessagesDmScreen - user:', user?.user?.id, 'username:', user?.user?.username);
+    console.log('MessagesDmScreen - chatWrapper style:', styles.chatWrapper);
 
     // Проверяем наличие обязательных параметров и данных
     if (!connection_id) {
@@ -361,6 +363,7 @@ export const MessagesDmScreen = ({route}) => {
                     showUserAvatar={true}
                     alwaysShowSend={true}
                     minInputToolbarHeight={60}
+                    bottomOffset={0}
                     textInputStyle={{
                         backgroundColor: '#FFFFFF',
                         borderRadius: 20,
@@ -371,11 +374,19 @@ export const MessagesDmScreen = ({route}) => {
                         marginHorizontal: 5,
                         fontSize: 16,
                     }}
-                    renderEmpty={() => (
-                        <View style={styles.emptyChat}>
-                            <Text style={styles.emptyChatText}>Нет сообщений. Начните диалог!</Text>
-                        </View>
-                    )}
+                    renderEmpty={() => null}
+                    listViewProps={{
+                        style: { flex: 1 },
+                    }}
+                    renderInputToolbar={(props) => {
+                        // Явно рендерим input toolbar, чтобы он всегда был виден
+                        console.log('Rendering InputToolbar with props:', Object.keys(props || {}));
+                        if (!props) {
+                            console.error('InputToolbar props are undefined!');
+                            return null;
+                        }
+                        return <InputToolbar {...props} containerStyle={styles.inputToolbarContainer} />;
+                    }}
                 />
             </View>
         </View>
@@ -493,6 +504,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         width: '100%',
         position: 'relative',
+        minHeight: 200,
+    },
+    inputToolbarContainer: {
+        backgroundColor: '#FFFFFF',
+        borderTopWidth: 1,
+        borderTopColor: '#E0E0E0',
+        paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+        minHeight: 60,
     },
     emptyChat: {
         position: 'absolute',
