@@ -353,44 +353,82 @@ export const MessagesDmScreen = ({route}) => {
             {/* Карточка объявления - показываем только если post_id существует и не равен 0 */}
             {post_id && post_id !== 0 && data && data.images && data.images.length > 0 ? 
                 <View style={styles.postCard}>
-                    <View style={styles.postCardContent}>
-                        <View style={styles.postCardInner}>
-                            {data.images[0].type === 'video' ? 
-                                <Video
-                                    isMuted={true}
-                                    ref={video}
-                                    style={styles.postImage}
-                                    source={{
-                                        uri: `${data.images[0].image}`,
-                                    }}
-                                    resizeMode={ResizeMode.COVER}
-                                    isLooping
-                                />
-                            :
-                                <Image style={styles.postImage} source={{uri:`${data.images[0].image}`}}/>
-                            }
-                            <View style={styles.postInfo}>
-                                <View style={styles.postHeader}>
-                                    <View style={styles.postTitleContainer}>
-                                        <Text style={styles.postTitle}>{data.title}</Text>
-                                        <Text style={styles.postCost}>{data.cost}</Text>
-                                    </View>
+                    <View style={styles.postCardInner}>
+                        {/* Изображение с градиентным оверлеем */}
+                        <View style={styles.postImageWrapper}>
+                            <View style={styles.postImageContainer}>
+                                {data.images[0].type === 'video' ? 
+                                    <Video
+                                        isMuted={true}
+                                        ref={video}
+                                        style={styles.postImage}
+                                        source={{
+                                            uri: `${data.images[0].image}`,
+                                        }}
+                                        resizeMode={ResizeMode.COVER}
+                                        isLooping
+                                    />
+                                :
+                                    <Image 
+                                        style={styles.postImage} 
+                                        source={{uri: data.images[0].image}}
+                                    />
+                                }
+                            </View>
+                            {/* Бейдж состояния */}
+                            <View style={styles.conditionBadge}>
+                                <Text style={styles.conditionBadgeText}>{data.condition}</Text>
+                            </View>
+                        </View>
+                        
+                        {/* Информация о посте */}
+                        <View style={styles.postInfo}>
+                            {/* Заголовок и цена */}
+                            <View style={styles.postHeader}>
+                                <Text style={styles.postTitle} numberOfLines={2}>{data.title}</Text>
+                                <View style={styles.priceContainer}>
+                                    <Text style={styles.postCost}>{data.cost}</Text>
                                 </View>
-                                <View style={styles.postTags}>
-                                    <View style={styles.tag}>
-                                        <Text style={styles.tagText}>{data.condition}</Text>
+                            </View>
+                            
+                            {/* Теги с иконками */}
+                            <View style={styles.postTags}>
+                                {data.mortage ? (
+                                    <View style={styles.featureTag}>
+                                        <View style={styles.featureTagIcon}>
+                                            <Ionicons name="card" size={12} color="#F09235" />
+                                        </View>
+                                        <Text style={styles.featureTagText}>{t('messages.installment')}</Text>
                                     </View>
-                                    {data.mortage ?
-                                        <View style={styles.tag}>
-                                            <Text style={styles.tagText}>{t('messages.installment')}</Text>
-                                        </View> : null}
-                                    {data.delivery ?
-                                        <View style={styles.tag}>
-                                            <Text style={styles.tagText}>{t('messages.delivery')}</Text>
-                                        </View> : null}
-                                </View>
-                                <Text style={styles.postLocation}>{data.geolocation}</Text>
-                                {data.date && <Text style={styles.postDate}>{data.date}</Text>}
+                                ) : null}
+                                {data.delivery ? (
+                                    <View style={styles.featureTag}>
+                                        <View style={styles.featureTagIcon}>
+                                            <Ionicons name="car" size={12} color="#F09235" />
+                                        </View>
+                                        <Text style={styles.featureTagText}>{t('messages.delivery')}</Text>
+                                    </View>
+                                ) : null}
+                            </View>
+                            
+                            {/* Метаданные */}
+                            <View style={styles.postMeta}>
+                                {data.geolocation ? (
+                                    <View style={styles.metaItem}>
+                                        <View style={styles.metaIconContainer}>
+                                            <Ionicons name="location" size={14} color="#F09235" />
+                                        </View>
+                                        <Text style={styles.postLocation} numberOfLines={1}>{data.geolocation}</Text>
+                                    </View>
+                                ) : null}
+                                {data.date ? (
+                                    <View style={styles.metaItem}>
+                                        <View style={styles.metaIconContainer}>
+                                            <Ionicons name="time" size={14} color="#F09235" />
+                                        </View>
+                                        <Text style={styles.postDate}>{data.date}</Text>
+                                    </View>
+                                ) : null}
                             </View>
                         </View>
                     </View>
@@ -487,82 +525,148 @@ const styles = StyleSheet.create({
     },
     postCard: {
         marginTop: 20,
-        width: '90%',
-        alignSelf: 'center',
-        marginBottom: 10,
-        maxHeight: 150,
-    },
-    postCardContent: {
-        marginBottom: 10,
+        marginHorizontal: 16,
+        marginBottom: 16,
     },
     postCardInner: {
         flexDirection: 'row',
-        borderWidth: 1,
-        borderColor: '#F09235',
-        borderRadius: 10,
-        position: 'relative',
-        alignItems: 'center',
         backgroundColor: '#FFFFFF',
-        padding: 5,
+        borderRadius: 20,
+        padding: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.12,
+        shadowRadius: 12,
+        elevation: 6,
+        borderWidth: 1,
+        borderColor: '#F0F0F0',
+    },
+    postImageWrapper: {
+        position: 'relative',
+        marginRight: 16,
+    },
+    postImageContainer: {
+        width: 140,
+        height: 140,
+        borderRadius: 16,
+        overflow: 'hidden',
+        backgroundColor: '#F8F8F8',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     postImage: {
-        width: 100,
-        height: 100,
-        borderRadius: 5,
-        marginRight: 10,
+        width: '100%',
+        height: '100%',
+    },
+    conditionBadge: {
+        position: 'absolute',
+        top: 8,
+        left: 8,
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    conditionBadgeText: {
+        fontFamily: 'bold',
+        fontSize: 11,
+        color: '#1A1A1A',
     },
     postInfo: {
-        paddingHorizontal: 7,
         flex: 1,
+        justifyContent: 'space-between',
     },
     postHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    postTitleContainer: {
-        flex: 1,
+        marginBottom: 12,
     },
     postTitle: {
-        marginTop: 5,
-        fontSize: 14,
-        minHeight: 20,
+        fontSize: 16,
         fontFamily: 'bold',
+        color: '#1A1A1A',
+        lineHeight: 22,
+        marginBottom: 8,
+    },
+    priceContainer: {
+        backgroundColor: '#FFF5E6',
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        alignSelf: 'flex-start',
     },
     postCost: {
-        fontFamily: 'medium',
-        fontSize: 12,
-        marginTop: 5,
+        fontFamily: 'bold',
+        fontSize: 18,
+        color: '#F09235',
     },
     postTags: {
         flexDirection: 'row',
-        marginTop: 4,
         flexWrap: 'wrap',
+        marginBottom: 12,
     },
-    tag: {
-        borderRadius: 2,
-        overflow: 'hidden',
-        marginRight: 2,
-        marginBottom: 2,
+    featureTag: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFF5E6',
+        borderRadius: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        marginRight: 8,
+        marginBottom: 6,
+        borderWidth: 1,
+        borderColor: '#FFE5CC',
     },
-    tagText: {
-        fontFamily: 'bold-italic',
-        backgroundColor: '#D6D6D6',
-        fontSize: 9.5,
-        color: '#fff',
-        paddingHorizontal: 3,
+    featureTagIcon: {
+        marginRight: 6,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    featureTagText: {
+        fontFamily: 'medium',
+        fontSize: 11,
+        color: '#F09235',
+    },
+    postMeta: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: 4,
+    },
+    metaItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 16,
+        marginBottom: 4,
+    },
+    metaIconContainer: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: '#FFF5E6',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 8,
     },
     postLocation: {
         fontFamily: 'regular',
-        fontSize: 10,
-        color: '#96949D',
-        marginTop: 5,
+        fontSize: 12,
+        color: '#666',
+        flex: 1,
     },
     postDate: {
         fontFamily: 'regular',
-        fontSize: 10,
-        color: '#96949D',
-        marginTop: 5,
+        fontSize: 12,
+        color: '#666',
     },
     chatWrapper: {
         flex: 1,
