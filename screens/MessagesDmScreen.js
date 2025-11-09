@@ -56,28 +56,11 @@ export const MessagesDmScreen = ({route}) => {
 
                 // Handle message.list response - загружаем полный список сообщений
                 if (rawData.source === 'message.list' && rawData.data && rawData.data.messages) {
-                    const receivedMessages = rawData.data.messages.map(msg => ({
-                        _id: msg._id,
-                        text: msg.text,
-                        createdAt: new Date(msg.created),
-                        user: {
-                            _id: msg.user._id,
-                            name: msg.user.username,
-                            avatar: msg.user.profile_image 
-                                ? `https://market.qorgau-city.kz${msg.user.profile_image}`
-                                : undefined
-                        }
-                    }));
-                    console.log('Setting messages from message.list:', receivedMessages.length);
-                    if (isMountedRef.current) {
-                        setMessages(receivedMessages);
-                    }
-
-                // Handle message.send response - обновляем список сообщений (бэкенд отправляет полный список)
-                } else if (rawData.source === 'message.send' && rawData.data) {
-                    // Если есть полный список сообщений, обновляем его
-                    if (rawData.data.messages && Array.isArray(rawData.data.messages)) {
-                        const receivedMessages = rawData.data.messages.map(msg => ({
+                    // Бэкенд возвращает сообщения в порядке убывания (новые первыми)
+                    // GiftedChat ожидает старые сообщения первыми, поэтому переворачиваем массив
+                    const receivedMessages = rawData.data.messages
+                        .reverse()  // Переворачиваем массив для правильного порядка
+                        .map(msg => ({
                             _id: msg._id,
                             text: msg.text,
                             createdAt: new Date(msg.created),
@@ -89,6 +72,31 @@ export const MessagesDmScreen = ({route}) => {
                                     : undefined
                             }
                         }));
+                    console.log('Setting messages from message.list:', receivedMessages.length);
+                    if (isMountedRef.current) {
+                        setMessages(receivedMessages);
+                    }
+
+                // Handle message.send response - обновляем список сообщений (бэкенд отправляет полный список)
+                } else if (rawData.source === 'message.send' && rawData.data) {
+                    // Если есть полный список сообщений, обновляем его
+                    if (rawData.data.messages && Array.isArray(rawData.data.messages)) {
+                        // Бэкенд возвращает сообщения в порядке убывания (новые первыми)
+                        // GiftedChat ожидает старые сообщения первыми, поэтому переворачиваем массив
+                        const receivedMessages = rawData.data.messages
+                            .reverse()  // Переворачиваем массив для правильного порядка
+                            .map(msg => ({
+                                _id: msg._id,
+                                text: msg.text,
+                                createdAt: new Date(msg.created),
+                                user: {
+                                    _id: msg.user._id,
+                                    name: msg.user.username,
+                                    avatar: msg.user.profile_image 
+                                        ? `https://market.qorgau-city.kz${msg.user.profile_image}`
+                                        : undefined
+                                }
+                            }));
                         console.log('Updating messages from message.send:', receivedMessages.length);
                         if (isMountedRef.current) {
                             setMessages(receivedMessages);
@@ -121,7 +129,11 @@ export const MessagesDmScreen = ({route}) => {
                         }
                     }
                 } else {
-                    console.log('WebSocket message format not recognized:', rawData);
+                    // Игнорируем сообщения без source (это могут быть тестовые сообщения от бэкенда)
+                    // Такие сообщения не содержат полезной информации для чата
+                    if (rawData.message !== null && rawData.message !== undefined) {
+                        console.log('Ignoring WebSocket message without source:', rawData);
+                    }
                 }
             } catch (error) {
                 console.error('Error parsing WebSocket message:', error);
@@ -160,12 +172,9 @@ export const MessagesDmScreen = ({route}) => {
                 return;
             }
 
-            // Загружаем через REST API только один раз при монтировании
-            // WebSocket будет обновлять сообщения в реальном времени
-            if (restApiLoadedRef.current) {
-                console.log('REST API already loaded, skipping fetch');
-                return;
-            }
+            // Сбрасываем флаг при изменении connection_id
+            restApiLoadedRef.current = false;
+            isMountedRef.current = true;
 
             try {
                 console.log('Fetching messages via REST API for connection_id:', connection_id);
@@ -189,18 +198,22 @@ export const MessagesDmScreen = ({route}) => {
                 console.log('REST API messages received:', result);
 
                 if (result.messages && Array.isArray(result.messages)) {
-                    const formattedMessages = result.messages.map(msg => ({
-                        _id: msg._id,
-                        text: msg.text,
-                        createdAt: new Date(msg.created),
-                        user: {
-                            _id: msg.user._id,
-                            name: msg.user.username,
-                            avatar: msg.user.profile_image 
-                                ? `https://market.qorgau-city.kz${msg.user.profile_image}`
-                                : undefined
-                        }
-                    }));
+                    // Бэкенд возвращает сообщения в порядке убывания (новые первыми)
+                    // GiftedChat ожидает старые сообщения первыми, поэтому переворачиваем массив
+                    const formattedMessages = result.messages
+                        .reverse()  // Переворачиваем массив для правильного порядка
+                        .map(msg => ({
+                            _id: msg._id,
+                            text: msg.text,
+                            createdAt: new Date(msg.created),
+                            user: {
+                                _id: msg.user._id,
+                                name: msg.user.username,
+                                avatar: msg.user.profile_image 
+                                    ? `https://market.qorgau-city.kz${msg.user.profile_image}`
+                                    : undefined
+                            }
+                        }));
                     console.log('Setting messages from REST API:', formattedMessages.length);
                     if (isMountedRef.current) {
                         setMessages(formattedMessages);
@@ -212,9 +225,6 @@ export const MessagesDmScreen = ({route}) => {
             }
         };
 
-        // Сбрасываем флаг при изменении connection_id
-        restApiLoadedRef.current = false;
-        isMountedRef.current = true;
         fetchMessages();
         
         return () => {
@@ -265,6 +275,7 @@ export const MessagesDmScreen = ({route}) => {
                     connectionId: connection_id,
                     user_receiver: receiver, 
                     message: messageText,
+                    post_id: post_id || 0,  // Добавляем post_id в данные
                 })
             );
         } else {
@@ -386,12 +397,15 @@ export const MessagesDmScreen = ({route}) => {
                             console.error('InputToolbar props are undefined!');
                             return null;
                         }
+                        // Принудительно показываем input toolbar
                         return (
-                            <InputToolbar 
-                                {...props} 
-                                containerStyle={[styles.inputToolbarContainer, props.containerStyle]}
-                                primaryStyle={styles.inputToolbarPrimary}
-                            />
+                            <View style={styles.inputToolbarWrapper}>
+                                <InputToolbar 
+                                    {...props} 
+                                    containerStyle={[styles.inputToolbarContainer, props.containerStyle]}
+                                    primaryStyle={styles.inputToolbarPrimary}
+                                />
+                            </View>
                         );
                     }}
                     isKeyboardInternallyHandled={false}
@@ -531,6 +545,16 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         position: 'relative',
         zIndex: 1000,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+    },
+    inputToolbarWrapper: {
+        position: 'relative',
+        zIndex: 1000,
+        backgroundColor: '#FFFFFF',
+        width: '100%',
     },
     inputToolbarPrimary: {
         backgroundColor: '#FFFFFF',
