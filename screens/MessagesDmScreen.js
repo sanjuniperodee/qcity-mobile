@@ -376,7 +376,8 @@ export const MessagesDmScreen = ({route}) => {
                     }}
                     renderEmpty={() => null}
                     listViewProps={{
-                        style: { flex: 1 },
+                        style: { flex: 1, paddingBottom: 0 },
+                        contentContainerStyle: { flexGrow: 1, paddingBottom: 0 },
                     }}
                     renderInputToolbar={(props) => {
                         // Явно рендерим input toolbar, чтобы он всегда был виден
@@ -385,8 +386,15 @@ export const MessagesDmScreen = ({route}) => {
                             console.error('InputToolbar props are undefined!');
                             return null;
                         }
-                        return <InputToolbar {...props} containerStyle={styles.inputToolbarContainer} />;
+                        return (
+                            <InputToolbar 
+                                {...props} 
+                                containerStyle={[styles.inputToolbarContainer, props.containerStyle]}
+                                primaryStyle={styles.inputToolbarPrimary}
+                            />
+                        );
                     }}
+                    isKeyboardInternallyHandled={false}
                 />
             </View>
         </View>
@@ -419,6 +427,9 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100%',
     },
     postCard: {
         marginTop: 20,
@@ -505,6 +516,10 @@ const styles = StyleSheet.create({
         width: '100%',
         position: 'relative',
         minHeight: 200,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'visible',
+        paddingBottom: 80, // Отступ снизу для нижней навигационной панели
     },
     inputToolbarContainer: {
         backgroundColor: '#FFFFFF',
@@ -512,6 +527,13 @@ const styles = StyleSheet.create({
         borderTopColor: '#E0E0E0',
         paddingBottom: Platform.OS === 'ios' ? 20 : 0,
         minHeight: 60,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        position: 'relative',
+        zIndex: 1000,
+    },
+    inputToolbarPrimary: {
+        backgroundColor: '#FFFFFF',
     },
     emptyChat: {
         position: 'absolute',
