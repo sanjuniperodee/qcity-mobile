@@ -56,11 +56,32 @@ export const MessagesDmScreen = ({route}) => {
 
                 // Handle message.list response - загружаем полный список сообщений
                 if (rawData.source === 'message.list' && rawData.data && rawData.data.messages) {
-                    // Бэкенд возвращает сообщения в порядке убывания (новые первыми)
-                    // GiftedChat ожидает старые сообщения первыми, поэтому переворачиваем массив
-                    const receivedMessages = rawData.data.messages
-                        .reverse()  // Переворачиваем массив для правильного порядка
-                        .map(msg => ({
+                    // Бэкенд теперь возвращает сообщения в порядке возрастания (старые первыми)
+                    // GiftedChat ожидает старые сообщения первыми, поэтому используем массив как есть
+                    const receivedMessages = rawData.data.messages.map(msg => ({
+                        _id: msg._id,
+                        text: msg.text,
+                        createdAt: new Date(msg.created),
+                        user: {
+                            _id: msg.user._id,
+                            name: msg.user.username,
+                            avatar: msg.user.profile_image 
+                                ? `https://market.qorgau-city.kz${msg.user.profile_image}`
+                                : undefined
+                        }
+                    }));
+                    console.log('Setting messages from message.list:', receivedMessages.length);
+                    if (isMountedRef.current) {
+                        setMessages(receivedMessages);
+                    }
+
+                // Handle message.send response - обновляем список сообщений (бэкенд отправляет полный список)
+                } else if (rawData.source === 'message.send' && rawData.data) {
+                    // Если есть полный список сообщений, обновляем его
+                    if (rawData.data.messages && Array.isArray(rawData.data.messages)) {
+                        // Бэкенд теперь возвращает сообщения в порядке возрастания (старые первыми)
+                        // GiftedChat ожидает старые сообщения первыми, поэтому используем массив как есть
+                        const receivedMessages = rawData.data.messages.map(msg => ({
                             _id: msg._id,
                             text: msg.text,
                             createdAt: new Date(msg.created),
@@ -72,31 +93,6 @@ export const MessagesDmScreen = ({route}) => {
                                     : undefined
                             }
                         }));
-                    console.log('Setting messages from message.list:', receivedMessages.length);
-                    if (isMountedRef.current) {
-                        setMessages(receivedMessages);
-                    }
-
-                // Handle message.send response - обновляем список сообщений (бэкенд отправляет полный список)
-                } else if (rawData.source === 'message.send' && rawData.data) {
-                    // Если есть полный список сообщений, обновляем его
-                    if (rawData.data.messages && Array.isArray(rawData.data.messages)) {
-                        // Бэкенд возвращает сообщения в порядке убывания (новые первыми)
-                        // GiftedChat ожидает старые сообщения первыми, поэтому переворачиваем массив
-                        const receivedMessages = rawData.data.messages
-                            .reverse()  // Переворачиваем массив для правильного порядка
-                            .map(msg => ({
-                                _id: msg._id,
-                                text: msg.text,
-                                createdAt: new Date(msg.created),
-                                user: {
-                                    _id: msg.user._id,
-                                    name: msg.user.username,
-                                    avatar: msg.user.profile_image 
-                                        ? `https://market.qorgau-city.kz${msg.user.profile_image}`
-                                        : undefined
-                                }
-                            }));
                         console.log('Updating messages from message.send:', receivedMessages.length);
                         if (isMountedRef.current) {
                             setMessages(receivedMessages);
@@ -198,22 +194,20 @@ export const MessagesDmScreen = ({route}) => {
                 console.log('REST API messages received:', result);
 
                 if (result.messages && Array.isArray(result.messages)) {
-                    // Бэкенд возвращает сообщения в порядке убывания (новые первыми)
-                    // GiftedChat ожидает старые сообщения первыми, поэтому переворачиваем массив
-                    const formattedMessages = result.messages
-                        .reverse()  // Переворачиваем массив для правильного порядка
-                        .map(msg => ({
-                            _id: msg._id,
-                            text: msg.text,
-                            createdAt: new Date(msg.created),
-                            user: {
-                                _id: msg.user._id,
-                                name: msg.user.username,
-                                avatar: msg.user.profile_image 
-                                    ? `https://market.qorgau-city.kz${msg.user.profile_image}`
-                                    : undefined
-                            }
-                        }));
+                    // Бэкенд теперь возвращает сообщения в порядке возрастания (старые первыми)
+                    // GiftedChat ожидает старые сообщения первыми, поэтому используем массив как есть
+                    const formattedMessages = result.messages.map(msg => ({
+                        _id: msg._id,
+                        text: msg.text,
+                        createdAt: new Date(msg.created),
+                        user: {
+                            _id: msg.user._id,
+                            name: msg.user.username,
+                            avatar: msg.user.profile_image 
+                                ? `https://market.qorgau-city.kz${msg.user.profile_image}`
+                                : undefined
+                        }
+                    }));
                     console.log('Setting messages from REST API:', formattedMessages.length);
                     if (isMountedRef.current) {
                         setMessages(formattedMessages);
