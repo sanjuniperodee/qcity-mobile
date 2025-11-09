@@ -6,6 +6,7 @@ import { View, Text, TextInput, TouchableOpacity, Platform, Image, Dimensions, K
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import uuid from 'react-native-uuid';
 
 export const MessagesDmScreen = ({route}) => {
@@ -17,6 +18,7 @@ export const MessagesDmScreen = ({route}) => {
     const { data, error, isLoading,refetch } = useGetPostByIdQuery(post_id || 0, { skip: !post_id || post_id === 0 });
     const user = useSelector(state => state.auth);
     const { t } = useTranslation();
+    const insets = useSafeAreaInsets();
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
     const video = useRef(null);
@@ -417,36 +419,36 @@ export const MessagesDmScreen = ({route}) => {
                     renderActions={() => null}
                     isKeyboardInternallyHandled={false}
                 />
-                {/* Кастомный Input Toolbar */}
-                <View style={styles.customInputToolbar}>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            ref={inputRef}
-                            style={styles.customTextInput}
-                            placeholder="Введите сообщение..."
-                            placeholderTextColor="#999"
-                            value={inputText}
-                            onChangeText={setInputText}
-                            multiline
-                            maxLength={1000}
-                            textAlignVertical="center"
+            </View>
+            {/* Кастомный Input Toolbar - вынесен за пределы chatWrapper */}
+            <View style={[styles.customInputToolbar, { paddingBottom: Math.max(insets.bottom, Platform.OS === 'ios' ? 24 : 12) + 60 }]}>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        ref={inputRef}
+                        style={styles.customTextInput}
+                        placeholder="Введите сообщение..."
+                        placeholderTextColor="#999"
+                        value={inputText}
+                        onChangeText={setInputText}
+                        multiline
+                        maxLength={1000}
+                        textAlignVertical="center"
+                    />
+                    <TouchableOpacity
+                        onPress={handleSendMessage}
+                        disabled={inputText.trim() === ''}
+                        style={[
+                            styles.customSendButton,
+                            inputText.trim() === '' && styles.customSendButtonDisabled
+                        ]}
+                        activeOpacity={0.7}
+                    >
+                        <Ionicons 
+                            name="paper-plane" 
+                            size={20} 
+                            color={inputText.trim() === '' ? '#CCCCCC' : '#FFFFFF'} 
                         />
-                        <TouchableOpacity
-                            onPress={handleSendMessage}
-                            disabled={inputText.trim() === ''}
-                            style={[
-                                styles.customSendButton,
-                                inputText.trim() === '' && styles.customSendButtonDisabled
-                            ]}
-                            activeOpacity={0.7}
-                        >
-                            <Ionicons 
-                                name="paper-plane" 
-                                size={20} 
-                                color={inputText.trim() === '' ? '#CCCCCC' : '#FFFFFF'} 
-                            />
-                        </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -571,11 +573,11 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'visible',
+        paddingBottom: 80,
     },
     customInputToolbar: {
         backgroundColor: '#FFFFFF',
         paddingTop: 8,
-        paddingBottom: Platform.OS === 'ios' ? 24 : 12,
         paddingHorizontal: 16,
         borderTopWidth: 1,
         borderTopColor: '#F0F0F0',
