@@ -77,6 +77,22 @@ export const EditPostScreen = ({route}) => {
   const [heating, setHeating] = useState('');
   const [house3, onChangeHouse3] = useState('');
 
+  // Функция для определения MIME типа
+  function guessMime(type, uri) {
+    if (type === 'video') {
+      if (uri.endsWith('.mov')) return 'video/quicktime';
+      if (uri.endsWith('.mkv')) return 'video/x-matroska';
+      if (uri.endsWith('.avi')) return 'video/x-msvideo';
+      if (uri.endsWith('.wmv')) return 'video/x-ms-wmv';
+      return 'video/mp4';
+    }
+    // image
+    if (uri.endsWith('.png')) return 'image/png';
+    if (uri.endsWith('.webp')) return 'image/webp';
+    if (uri.endsWith('.heic')) return 'image/heic';
+    return 'image/jpeg';
+  }
+
     useEffect(()=>{
         console.log(images);
     },[images])
@@ -302,21 +318,38 @@ export const EditPostScreen = ({route}) => {
     });
 
     // Отправка только новых изображений (без id)
-    let newImageIndex = 0;
-    images.forEach((image) => {
-      if (image.uri && image.uri.startsWith('file://') && !image.id) {
-        // Только новые изображения
-        const file = {
-          uri: image.uri,
-          name: image.fileName || `image_${newImageIndex}.jpg`,
-          type: image.type || 'image',
-        };
-
-        formData.append(`images[${newImageIndex}][image]`, file);
-        formData.append(`images[${newImageIndex}][type]`, image.type || 'image');
-        newImageIndex++;
-      }
+    // Новые изображения не имеют id и не начинаются с http (не являются URL с сервера)
+    const newImages = images.filter((image) => {
+      const imageUri = image.image || image.uri;
+      return imageUri && !image.id && !imageUri.startsWith('http');
     });
+
+    // Приложение (iOS/Android) — передаём { uri, name, type }
+    // Web — нужен Blob/File: читаем через fetch(item.uri) и добавляем blob
+    await Promise.all(
+      newImages.map(async (item, index) => {
+        const imageUri = item.image || item.uri;
+        const mime = guessMime(item.type || 'image', imageUri);
+        const name = (item.fileName || `media_${index}`).toLowerCase();
+        
+        if (Platform.OS === 'web') {
+          try {
+            const resp = await fetch(imageUri);
+            const blob = await resp.blob();
+            formData.append(`images[${index}][image]`, blob, name);
+          } catch (e) {
+            console.warn('Failed to read media blob', e);
+          }
+        } else {
+          formData.append(`images[${index}][image]`, {
+            uri: imageUri,
+            name,
+            type: mime,
+          });
+        }
+        formData.append(`images[${index}][type]`, item.type || 'image'); // 'image' | 'video'
+      })
+    );
 
     try {
       console.log('Starting update request...');
