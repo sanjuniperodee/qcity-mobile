@@ -1,8 +1,8 @@
 import { useGetPostByIdQuery } from '../api';
 import { Video, ResizeMode } from 'expo-av';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
-import { View,Text, TextInput, TouchableOpacity, Platform, Image,Dimensions, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
+import { View, Text, TextInput, TouchableOpacity, Platform, Image, Dimensions, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import uuid from 'react-native-uuid';
@@ -369,16 +369,7 @@ export const MessagesDmScreen = ({route}) => {
                     alwaysShowSend={true}
                     minInputToolbarHeight={60}
                     bottomOffset={0}
-                    textInputStyle={{
-                        backgroundColor: '#FFFFFF',
-                        borderRadius: 20,
-                        borderWidth: 1,
-                        borderColor: '#E0E0E0',
-                        paddingHorizontal: 15,
-                        paddingVertical: 10,
-                        marginHorizontal: 5,
-                        fontSize: 16,
-                    }}
+                    textInputStyle={styles.textInput}
                     renderEmpty={() => null}
                     listViewProps={{
                         style: { flex: 1, paddingBottom: 0 },
@@ -386,9 +377,7 @@ export const MessagesDmScreen = ({route}) => {
                     }}
                     renderInputToolbar={(props) => {
                         // Явно рендерим input toolbar, чтобы он всегда был виден
-                        console.log('Rendering InputToolbar with props:', Object.keys(props || {}));
                         if (!props) {
-                            console.error('InputToolbar props are undefined!');
                             return null;
                         }
                         // Принудительно показываем input toolbar
@@ -398,6 +387,18 @@ export const MessagesDmScreen = ({route}) => {
                                 containerStyle={[styles.inputToolbarContainer, props.containerStyle]}
                                 primaryStyle={styles.inputToolbarPrimary}
                             />
+                        );
+                    }}
+                    renderSend={(props) => {
+                        if (!props || !props.text || props.text.trim() === '') {
+                            return null;
+                        }
+                        return (
+                            <Send {...props} containerStyle={styles.sendContainer}>
+                                <View style={styles.sendButton}>
+                                    <Text style={styles.sendButtonText}>Отправить</Text>
+                                </View>
+                            </Send>
                         );
                     }}
                     isKeyboardInternallyHandled={false}
@@ -534,10 +535,48 @@ const styles = StyleSheet.create({
         paddingBottom: Platform.OS === 'ios' ? 20 : 0,
         minHeight: 60,
         paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingVertical: 8,
+        alignItems: 'center',
     },
     inputToolbarPrimary: {
         backgroundColor: '#FFFFFF',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    textInput: {
+        backgroundColor: '#F5F5F5',
+        borderRadius: 25,
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        marginHorizontal: 5,
+        fontSize: 16,
+        fontFamily: 'regular',
+        color: '#000000',
+        flex: 1,
+        maxHeight: 100,
+    },
+    sendContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 5,
+        marginBottom: 5,
+    },
+    sendButton: {
+        backgroundColor: '#F3B127',
+        borderRadius: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        minWidth: 80,
+    },
+    sendButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontFamily: 'regular',
+        fontWeight: '600',
     },
     emptyChat: {
         position: 'absolute',
