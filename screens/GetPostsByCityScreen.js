@@ -11,6 +11,7 @@ export const GetPostsByCityScreen = ({route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const { data, isLoading, refetch, error } = useGetPostListCityQuery({ city, page, limit  });
     const [posts, setPosts] = useState([]);
+    const [hasReachedEnd, setHasReachedEnd] = useState(false); // Флаг для блокировки после 404
 
     const [visibleItems, setVisibleItems] = useState([]);
 
@@ -29,26 +30,49 @@ export const GetPostsByCityScreen = ({route}) => {
       setRefreshing(true);
       console.log('refreshed');
       setPage(1); // Reset to page 1 for refresh
+      setHasReachedEnd(false); // Сбрасываем флаг при обновлении
       refetch({ page: 1, limit }).finally(() => setRefreshing(false));
     }, [refetch, limit]);
   
     const hasMore = useMemo(() => {
-      if (is404Error) return false;
+      if (hasReachedEnd || is404Error) return false;
       const total = data?.total;
       if (typeof total === 'number') return posts.length < total;
       const lastLen = data?.results?.length ?? 0;
       return lastLen === limit && lastLen > 0;
-    }, [data?.total, data?.results?.length, posts.length, is404Error, limit]);
+    }, [data?.total, data?.results?.length, posts.length, is404Error, hasReachedEnd, limit]);
   
-    const loadMoreItems = useCallback(() => {
-      if (isLoading || !hasMore || is404Error) return;
+    const loadMoreItemsRaw = useCallback(() => {
+      if (isLoading || !hasMore || is404Error || hasReachedEnd) return;
       setPage(currentPage => currentPage + 1);
-    }, [isLoading, hasMore, is404Error]);
+    }, [isLoading, hasMore, is404Error, hasReachedEnd]);
+  
+    // Throttle для предотвращения частых вызовов при скролле
+    const throttle = (fn, ms) => {
+      let last = 0;
+      let timer = null;
+      return (...args) => {
+        const now = Date.now();
+        if (now - last >= ms) {
+          last = now;
+          fn(...args);
+        } else {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            last = Date.now();
+            fn(...args);
+          }, ms - (now - last));
+        }
+      };
+    };
+    
+    const loadMoreItems = useMemo(() => throttle(loadMoreItemsRaw, 1000), [loadMoreItemsRaw]);
   
     useEffect(() => {
       // Если была 404 ошибка, не обрабатываем данные
       if (is404Error && page > 1) {
         setPage((p) => Math.max(1, p - 1));
+        setHasReachedEnd(true); // Устанавливаем флаг, что достигли конца
         return;
       }
       
@@ -65,13 +89,22 @@ export const GetPostsByCityScreen = ({route}) => {
       };
     
       if (data?.results) {
+        // Если последняя страница вернула меньше элементов чем limit, значит это последняя страница
+        if (data.results.length < limit && page > 1) {
+          setHasReachedEnd(true);
+        }
+        
         if (page === 1) {
           setPosts(data.results);
+          // Если первая страница вернула меньше элементов чем limit, значит это последняя страница
+          if (data.results.length < limit) {
+            setHasReachedEnd(true);
+          }
         } else {
           appendNewPosts(data.results);
         }
       }
-    }, [data, page, is404Error]);
+    }, [data, page, is404Error, limit]);
   
   
     return (
@@ -103,7 +136,7 @@ export const GetPostsByCityScreen = ({route}) => {
           </View>
         )}
         onEndReached={loadMoreItems}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.3}
         ListEmptyComponent={
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
             <Text style={{ fontSize: 18, color: '#777' }}>Нет постов</Text>
