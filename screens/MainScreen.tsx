@@ -131,6 +131,7 @@ export const HomeScreen = () => {
     setPage(1);
     setPosts([]);
     setFirstLoaded(false);
+    setHasReachedEnd(false); // Сбрасываем флаг при смене города
   }, [effectiveCity, isAllKazakhstan]);
 
   const [visibleItems, setVisibleItems] = useState<Array<string | number>>([]);
@@ -140,6 +141,7 @@ export const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
   const [firstLoaded, setFirstLoaded] = useState(false);
+  const [hasReachedEnd, setHasReachedEnd] = useState(false); // Флаг для блокировки после 404
 
   const handleOpenStory = (story: any) => {
     if (!story?.slides?.length) return;
@@ -207,6 +209,7 @@ export const HomeScreen = () => {
     setPage(1);
     setPosts([]);
     setFirstLoaded(false);
+    setHasReachedEnd(false); // Сбрасываем флаг при смене города
     setVisible(false);
   };
 
@@ -214,6 +217,7 @@ export const HomeScreen = () => {
     setRefreshing(true);
     setPage(1);
     setFirstLoaded(false);
+    setHasReachedEnd(false); // Сбрасываем флаг при обновлении
     refetchActive().finally(() => setRefreshing(false));
   }, [refetchActive]);
 
@@ -231,10 +235,17 @@ export const HomeScreen = () => {
     if (is404Error && page > 1) {
       // Откатываем страницу назад, если получили 404
       setPage((p) => Math.max(1, p - 1));
+      setHasReachedEnd(true); // Устанавливаем флаг, что достигли конца
       return;
     }
     
     if (!data?.results) return;
+    
+    // Если последняя страница вернула меньше элементов чем limit, значит это последняя страница
+    if (data.results.length < limit && page > 1) {
+      setHasReachedEnd(true);
+    }
+    
     if (page === 1) {
       const next = data.results;
       const same =
@@ -242,6 +253,10 @@ export const HomeScreen = () => {
         arraysEqual(posts.map((p) => p.id), next.map((p: any) => p.id));
       if (!same) setPosts(next);
       setFirstLoaded(true);
+      // Если первая страница вернула меньше элементов чем limit, значит это последняя страница
+      if (next.length < limit) {
+        setHasReachedEnd(true);
+      }
     } else {
       setPosts((prev) => {
         const ids = new Set(prev.map((p) => p.id));
@@ -249,24 +264,35 @@ export const HomeScreen = () => {
         return add.length ? [...prev, ...add] : prev;
       });
     }
-  }, [data, page, is404Error]); // eslint-disable-line
+  }, [data, page, is404Error, limit]); // eslint-disable-line
 
   // ========= пагинация =========
   const hasMore = useMemo(() => {
-    // Если была 404 ошибка, значит больше постов нет
-    if (is404Error) return false;
+    // Если достигли конца (404 или последняя страница), значит больше постов нет
+    if (hasReachedEnd || is404Error) return false;
     
     const total = data?.total;
     if (typeof total === 'number') return posts.length < total;
     const lastLen = data?.results?.length ?? 0;
     // Если последняя страница вернула меньше элементов чем limit, значит это последняя страница
     return lastLen === limit && lastLen > 0;
-  }, [data?.total, data?.results?.length, posts.length, is404Error, limit]);
+  }, [data?.total, data?.results?.length, posts.length, is404Error, hasReachedEnd, limit]);
 
-  const loadMoreItems = useCallback(() => {
-    if (!firstLoaded || isLoading || !hasMore || is404Error) return;
+  const loadMoreItemsRaw = useCallback(() => {
+    // Блокируем загрузку если:
+    // - еще не загрузили первую страницу
+    // - идет загрузка
+    // - нет больше данных
+    // - была 404 ошибка
+    // - уже достигли конца
+    if (!firstLoaded || isLoading || !hasMore || is404Error || hasReachedEnd) {
+      return;
+    }
     setPage((p) => p + 1);
-  }, [firstLoaded, isLoading, hasMore, is404Error]);
+  }, [firstLoaded, isLoading, hasMore, is404Error, hasReachedEnd]);
+
+  // Throttle для предотвращения частых вызовов при скролле
+  const loadMoreItems = useMemo(() => throttle(loadMoreItemsRaw, 1000), [loadMoreItemsRaw]);
 
   // ========= источники для UI =========
   // заменили картинки на иконки из @expo/vector-icons
@@ -452,7 +478,7 @@ export const HomeScreen = () => {
         }
         ListHeaderComponent={headerEl}
         onEndReached={loadMoreItems}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.3}
         refreshing={refreshing}
         onRefresh={onRefresh}
         ProductCardComponent={MemoProductCard}

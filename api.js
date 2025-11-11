@@ -46,14 +46,14 @@ export const api = createApi({
     getPostList: builder.query({
       query: ({ page, limit }) => {
         console.log(`Querying with page: ${page}, limit: ${limit}`);
-        return `posts/?page=${page}&page_size=${limit}`;
+        return `posts/?page=${page}&limit=${limit}`;
       },
       keepUnusedDataFor: 30,
       providesTags: ['PostList'],
     }),
     getPostListCity: builder.query({
       query: ({ page, limit, city }) => {
-        return `posts_city/?page=${page}&page_size=${limit}&city=${encodeURIComponent(city)}`;
+        return `posts_city/?page=${page}&limit=${limit}&city=${encodeURIComponent(city)}`;
       },
       keepUnusedDataFor: 30,
       providesTags: ['PostList'],
@@ -180,14 +180,14 @@ export const api = createApi({
       keepUnusedDataFor: 0,
     }),
     getPostsByCategory: builder.query({
-      query: ({category_id,page,limit}) => `posts/category/${category_id}?page=${page}&page_size=${limit}`,
+      query: ({category_id,page,limit}) => `posts/category/${category_id}?page=${page}&limit=${limit}`,
       providesTags: (result, error, categoryId) => [
         { type: 'PostList', id: categoryId },
       ],
       keepUnusedDataFor: 0,
     }),
     getPostsByCategoryAndCity:builder.query({
-      query: ({category_id,page,limit,city}) => `posts/category-city/${category_id}?page=${page}&page_size=${limit}&city=${city}`,
+      query: ({category_id,page,limit,city}) => `posts/category-city/${category_id}?page=${page}&limit=${limit}&city=${city}`,
       providesTags: (result, error, categoryId) => [
         { type: 'PostList', id: categoryId },
       ],
