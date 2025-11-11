@@ -1,33 +1,96 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import { View, FlatList, TouchableOpacity, Text, StyleSheet, useWindowDimensions } from 'react-native';
-import { Image } from 'expo-image';
+import { View, FlatList, TouchableOpacity, Text, StyleSheet, useWindowDimensions, Platform } from 'react-native';
+import { Image, getImageInfoAsync } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import ImageViewing from 'react-native-image-viewing';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useResponsive } from '../hooks/useResponsive';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const SliderComponent = ({ data }) => {
   const navigation = useNavigation();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { isWeb } = useResponsive();
+  const insets = useSafeAreaInsets();
   const videoRefs = useRef({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageViewerVisible, setImageViewerVisible] = useState(false);
   const [playingVideos, setPlayingVideos] = useState({});
+  const [aspectRatios, setAspectRatios] = useState({});
 
-  // Вычисляем адаптивные размеры
+  // Вычисляем адаптивные размеры контейнера
   const sliderDimensions = useMemo(() => {
     const maxWidth = isWeb ? 800 : windowWidth;
     const sliderWidth = Math.min(windowWidth, maxWidth);
-    const sliderHeight = sliderWidth * 1.8; // Сохраняем соотношение сторон для вертикальных видео
+    // Максимальная высота: min(70vh, screenWidth*1.2) для страницы поста
+    const maxHeight = Math.min(windowHeight * 0.7, sliderWidth * 1.2);
     
     return {
       width: sliderWidth,
-      height: sliderHeight,
+      maxHeight,
       maxWidth,
     };
-  }, [windowWidth, isWeb]);
+  }, [windowWidth, windowHeight, isWeb]);
+
+  // Получаем размеры изображения
+  const getImageDimensions = useCallback(async (uri, index) => {
+    try {
+      if (Platform.OS === 'web') {
+        // Для web используем HTML Image
+        return new Promise((resolve) => {
+          const img = new window.Image();
+          img.onload = () => {
+            const aspectRatio = img.width / img.height;
+            setAspectRatios(prev => ({ ...prev, [index]: aspectRatio }));
+            resolve(aspectRatio);
+          };
+          img.onerror = () => {
+            // Fallback к 1:1 если не удалось загрузить
+            setAspectRatios(prev => ({ ...prev, [index]: 1 }));
+            resolve(1);
+          };
+          img.src = uri;
+        });
+      } else {
+        // Для мобильных используем getImageInfoAsync из expo-image
+        try {
+          const info = await getImageInfoAsync(uri);
+          if (info && info.width && info.height) {
+            const aspectRatio = info.width / info.height;
+            setAspectRatios(prev => ({ ...prev, [index]: aspectRatio }));
+            return aspectRatio;
+          } else {
+            // Fallback к 1:1 если размеры не получены
+            setAspectRatios(prev => ({ ...prev, [index]: 1 }));
+            return 1;
+          }
+        } catch (err) {
+          console.log('getImageInfoAsync error:', err);
+          // Fallback к 1:1 при ошибке
+          setAspectRatios(prev => ({ ...prev, [index]: 1 }));
+          return 1;
+        }
+      }
+    } catch (error) {
+      console.log('Error getting image dimensions:', error);
+      // Fallback к 1:1
+      setAspectRatios(prev => ({ ...prev, [index]: 1 }));
+      return 1;
+    }
+  }, []);
+
+  // Загружаем размеры изображений при монтировании
+  useEffect(() => {
+    if (!data || data.length === 0) return;
+    
+    data.forEach((item, index) => {
+      if (item.type === 'image' && item.image) {
+        const imageUri = item.image.startsWith('http') ? item.image : `https://market.qorgau-city.kz${item.image}`;
+        getImageDimensions(imageUri, index);
+      }
+    });
+  }, [data, getImageDimensions]);
 
   const openImageViewer = (index) => {
     const imageIndex = data.filter(item => item.type === 'image').findIndex(img => img.image === data[index].image);
@@ -62,14 +125,31 @@ export const SliderComponent = ({ data }) => {
     }
   };
 
-  const handleVideoLoad = async (index) => {
+  const handleVideoLoad = async (index, status) => {
     // Убеждаемся, что видео загружено и готово к воспроизведению
     const videoRef = videoRefs.current[index];
     if (videoRef) {
       try {
         await videoRef.setStatusAsync({ shouldPlay: false });
+        
+        // Получаем размеры видео для aspectRatio
+        if (status.isLoaded && status.naturalSize) {
+          const { width, height } = status.naturalSize;
+          if (width && height) {
+            const aspectRatio = width / height;
+            setAspectRatios(prev => ({ ...prev, [index]: aspectRatio }));
+          } else {
+            // Fallback к 9:16 для вертикальных видео
+            setAspectRatios(prev => ({ ...prev, [index]: 9 / 16 }));
+          }
+        } else {
+          // Fallback к 9:16 если размеры недоступны
+          setAspectRatios(prev => ({ ...prev, [index]: 9 / 16 }));
+        }
       } catch (error) {
         console.log('Error setting video status:', error);
+        // Fallback к 9:16 при ошибке
+        setAspectRatios(prev => ({ ...prev, [index]: 9 / 16 }));
       }
     }
   };
@@ -131,20 +211,42 @@ export const SliderComponent = ({ data }) => {
   );
 
   const renderItem = ({ item, index }) => {
+    const aspectRatio = aspectRatios[index] || 1; // Fallback к 1:1 если еще не загружено
+    const itemWidth = sliderDimensions.width;
+    const calculatedHeight = itemWidth / aspectRatio;
+    const itemHeight = Math.min(calculatedHeight, sliderDimensions.maxHeight);
+    
     if (item.type === 'image') {
+      const imageUri = item.image.startsWith('http') ? item.image : `https://market.qorgau-city.kz${item.image}`;
       return (
-        <TouchableOpacity key={index} onPress={() => openImageViewer(index)}>
+        <TouchableOpacity 
+          key={index} 
+          onPress={() => openImageViewer(index)}
+          style={{ width: itemWidth, height: itemHeight }}
+        >
           <Image
-            style={{ width: sliderDimensions.width, height: sliderDimensions.height }}
-            source={{ uri: item.image }}
-            resizeMode="cover"
+            style={{ width: '100%', height: '100%' }}
+            source={{ uri: imageUri }}
+            contentFit="contain"
+            transition={200}
           />
         </TouchableOpacity>
       );
     } else if (item.type === 'video') {
       const isPlaying = playingVideos[index];
+      const videoUri = item.image.startsWith('http') ? item.image : `https://market.qorgau-city.kz${item.image}`;
       return (
-        <View key={index} style={[styles.videoContainer, { width: sliderDimensions.width, height: sliderDimensions.height }]}>
+        <View 
+          key={index} 
+          style={[
+            styles.videoContainer, 
+            { 
+              width: itemWidth, 
+              height: itemHeight,
+              backgroundColor: '#000000'
+            }
+          ]}
+        >
           <Video
             isMuted={false}
             volume={1.0}
@@ -153,7 +255,7 @@ export const SliderComponent = ({ data }) => {
                 videoRefs.current[index] = ref;
               }
             }}
-            source={{ uri: item.image }}
+            source={{ uri: videoUri }}
             style={styles.video}
             resizeMode={ResizeMode.CONTAIN}
             useNativeControls={true}
@@ -162,8 +264,13 @@ export const SliderComponent = ({ data }) => {
             playsInline={true}
             allowsExternalPlayback={false}
             shouldPlay={false}
-            onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(index, status)}
-            onLoad={() => handleVideoLoad(index)}
+            onPlaybackStatusUpdate={(status) => {
+              handlePlaybackStatusUpdate(index, status);
+              // Получаем размеры при первой загрузке
+              if (status.isLoaded && status.naturalSize && !aspectRatios[index]) {
+                handleVideoLoad(index, status);
+              }
+            }}
           />
           {/* Визуальный индикатор видео */}
           <View style={styles.videoBadge} pointerEvents="none">
@@ -196,13 +303,18 @@ export const SliderComponent = ({ data }) => {
           data={data}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => `${index}-${aspectRatios[index] || 'loading'}`}
           renderItem={renderItem}
           pagingEnabled
           snapToAlignment="center"
           decelerationRate="fast"
           snapToInterval={sliderDimensions.width}
           contentContainerStyle={isWeb && styles.flatListContentWeb}
+          getItemLayout={(data, index) => ({
+            length: sliderDimensions.width,
+            offset: sliderDimensions.width * index,
+            index,
+          })}
         />
       </View>
       <ImageViewing
@@ -238,6 +350,7 @@ const styles = StyleSheet.create({
   video: {
     width: '100%',
     height: '100%',
+    backgroundColor: '#000000',
   },
   videoBadge: {
     position: 'absolute',

@@ -18,6 +18,8 @@ import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useResponsive } from '../hooks/useResponsive';
 
 import { useGetPostByIdQuery, useGetPostListQuery, useAddToFavouritesMutation, useRemoveFromFavouritesMutation, useListFavouritesQuery } from '../api';
 import { ProductCard } from '../components/ProductCard';
@@ -31,6 +33,8 @@ export const PostViewScreen = ({ route }) => {
   const isAuthenticated = !!auth?.isAuthenticated && !!auth?.token;
   const user = auth?.user;
   const isAdmin = user?.email === 'admin@mail.ru';
+  const insets = useSafeAreaInsets();
+  const { isWeb, isPhone } = useResponsive();
 
   const [message, onChangeMessage] = useState('');
   const { id, viewMode, fromScreen } = route.params || {};
@@ -575,6 +579,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginTop: 0,
     paddingTop: 0,
+    paddingHorizontal: 0,
   },
   mainContent: {
     paddingHorizontal: 20,
