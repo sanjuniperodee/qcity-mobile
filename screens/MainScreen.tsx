@@ -161,6 +161,7 @@ export const HomeScreen = () => {
     isLoading: isLoadingAll,
     isFetching: isFetchingAll,
     refetch: refetchAll,
+    error: errorAll,
   } = useGetPostListQuery({ page, limit }, { ...baseQueryOpts, skip: !isAllKazakhstan });
 
   const {
@@ -168,11 +169,20 @@ export const HomeScreen = () => {
     isLoading: isLoadingCity,
     isFetching: isFetchingCity,
     refetch: refetchCity,
+    error: errorCity,
   } = useGetPostListCityQuery({ city: effectiveCity, page, limit }, { ...baseQueryOpts, skip: isAllKazakhstan });
 
   const data = isAllKazakhstan ? allData : cityData;
+  const error = isAllKazakhstan ? errorAll : errorCity;
   const isLoading = isAllKazakhstan ? (isLoadingAll || isFetchingAll) : (isLoadingCity || isFetchingCity);
   const refetchActive = isAllKazakhstan ? refetchAll : refetchCity;
+  
+  // Проверка на 404 ошибку (конец списка)
+  const is404Error = error && (
+    ('status' in error && (error.status === 404 || error.status === 'FETCH_ERROR')) ||
+    ('data' in error && error.data && typeof error.data === 'object' && 'detail' in error.data && 
+     typeof error.data.detail === 'string' && error.data.detail.includes('Неправильная страница'))
+  );
 
   // Обновление данных при смене языка
   const prevLanguageRef = useRef(currentLanguage);
@@ -217,6 +227,13 @@ export const HomeScreen = () => {
 
   // ========= приём данных =========
   useEffect(() => {
+    // Если была 404 ошибка, не обрабатываем данные
+    if (is404Error && page > 1) {
+      // Откатываем страницу назад, если получили 404
+      setPage((p) => Math.max(1, p - 1));
+      return;
+    }
+    
     if (!data?.results) return;
     if (page === 1) {
       const next = data.results;
@@ -232,20 +249,24 @@ export const HomeScreen = () => {
         return add.length ? [...prev, ...add] : prev;
       });
     }
-  }, [data, page]); // eslint-disable-line
+  }, [data, page, is404Error]); // eslint-disable-line
 
   // ========= пагинация =========
   const hasMore = useMemo(() => {
+    // Если была 404 ошибка, значит больше постов нет
+    if (is404Error) return false;
+    
     const total = data?.total;
     if (typeof total === 'number') return posts.length < total;
     const lastLen = data?.results?.length ?? 0;
-    return lastLen === limit;
-  }, [data?.total, data?.results?.length, posts.length]);
+    // Если последняя страница вернула меньше элементов чем limit, значит это последняя страница
+    return lastLen === limit && lastLen > 0;
+  }, [data?.total, data?.results?.length, posts.length, is404Error, limit]);
 
   const loadMoreItems = useCallback(() => {
-    if (!firstLoaded || isLoading || !hasMore) return;
+    if (!firstLoaded || isLoading || !hasMore || is404Error) return;
     setPage((p) => p + 1);
-  }, [firstLoaded, isLoading, hasMore]);
+  }, [firstLoaded, isLoading, hasMore, is404Error]);
 
   // ========= источники для UI =========
   // заменили картинки на иконки из @expo/vector-icons

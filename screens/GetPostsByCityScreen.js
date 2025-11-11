@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet,FlatList} from 'react-native';
 import { ProductCard } from '../components/ProductCard';
 import { useGetPostListCityQuery } from '../api';
@@ -9,7 +9,7 @@ export const GetPostsByCityScreen = ({route}) => {
     const [page, setPage] = useState(1);
     const limit = 6;
     const [refreshing, setRefreshing] = useState(false);
-    const { data, isLoading, refetch } = useGetPostListCityQuery({ city, page, limit  });
+    const { data, isLoading, refetch, error } = useGetPostListCityQuery({ city, page, limit  });
     const [posts, setPosts] = useState([]);
 
     const [visibleItems, setVisibleItems] = useState([]);
@@ -22,6 +22,9 @@ export const GetPostsByCityScreen = ({route}) => {
       setVisibleItems(viewableItems.map(item => item.item.id));
     }).current;
   
+    // Проверка на 404 ошибку (конец списка)
+    const is404Error = error && (error.status === 404 || error.status === 'FETCH_ERROR' || (error.data && error.data.detail && error.data.detail.includes('Неправильная страница')));
+  
     const onRefresh = useCallback(() => {
       setRefreshing(true);
       console.log('refreshed');
@@ -29,12 +32,27 @@ export const GetPostsByCityScreen = ({route}) => {
       refetch({ page: 1, limit }).finally(() => setRefreshing(false));
     }, [refetch, limit]);
   
+    const hasMore = useMemo(() => {
+      if (is404Error) return false;
+      const total = data?.total;
+      if (typeof total === 'number') return posts.length < total;
+      const lastLen = data?.results?.length ?? 0;
+      return lastLen === limit && lastLen > 0;
+    }, [data?.total, data?.results?.length, posts.length, is404Error, limit]);
+  
     const loadMoreItems = useCallback(() => {
-        setPage(currentPage => currentPage + 1);
-    }, [data?.results?.length, data?.total, isLoading]);
+      if (isLoading || !hasMore || is404Error) return;
+      setPage(currentPage => currentPage + 1);
+    }, [isLoading, hasMore, is404Error]);
   
     useEffect(() => {
-      refetch()
+      // Если была 404 ошибка, не обрабатываем данные
+      if (is404Error && page > 1) {
+        setPage((p) => Math.max(1, p - 1));
+        return;
+      }
+      
+      refetch();
       const appendNewPosts = (newPosts) => {
         // Only append if newPosts are not empty and have different content
         if (newPosts.length === 0) return;
@@ -53,7 +71,7 @@ export const GetPostsByCityScreen = ({route}) => {
           appendNewPosts(data.results);
         }
       }
-    }, [data, page]);
+    }, [data, page, is404Error]);
   
   
     return (

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import { View, FlatList, TouchableOpacity, Text, StyleSheet, useWindowDimensions, Platform } from 'react-native';
-import { Image, getImageInfoAsync } from 'expo-image';
+import { View, FlatList, TouchableOpacity, Text, StyleSheet, useWindowDimensions, Platform, Image as RNImage } from 'react-native';
+import { Image } from 'expo-image';
 import { Video, ResizeMode } from 'expo-av';
 import ImageViewing from 'react-native-image-viewing';
 import { Ionicons } from '@expo/vector-icons';
@@ -53,24 +53,23 @@ export const SliderComponent = ({ data }) => {
           img.src = uri;
         });
       } else {
-        // Для мобильных используем getImageInfoAsync из expo-image
-        try {
-          const info = await getImageInfoAsync(uri);
-          if (info && info.width && info.height) {
-            const aspectRatio = info.width / info.height;
-            setAspectRatios(prev => ({ ...prev, [index]: aspectRatio }));
-            return aspectRatio;
-          } else {
-            // Fallback к 1:1 если размеры не получены
-            setAspectRatios(prev => ({ ...prev, [index]: 1 }));
-            return 1;
-          }
-        } catch (err) {
-          console.log('getImageInfoAsync error:', err);
-          // Fallback к 1:1 при ошибке
-          setAspectRatios(prev => ({ ...prev, [index]: 1 }));
-          return 1;
-        }
+        // Для мобильных используем Image.getSize из react-native (более надежный способ)
+        return new Promise((resolve) => {
+          RNImage.getSize(
+            uri,
+            (width, height) => {
+              const aspectRatio = width / height;
+              setAspectRatios(prev => ({ ...prev, [index]: aspectRatio }));
+              resolve(aspectRatio);
+            },
+            (error) => {
+              console.log('Image.getSize error:', error);
+              // Fallback к 1:1 при ошибке
+              setAspectRatios(prev => ({ ...prev, [index]: 1 }));
+              resolve(1);
+            }
+          );
+        });
       }
     } catch (error) {
       console.log('Error getting image dimensions:', error);
