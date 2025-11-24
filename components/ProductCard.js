@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Video, InterruptionModeAndroid, InterruptionModeIOS, ResizeMode } from 'expo-av';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAddToFavouritesMutation, useRemoveFromFavouritesMutation,useListFavouritesQuery } from '../api';
 
 export const ProductCard = (props) => {
@@ -96,28 +97,15 @@ export const ProductCard = (props) => {
             props.tariff === 2 && styles.cardFeatured
           ]}>
           <View>
-            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',bottom:10,zIndex:2,left:10,position:'absolute'}}>
-              <View style={{flexDirection:'row',marginTop:4}}>
+            <View style={styles.tagsContainer}>
+              <View style={styles.tagsWrapper}>
               {Array.isArray(props.extra_fields) &&
                 props.extra_fields.map((extra_field, index) => (
                   <View
                     key={index}
-                    style={{
-                      borderRadius: 5,
-                      overflow: 'hidden',
-                      marginRight: 3,
-                    }}
+                    style={styles.tag}
                   >
-                    <Text
-                      style={{
-                        fontFamily: 'bold',
-                        backgroundColor: colors.primary,
-                        fontSize: 11,
-                        color: colors.primaryText,
-                        paddingHorizontal: 5,
-                        paddingVertical: 3,
-                      }}
-                    >
+                    <Text style={styles.tagText}>
                       {extra_field}
                     </Text>
                   </View>
@@ -125,23 +113,34 @@ export const ProductCard = (props) => {
               </View>
             </View>
             {props.media[0]?.type === 'video' ? 
-              <View style={{position:'relative', width:'100%', aspectRatio:1, borderRadius:8, overflow:'hidden', backgroundColor:'#000000'}}>
+              <View style={styles.mediaContainer}>
                 {props.tariff === 1 && (
-                  <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:3,}}>
-                    <Text style={{fontFamily: 'bold', fontSize: 12, color: '#fff'}}>ТОП</Text>
+                  <View style={styles.topBadge}>
+                    <LinearGradient
+                      colors={[colors.primary, colors.primaryDark]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.topBadgeGradient}
+                    >
+                      <Text style={styles.topBadgeText}>ТОП</Text>
+                    </LinearGradient>
                   </View>  
                 )}
                 <TouchableOpacity 
-                  style={{backgroundColor:'rgba(255,255,255,0.6)',padding:5,borderRadius:10,position:'absolute',top:5,right:5,zIndex:3}} 
+                  style={styles.favouriteButton}
                   onPress={(e) => {
                     e.stopPropagation();
                     toggleFavourite();
                   }}
+                  activeOpacity={0.7}
                 >
-                  <Image
-                    source={isFavourite ? require('../assets/Heart.png') : require('../assets/Favorite.png')}
-                    style={{ height: 23, width: 25, objectFit:'contain' }}
-                  />
+                  <View style={styles.favouriteButtonInner}>
+                    <Ionicons 
+                      name={isFavourite ? "heart" : "heart-outline"} 
+                      size={22} 
+                      color={isFavourite ? colors.systemRed : colors.text} 
+                    />
+                  </View>
                 </TouchableOpacity>
                 {/* Визуальный индикатор видео */}
                 <View style={styles.videoBadge}>
@@ -173,73 +172,69 @@ export const ProductCard = (props) => {
                 </View>
               </View>
             :
-            <View style={{position:'relative', width:'100%', aspectRatio:1, borderRadius:8, overflow:'hidden'}}>
+            <View style={styles.mediaContainer}>
                 {props.tariff === 1 && (
                   <View style={{backgroundColor:colors.primary,paddingHorizontal:10,paddingVertical:5,borderRadius:10,position:'absolute',top:10,left:10,zIndex:2,}}>
                     <Text style={{fontFamily: 'bold', fontSize: 12, color: '#fff'}}>ТОП</Text>
                   </View>  
                 )}
-                <TouchableOpacity style={{backgroundColor:'rgba(255,255,255,0.6)',padding:5,borderRadius:10,position:'absolute',top:5,right:5,zIndex:2}} onPress={toggleFavourite}>
-                  <Image
-                    source={isFavourite ? require('../assets/Heart.png') : require('../assets/Favorite.png')}
-                    style={{ height: 23, width: 25,objectFit:'contain' }}
-                  />
+                <TouchableOpacity 
+                  style={styles.favouriteButton}
+                  onPress={toggleFavourite}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.favouriteButtonInner}>
+                    <Ionicons 
+                      name={isFavourite ? "heart" : "heart-outline"} 
+                      size={22} 
+                      color={isFavourite ? colors.systemRed : colors.text} 
+                    />
+                  </View>
                 </TouchableOpacity>
-                {isImageLoading && <ActivityIndicator style={{ position: 'absolute', width: '100%', height: '100%' }} />}
+                {isImageLoading && (
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={colors.primary} />
+                  </View>
+                )}
                 <Image
-                    style={{width:'100%', height:'100%'}}
+                    style={styles.cardImage}
                     source={props.image === '/media/defaults/post.png' ? require('../assets/post.png') : {uri: `https://market.qorgau-city.kz${props.image}`}}
                     onLoadStart={() => setImageLoading(true)}
                     onLoadEnd={() => setImageLoading(false)}
                     contentFit={'cover'}
+                    transition={200}
                 />
             </View>
             }
           </View>
 
-          <View style={{paddingHorizontal:spacing.sm}}>
+          <View style={styles.cardContent}>
             <Text
               numberOfLines={2}
               ellipsizeMode="tail"
-              style={{
-                opacity:.9,
-                fontSize:15,
-                lineHeight:20,
-                minHeight:40,
-                marginTop:10,
-                fontFamily:'medium',
-                maxWidth:'100%'
-              }}
+              style={styles.cardTitle}
             >{props.title}</Text>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={{
-                fontFamily:'medium',
-                marginTop:5,
-                fontSize:18,
-                color:colors.text,
-                textAlign:'left',
-                lineHeight:22,
-                minHeight:22,
-                maxWidth:'100%'
-              }}
+              style={styles.cardPrice}
             >
               {props.cost} ₸
             </Text>
-            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginTop:8}}>
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, width:'56%'}}
-              >{props.city}</Text>
-              <View style={{width:'42%', alignItems:'flex-end'}}>
+            <View style={styles.cardFooter}>
+              <View style={styles.locationContainer}>
+                <Ionicons name="location-outline" size={14} color={colors.textMuted} />
                 <Text
                   numberOfLines={1}
                   ellipsizeMode="tail"
-                  style={{fontFamily:'regular',fontSize:12,color:colors.textMuted, textAlign:'right'}}
-                >{props.date}</Text>
+                  style={styles.cardLocation}
+                >{props.city}</Text>
               </View>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.cardDate}
+              >{props.date}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -250,32 +245,172 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     height: 'max-content',
-    borderRadius: radius.lg, // Apple HIG: consistent rounding
-    backgroundColor: colors.surface, // Apple HIG: system surface
+    borderRadius: radius.xl, // Apple HIG: more rounded for modern look
+    backgroundColor: colors.surface,
     overflow: 'hidden',
-    ...shadows.md, // Apple HIG: subtle depth
+    marginBottom: spacing.md, // Space between cards
+    ...shadows.lg, // Apple HIG: more prominent shadow for depth
+    borderWidth: 1,
+    borderColor: colors.borderLight, // Subtle border for definition
   },
   cardFeatured: {
-    borderWidth: 2,
-    borderColor: colors.primary, // Apple HIG: primary color for featured
+    borderWidth: 2.5,
+    borderColor: colors.primary,
+    ...shadows.xl, // Extra shadow for featured cards
   },
   videoBadge: {
     position: 'absolute',
-    top: spacing.sm,
-    left: spacing.sm,
+    top: spacing.md,
+    left: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.overlay, // Apple HIG: system overlay
-    paddingHorizontal: spacing.xs,
-    paddingVertical: spacing.xxs,
-    borderRadius: radius.round, // Apple HIG: fully rounded badge
+    backgroundColor: 'rgba(0, 0, 0, 0.75)', // More opaque for better visibility
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.md,
     zIndex: 2,
+    ...shadows.sm, // Shadow for badge
   },
   videoBadgeText: {
     color: colors.primaryText,
     fontFamily: 'bold',
-    fontSize: 10,
-    marginLeft: spacing.xxs,
+    fontSize: 11,
+    marginLeft: spacing.xs,
+    letterSpacing: 0.5,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    bottom: spacing.sm,
+    zIndex: 2,
+    left: spacing.md,
+    position: 'absolute',
+  },
+  tagsWrapper: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  tag: {
+    borderRadius: radius.md,
+    overflow: 'hidden',
+    ...shadows.sm,
+  },
+  tagText: {
+    fontFamily: 'bold',
+    backgroundColor: colors.primary,
+    fontSize: 11,
+    color: colors.primaryText,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    letterSpacing: 0.3,
+  },
+  topBadge: {
+    position: 'absolute',
+    top: spacing.md,
+    left: spacing.md,
+    zIndex: 3,
+    ...shadows.md,
+  },
+  topBadgeGradient: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.md,
+  },
+  topBadgeText: {
+    fontFamily: 'bold',
+    fontSize: 12,
+    color: colors.primaryText,
+    letterSpacing: 0.5,
+  },
+  favouriteButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: spacing.xs,
+    borderRadius: radius.round,
+    position: 'absolute',
+    top: spacing.md,
+    right: spacing.md,
+    zIndex: 3,
+    ...shadows.sm,
+  },
+  favouriteButtonInner: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardContent: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.md,
+  },
+  cardTitle: {
+    fontSize: 16,
+    lineHeight: 22,
+    minHeight: 44,
+    marginTop: spacing.xs,
+    fontFamily: 'semibold',
+    maxWidth: '100%',
+    color: colors.text,
+    letterSpacing: 0.2,
+  },
+  cardPrice: {
+    fontFamily: 'bold',
+    marginTop: spacing.sm,
+    fontSize: 20,
+    color: colors.primary,
+    textAlign: 'left',
+    lineHeight: 24,
+    minHeight: 24,
+    maxWidth: '100%',
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: spacing.md,
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.borderLight,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    flex: 1,
+  },
+  cardLocation: {
+    fontFamily: 'regular',
+    fontSize: 13,
+    color: colors.textMuted,
+    flex: 1,
+  },
+  cardDate: {
+    fontFamily: 'regular',
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: 'right',
+  },
+  mediaContainer: {
+    position: 'relative',
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    backgroundColor: colors.bgSecondary,
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  loadingContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bgSecondary,
   },
 });
   
