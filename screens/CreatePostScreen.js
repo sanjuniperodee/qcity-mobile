@@ -523,7 +523,8 @@ export const CreatePostScreen = () => {
               borderRadius: 10,
               borderWidth: 1,
               borderColor: '#c4c4c4',
-              backgroundColor: '#F7F8F9'
+              backgroundColor: '#F7F8F9',
+              fontSize: 16 // Минимум 16px для предотвращения зума на iOS
             }}
             ref={titleRef}
             placeholder={t('title.header')}
@@ -540,7 +541,8 @@ export const CreatePostScreen = () => {
               borderRadius: 10,
               borderWidth: 1,
               borderColor: '#c4c4c4',
-              backgroundColor: '#F7F8F9'
+              backgroundColor: '#F7F8F9',
+              fontSize: 16 // Минимум 16px для предотвращения зума на iOS
             }}
             ref={costRef}
             value={cost}
@@ -731,7 +733,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: phoneError ? 'red' : '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 options={{ mask: '+79999999999' }}
                 value={phone}
@@ -753,7 +756,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 options={{ mask: '+79999999999' }}
                 value={whatsapp}
@@ -771,7 +775,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 value={site}
                 onChangeText={onChangeSite}
@@ -788,7 +793,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 value={telegram}
                 onChangeText={onChangeTelegram}
@@ -805,7 +811,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 value={tiktok}
                 onChangeText={onChangeTiktok}
@@ -822,7 +829,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 value={facebook}
                 onChangeText={onChangeFacebook}
@@ -839,7 +847,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 value={insta}
                 onChangeText={onChangeInsta}
@@ -856,7 +865,8 @@ export const CreatePostScreen = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: '#c4c4c4',
-                  backgroundColor: '#F7F8F9'
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16 // Минимум 16px для предотвращения зума на iOS
                 }}
                 value={twogis}
                 onChangeText={onChangeTwogis}
