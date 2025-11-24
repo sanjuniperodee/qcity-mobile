@@ -11,6 +11,9 @@ import { TextInputMask } from 'react-native-masked-text';
 import { useTranslation } from 'react-i18next';
 import { ToggleGroup } from '../components/ToggleGroup';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
+import FormField from '../components/ui/FormField';
+import Button from '../components/ui/Button';
 
 export const CreatePostScreen = () => {
   const navigation = useNavigation();
@@ -441,15 +444,15 @@ export const CreatePostScreen = () => {
   const CreateDropdown = ({ isOpen, refProp, error, toggleOpen, state, setState, title, placeholder, items = [] }) => {
     return (
       <View ref={refProp}>
-        <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 20, marginBottom: 10 }}>{title}</Text>
+        <Text style={styles.sectionTitle}>{title}</Text>
         <Pressable
           onPress={toggleOpen}
           style={[
             styles.profileButton,
-            { borderColor: error ? '#F04438' : '#E0E0E0', borderWidth: 1 }
+            error && styles.inputFieldError
           ]}
         >
-          <Text style={{ fontFamily: 'regular', fontSize: 14, color: state ? '#000' : '#96949D' }}>
+          <Text style={{ fontFamily: 'regular', fontSize: 15, color: state ? colors.text : colors.textMuted }}>
             {state ? state : placeholder}
           </Text>
           <Image
@@ -457,14 +460,14 @@ export const CreatePostScreen = () => {
               height: 16,
               width: 8,
               transform: [{ rotate: isOpen ? '270deg' : '90deg' }],
-              marginRight: 5,
+              marginRight: spacing.xs,
             }}
             source={require('../assets/arrow-right.png')}
           />
         </Pressable>
 
         {isOpen && (
-          <View style={{ backgroundColor: '#F7F8F9', borderEndEndRadius: 5, marginTop: -2, borderBottomLeftRadius: 5, borderColor: '#e0e0e0', borderWidth: 1, paddingVertical: 10 }}>
+          <View style={styles.dropdownContainer}>
             {items.map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -472,8 +475,10 @@ export const CreatePostScreen = () => {
                   setState(item);
                   toggleOpen();
                 }}
-                style={{ width: '100%', paddingVertical: 10, paddingHorizontal: 15 }}>
-                <Text style={{ color: '#96949D', fontSize: 13 }}>{item}</Text>
+                style={styles.dropdownItem}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.dropdownItemText}>{item}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -505,45 +510,24 @@ export const CreatePostScreen = () => {
         </Modal>
 
         <View style={{ marginTop: 20, marginBottom: 150, width: '90%', alignSelf: 'center' }}>
-          <Text style={{ fontFamily: 'medium', fontSize: 22, marginTop: 10 }}>{`Подать объявление ${categoryParam}`}</Text>
-          {generalError ? (
-            <Text style={{ color: 'red', marginTop: 12 }}>{generalError}</Text>
-          ) : null}
+          <Text style={{ fontFamily: 'bold', fontSize: 24, marginTop: spacing.md, marginBottom: spacing.sm, color: colors.text }}>{`Подать объявление ${categoryParam}`}</Text>
+          {generalError ? <Text style={styles.errorText}>{generalError}</Text> : null}
 
-          <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 20 }}>{t('title.header')}</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, marginTop: 5 }}>
-            <Text style={{ fontFamily: 'regular', fontSize: 14, opacity: .5 }}>{t('title.min_length_instruction')}</Text>
-            <Text style={{ color: '#96949D' }}>{title.length}/70</Text>
+          <Text style={styles.sectionTitle}>{t('title.header')}</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.sm, marginTop: spacing.xs }}>
+            <Text style={styles.sectionSubtitle}>{t('title.min_length_instruction')}</Text>
+            <Text style={{ color: colors.textMuted, fontSize: 14 }}>{title.length}/70</Text>
           </View>
-          <TextInput
-            style={{
-              width: '100%',
-              paddingHorizontal: 10,
-              height: 50,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: '#c4c4c4',
-              backgroundColor: '#F7F8F9',
-              fontSize: 16 // Минимум 16px для предотвращения зума на iOS
-            }}
+          <FormField
             ref={titleRef}
             placeholder={t('title.header')}
             maxLength={50}
             onChangeText={onChangeTitle}
+            value={title}
           />
 
-          <Text style={{ fontFamily: 'medium', fontSize: 18, marginBottom: 10, marginTop: 20, }}>{t('price.header')}</Text>
-          <TextInput
-            style={{
-              width: '100%',
-              paddingHorizontal: 10,
-              height: 50,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: '#c4c4c4',
-              backgroundColor: '#F7F8F9',
-              fontSize: 16 // Минимум 16px для предотвращения зума на iOS
-            }}
+          <Text style={styles.sectionTitle}>{t('price.header')}</Text>
+          <FormField
             ref={costRef}
             value={cost}
             onChangeText={text => onChangeCost(text.replace(/[^0-9]/g, '').slice(0, 103123))}
@@ -874,9 +858,14 @@ export const CreatePostScreen = () => {
             </View>
           </View>
 
-          <TouchableOpacity onPress={sendPostRequest} disabled={loading} style={{ borderRadius: 10, overflow: 'hidden', marginBottom: 20, marginTop: 40, backgroundColor: loading ? '#d7a06f' : '#F09235', paddingVertical: 15, alignItems: 'center' }}>
-            <Text style={{ color: '#F7F8F9', fontSize: 16 }}>Опубликовать</Text>
-          </TouchableOpacity>
+          <Button 
+            onPress={sendPostRequest} 
+            disabled={loading} 
+            fullWidth
+            style={styles.submitButton}
+          >
+            Опубликовать
+          </Button>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -889,12 +878,13 @@ const styles = StyleSheet.create({
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      backgroundColor: '#F7F8F9',
-      borderRadius: 10,
-      borderColor: '#c4c4c4',
-      borderWidth: 1,
-      paddingHorizontal: 10,
-      paddingVertical: 17,
+      backgroundColor: colors.surfaceSecondary,
+      borderRadius: radius.lg,
+      borderColor: colors.border,
+      borderWidth: 1.5,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
+      ...shadows.sm,
     },
     container: {
       flex: 1,
@@ -905,28 +895,88 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: colors.overlay,
     },
     modalView: {
-      margin: 20,
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 35,
-      paddingTop:50,
+      margin: spacing.lg,
+      backgroundColor: colors.surface,
+      borderRadius: radius.xl,
+      padding: spacing.xxl,
+      paddingTop: spacing.xxxl,
       alignItems: 'center',
-      shadowColor: '#666',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
+      ...shadows.xl,
     },
     modalText: {
-      marginTop: 25,
-      fontFamily:'medium',
-      fontSize:18,
+      marginTop: spacing.lg,
+      fontFamily: 'medium',
+      fontSize: 18,
       textAlign: 'center',
+      color: colors.text,
+    },
+    sectionTitle: {
+      fontFamily: 'semibold',
+      fontSize: 18,
+      marginTop: spacing.lg,
+      marginBottom: spacing.sm,
+      color: colors.text,
+    },
+    sectionSubtitle: {
+      fontFamily: 'regular',
+      fontSize: 14,
+      opacity: 0.6,
+      color: colors.textSecondary,
+    },
+    inputField: {
+      width: '100%',
+      paddingHorizontal: spacing.md,
+      height: 50,
+      borderWidth: 1.5,
+      borderRadius: radius.lg,
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSecondary,
+      fontSize: 16, // Минимум 16px для предотвращения зума на iOS
+      fontFamily: 'regular',
+      color: colors.text,
+    },
+    inputFieldError: {
+      borderColor: colors.error,
+    },
+    dropdownContainer: {
+      backgroundColor: colors.surfaceSecondary,
+      borderRadius: radius.md,
+      marginTop: -2,
+      borderColor: colors.border,
+      borderWidth: 1.5,
+      paddingVertical: spacing.sm,
+      ...shadows.sm,
+    },
+    dropdownItem: {
+      width: '100%',
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+    },
+    dropdownItemText: {
+      color: colors.textMuted,
+      fontSize: 14,
+      fontFamily: 'regular',
+    },
+    errorText: {
+      color: colors.error,
+      fontSize: 14,
+      fontFamily: 'regular',
+      marginTop: spacing.sm,
+    },
+    submitButton: {
+      borderRadius: radius.lg,
+      overflow: 'hidden',
+      marginBottom: spacing.lg,
+      marginTop: spacing.xl,
+      ...shadows.md,
+    },
+    submitButtonText: {
+      color: colors.primaryText,
+      fontSize: 16,
+      fontFamily: 'semibold',
     },
   });
   
