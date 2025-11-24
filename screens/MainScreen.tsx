@@ -124,10 +124,17 @@ export const HomeScreen = () => {
   const selectedCity = useSelector((state: any) => state.city.selectedCity, shallowEqual);
   const allKazakhstanText = t('location.all_kazakhstan');
   // Варианты "Весь Казахстан" на всех языках
-  const allKazakhstanVariants = ['Весь Казахстан', 'Бүкіл Қазақстан', 'All Kazakhstan'];
+  const allKazakhstanVariants = useMemo(
+    () => ['Весь Казахстан', 'Бүкіл Қазақстан', 'All Kazakhstan'],
+    []
+  );
   const effectiveCity = selectedCity || allKazakhstanText;
   // Проверяем, является ли выбранный город одним из вариантов "Весь Казахстан" на любом языке
-  const isAllKazakhstan = !selectedCity || allKazakhstanVariants.includes(effectiveCity) || effectiveCity === allKazakhstanText;
+  const isAllKazakhstan =
+    !selectedCity ||
+    allKazakhstanVariants.includes(effectiveCity) ||
+    effectiveCity === allKazakhstanText;
+  const [langKey, setLangKey] = useState(0);
   
   // Сброс данных при смене города
   useEffect(() => {
@@ -167,7 +174,10 @@ export const HomeScreen = () => {
     isFetching: isFetchingAll,
     refetch: refetchAll,
     error: errorAll,
-  } = useGetPostListQuery({ page, limit }, { ...baseQueryOpts, skip: !isAllKazakhstan });
+  } = useGetPostListQuery(
+    { page, limit, langKey },
+    { ...baseQueryOpts, skip: !isAllKazakhstan }
+  );
 
   const {
     data: cityData,
@@ -175,7 +185,10 @@ export const HomeScreen = () => {
     isFetching: isFetchingCity,
     refetch: refetchCity,
     error: errorCity,
-  } = useGetPostListCityQuery({ city: effectiveCity, page, limit }, { ...baseQueryOpts, skip: isAllKazakhstan });
+  } = useGetPostListCityQuery(
+    { city: effectiveCity, page, limit, langKey },
+    { ...baseQueryOpts, skip: isAllKazakhstan }
+  );
 
   const data = isAllKazakhstan ? allData : cityData;
   const error = isAllKazakhstan ? errorAll : errorCity;
@@ -194,21 +207,13 @@ export const HomeScreen = () => {
   useEffect(() => {
     if (prevLanguageRef.current !== currentLanguage) {
       prevLanguageRef.current = currentLanguage;
+      setLangKey((key) => key + 1);
       setPage(1);
       setPosts([]);
       setFirstLoaded(false);
       setHasReachedEnd(false);
-      // Принудительно обновляем данные при смене языка
-      // Используем setTimeout чтобы убедиться, что состояние обновилось
-      setTimeout(() => {
-        if (isAllKazakhstan) {
-          refetchAll();
-        } else {
-          refetchCity();
-        }
-      }, 100);
     }
-  }, [currentLanguage, isAllKazakhstan, refetchAll, refetchCity]); // eslint-disable-line
+  }, [currentLanguage]); // eslint-disable-line
 
   const handleSelectCity = (city: string) => {
     if (city === selectedCity) { setVisible(false); return; }
