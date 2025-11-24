@@ -21,14 +21,14 @@ export default function Navigation() {
     
 
     const linking = {
-      prefixes: ['https://www.qcity.kz'],
+      prefixes: ['https://www.qcity.kz', 'qcity://'],
       config: {
         screens: {
           root: {
             screens: {
               BottomTabNavigation: {
                 screens: {
-                  // Главная вкладка (MainStackNavigator)
+                  // Главная вкладка (MainStackNavigator) - корневой путь
                   HomeTab: {
                     screens: {
                       Home: '',
@@ -108,6 +108,81 @@ export default function Navigation() {
       },
       documentTitle: {
         formatter: (_options, route) => `${route?.name ?? 'Qcity'} · Qcity`,
+      },
+      getInitialURL: async () => {
+        // Проверяем, есть ли глубокие ссылки
+        const url = await Linking.getInitialURL();
+        if (url != null) {
+          return url;
+        }
+        // Если нет глубокой ссылки, возвращаем корневой путь для главной
+        return 'https://www.qcity.kz/';
+      },
+      getStateFromPath: (path, options) => {
+        // Нормализуем путь - убираем начальный и конечный слэш
+        const normalizedPath = path ? path.replace(/^\/+|\/+$/g, '') : '';
+        
+        // Если путь пустой или только "/", направляем на главную (HomeTab)
+        if (!normalizedPath || normalizedPath === '') {
+          return {
+            routes: [
+              {
+                name: 'root',
+                state: {
+                  routes: [
+                    {
+                      name: 'BottomTabNavigation',
+                      state: {
+                        routes: [
+                          {
+                            name: 'HomeTab',
+                            state: {
+                              routes: [{ name: 'Home' }],
+                            },
+                          },
+                        ],
+                        index: 0, // Указываем, что HomeTab активен
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          };
+        }
+        
+        // Если путь начинается с "MessagesTab" или "messages", это старая ссылка - игнорируем
+        if (normalizedPath.startsWith('MessagesTab') || normalizedPath === 'messages') {
+          // Перенаправляем на главную вместо сообщений
+          return {
+            routes: [
+              {
+                name: 'root',
+                state: {
+                  routes: [
+                    {
+                      name: 'BottomTabNavigation',
+                      state: {
+                        routes: [
+                          {
+                            name: 'HomeTab',
+                            state: {
+                              routes: [{ name: 'Home' }],
+                            },
+                          },
+                        ],
+                        index: 0,
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          };
+        }
+        
+        // Для остальных путей используем стандартную обработку
+        return undefined;
       },
     };
 
