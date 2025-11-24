@@ -197,7 +197,7 @@ export const ProfileRegistrationScreen = ({route}) => {
 
             <View style={{marginTop:40}}>
                 <TextInput
-                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6'}}
+                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',fontSize:16}}
                     onChangeText={onChangeName}
                     value={name}
                     placeholder={t('register.write_name')}

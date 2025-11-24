@@ -707,6 +707,7 @@ const styles = StyleSheet.create({
         paddingTop: 12,
         paddingBottom: 12,
         marginRight: 12,
+        fontSize: 16, // Минимум 16px для предотвращения зума на iOS
         fontSize: 16,
         fontFamily: 'regular',
         color: '#1A1A1A',

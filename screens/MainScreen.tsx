@@ -194,12 +194,16 @@ export const HomeScreen = () => {
       setPage(1);
       setPosts([]);
       setFirstLoaded(false);
+      setHasReachedEnd(false);
       // Принудительно обновляем данные при смене языка
-      if (isAllKazakhstan) {
-        refetchAll();
-      } else {
-        refetchCity();
-      }
+      // Используем setTimeout чтобы убедиться, что состояние обновилось
+      setTimeout(() => {
+        if (isAllKazakhstan) {
+          refetchAll();
+        } else {
+          refetchCity();
+        }
+      }, 100);
     }
   }, [currentLanguage, isAllKazakhstan, refetchAll, refetchCity]); // eslint-disable-line
 

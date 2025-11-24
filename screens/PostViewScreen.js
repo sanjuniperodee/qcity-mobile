@@ -909,7 +909,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     borderColor: '#E0E0E0',
-    fontSize: 15,
+    fontSize: 16, // Минимум 16px для предотвращения зума на iOS
     fontFamily: 'regular',
     color: '#1A1A1A',
     backgroundColor: '#FAFAFA',

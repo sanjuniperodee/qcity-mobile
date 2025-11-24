@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: colors.text,
-    fontSize: fontSizes.sm(),
+    fontSize: Math.max(fontSizes.sm(), 16), // Минимум 16px для предотвращения зума на iOS
   },
   right: {
     position: 'absolute',

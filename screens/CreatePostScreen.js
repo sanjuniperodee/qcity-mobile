@@ -673,7 +673,8 @@ export const CreatePostScreen = () => {
               borderWidth: 1,
               borderRadius: 10,
               borderColor: '#c4c4c4',
-              backgroundColor: '#F7F8F9'
+              backgroundColor: '#F7F8F9',
+              fontSize: 16 // Минимум 16px для предотвращения зума на iOS
             }}
             value={content}
             ref={contentRef}
