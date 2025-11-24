@@ -2,11 +2,10 @@ import React, { useState,useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-    const {height, width} = Dimensions.get('window')
-    const InputWidth = width * 0.88
-
 export const InputMap = (props) => {   
     const [InputFocus, setInputFocus] = useState(false)
+    const { width } = Dimensions.get('window');
+    const InputWidth = width * 0.88;
 
     const onFocus = () => {
         setInputFocus(true)
@@ -64,7 +63,13 @@ export const InputMap = (props) => {
                             language: 'ru',
                             types: 'address',
                     }}
-                    styles={InputStyles}/>
+                    styles={{
+                        ...InputStyles,
+                        listView: {
+                            ...InputStyles.listView,
+                            width: InputWidth - 20,
+                        },
+                    }}/>
                 </View>
                 <TouchableOpacity
                     style={styles.Icon}
@@ -141,7 +146,6 @@ const InputStyles = StyleSheet.create({
     },
     listView: {
         top: 0,
-        width: InputWidth - 20,
         borderRadius: 5,
         backgroundColor: '#F7F8F9',
         zIndex: 999,

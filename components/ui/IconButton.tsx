@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, ViewStyle, StyleSheet } from 'react-native';
-import { colors, radius, spacing, hitSlop } from '../../theme/tokens';
+import { colors, radius, spacing, hitSlop, shadows } from '../../theme/tokens';
 
 type Props = {
   children: React.ReactNode;

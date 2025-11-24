@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, ViewStyle, TextInputProps } from 'react-native';
-import { colors, radius, spacing } from '../../theme/tokens';
+import { colors, radius, spacing, shadows } from '../../theme/tokens';
 import { fontSizes } from '../../theme/typography';
 
 type Props = {

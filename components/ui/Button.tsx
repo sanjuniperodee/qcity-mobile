@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, ViewStyle, StyleSheet, View, StyleProp } from 'react-native';
-import { colors, radius, spacing, hitSlop } from '../../theme/tokens';
+import { colors, radius, spacing, hitSlop, shadows } from '../../theme/tokens';
 import { fontSizes, lineHeights } from '../../theme/typography';
 
 type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';

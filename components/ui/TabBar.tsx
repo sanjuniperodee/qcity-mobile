@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { colors, spacing } from '../../theme/tokens';
+import { colors, spacing, shadows } from '../../theme/tokens';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type TabItem = { key: string; label: string; focused?: boolean; onPress?: () => void };

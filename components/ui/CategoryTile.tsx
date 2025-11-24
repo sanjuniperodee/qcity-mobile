@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ViewStyle, Platform } from 'react-native';
-import { colors, radius, spacing } from '../../theme/tokens';
+import { colors, radius, spacing, shadows } from '../../theme/tokens';
 import { fontSizes, lineHeights } from '../../theme/typography';
 
 type Props = {

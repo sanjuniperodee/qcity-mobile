@@ -4,7 +4,7 @@ import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
 import Spacer from '../components/ui/Spacer';
-import { colors } from '../theme/tokens';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { loginSuccess } from '../actions/authActions';
@@ -207,15 +207,23 @@ export const LoginScreen = () => {
                             <Text style={styles.logoSubtext}>City</Text>
                         </LinearGradient>
                     </View>
-                    <Text style={{ fontFamily: 'bold',fontSize:isDesktop ? 18 : 25, textAlign:'center',marginTop:20}} >{t('login.login_to_acc')}</Text>
-                    <Text style={{ fontFamily: 'regular',fontSize:isDesktop ? 14 : 15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
+                    <Text style={[styles.screenTitle, { fontSize: isDesktop ? 18 : 25 }]}>{t('login.login_to_acc')}</Text>
+                    <Text style={[styles.screenSubtitle, { fontSize: isDesktop ? 14 : 15 }]}></Text>
                     {/* Toggle Email/Phone */}
-                    <View style={{marginTop:20, flexDirection:'row', gap:10}}>
-                        <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', backgroundColor: method==='email' ? colors.mutedBg : '#FFF' }}>
-                            <Text style={{ color: colors.primary }}>{t('auth.email')}</Text>
+                    <View style={styles.toggleContainer}>
+                        <TouchableOpacity 
+                            onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); setInputType(''); }} 
+                            style={[styles.toggleButton, method === 'email' && styles.toggleButtonActive]}
+                            activeOpacity={0.6}
+                        >
+                            <Text style={[styles.toggleText, method === 'email' && styles.toggleTextActive]}>{t('auth.email')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setMethod('phone'); setLogin('+7 (7'); setPhoneDigits(''); setInputType(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
-                            <Text style={{ color: colors.primary }}>{t('auth.phone')}</Text>
+                        <TouchableOpacity 
+                            onPress={() => { setMethod('phone'); setLogin('+7 (7'); setPhoneDigits(''); setInputType(''); }} 
+                            style={[styles.toggleButton, method === 'phone' && styles.toggleButtonActive]}
+                            activeOpacity={0.6}
+                        >
+                            <Text style={[styles.toggleText, method === 'phone' && styles.toggleTextActive]}>{t('auth.phone')}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -251,11 +259,14 @@ export const LoginScreen = () => {
 
                     <View style={{marginTop:20,justifyContent:'center'}}>
 
-                        {error ? <Text style={{color: 'red', textAlign: 'center', marginBottom: 15}}>{error}</Text> : null}
+                        {error ? <Text style={styles.errorText}>{error}</Text> : null}
                         <Button size={isDesktop ? 'xs' : 'md'} fullWidth onPress={handleLogin}>{t('login.login')}</Button>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                            <Text style={{marginTop:30, color:colors.textMuted,fontSize:15, textAlign:'center'}}>
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate('ForgotPassword')}
+                            activeOpacity={0.6}
+                        >
+                            <Text style={styles.forgotPasswordText}>
                                 {t('login.forgot_password')}
                             </Text>
                         </TouchableOpacity>
@@ -277,28 +288,23 @@ export const LoginScreen = () => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: colors.overlay, // Apple HIG: system overlay
     },
     modalView: {
-      margin: 20,
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 35,
-      paddingTop:50,
+      margin: spacing.xl,
+      backgroundColor: colors.surface,
+      borderRadius: radius.xl, // Apple HIG: larger radius for modals
+      padding: spacing.xl,
+      paddingTop: spacing.xxxl,
       alignItems: 'center',
-      shadowColor: '#666',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
+      ...shadows.xl, // Apple HIG: stronger shadow for modals
     },
     modalText: {
-      marginTop: 25,
-      fontFamily:'medium',
-      fontSize:16,
+      marginTop: spacing.lg,
+      fontFamily: 'medium',
+      fontSize: 16,
       textAlign: 'center',
+      color: colors.text, // Apple HIG: primary text
     },
     logoContainer: {
       flexDirection: 'column',
@@ -306,27 +312,83 @@ export const LoginScreen = () => {
       justifyContent: 'center',
     },
     logoGradient: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 12,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.lg, // Apple HIG: consistent rounding
       flexDirection: 'row',
       alignItems: 'baseline',
+      ...shadows.md, // Apple HIG: subtle depth
     },
     logoText: {
       fontSize: 22,
       fontFamily: 'bold',
-      color: '#FFFFFF',
+      color: colors.primaryText,
       lineHeight: 24,
       letterSpacing: 0.5,
     },
     logoSubtext: {
       fontSize: 18,
       fontFamily: 'medium',
-      color: '#FFFFFF',
+      color: colors.primaryText,
       lineHeight: 20,
       letterSpacing: 0.3,
-      marginLeft: 4,
+      marginLeft: spacing.xxs,
       opacity: 0.95,
+    },
+    screenTitle: {
+      fontFamily: 'bold',
+      textAlign: 'center',
+      marginTop: spacing.lg,
+      color: colors.text, // Apple HIG: primary text
+    },
+    screenSubtitle: {
+      fontFamily: 'regular',
+      color: colors.textSecondary, // Apple HIG: secondary text
+      maxWidth: 320,
+      lineHeight: 21,
+      marginTop: spacing.lg,
+      textAlign: 'center',
+    },
+    toggleContainer: {
+      marginTop: spacing.lg,
+      flexDirection: 'row',
+      gap: spacing.sm,
+    },
+    toggleButton: {
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.sm,
+      borderRadius: radius.lg, // Apple HIG: consistent rounding
+      borderWidth: 1,
+      borderColor: colors.borderLight, // Apple HIG: system border
+      backgroundColor: colors.surface, // Apple HIG: system surface
+      minHeight: 44, // Apple HIG: minimum touch target
+      ...shadows.sm, // Apple HIG: subtle depth
+    },
+    toggleButtonActive: {
+      borderColor: colors.primary,
+      backgroundColor: colors.mutedBg, // Apple HIG: semantic color
+    },
+    toggleText: {
+      color: colors.textSecondary, // Apple HIG: secondary text
+      fontSize: 15,
+      fontFamily: 'medium',
+    },
+    toggleTextActive: {
+      color: colors.primary, // Apple HIG: primary color for active
+    },
+    errorText: {
+      color: colors.error, // Apple HIG: system error color
+      textAlign: 'center',
+      marginBottom: spacing.md,
+      fontSize: 14,
+      fontFamily: 'regular',
+    },
+    forgotPasswordText: {
+      marginTop: spacing.xl,
+      color: colors.textSecondary, // Apple HIG: secondary text
+      fontSize: 15,
+      textAlign: 'center',
+      fontFamily: 'regular',
     },
   });
   

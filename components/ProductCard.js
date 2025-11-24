@@ -1,6 +1,6 @@
 import React, { useRef,useState,useEffect } from 'react';
 import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator, StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { colors, spacing, radius } from '../theme/tokens';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { Video, InterruptionModeAndroid, InterruptionModeIOS, ResizeMode } from 'expo-av';
 import { Image } from 'expo-image';
@@ -90,20 +90,11 @@ export const ProductCard = (props) => {
     return (
         <TouchableOpacity 
           onPress={handleCardPress}
-          style={{
-            width: '100%',
-            height: 'max-content',
-            // Let content define height; keep a minimal height to avoid collapse
-            borderRadius: radius.md,
-            borderWidth: props.tariff === 2 ? 2 : 0, 
-            borderColor: props.tariff === 2 ? colors.primary : 'transparent',
-            backgroundColor: '#FFFFFF',
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.1,
-            shadowRadius: 2,
-            elevation: 2
-          }}>
+          activeOpacity={0.9} // Apple HIG: standard active opacity
+          style={[
+            styles.card,
+            props.tariff === 2 && styles.cardFeatured
+          ]}>
           <View>
             <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',bottom:10,zIndex:2,left:10,position:'absolute'}}>
               <View style={{flexDirection:'row',marginTop:4}}>
@@ -256,23 +247,35 @@ export const ProductCard = (props) => {
   }
 
 const styles = StyleSheet.create({
+  card: {
+    width: '100%',
+    height: 'max-content',
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    backgroundColor: colors.surface, // Apple HIG: system surface
+    overflow: 'hidden',
+    ...shadows.md, // Apple HIG: subtle depth
+  },
+  cardFeatured: {
+    borderWidth: 2,
+    borderColor: colors.primary, // Apple HIG: primary color for featured
+  },
   videoBadge: {
     position: 'absolute',
-    top: 12,
-    left: 12,
+    top: spacing.sm,
+    left: spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 16,
+    backgroundColor: colors.overlay, // Apple HIG: system overlay
+    paddingHorizontal: spacing.xs,
+    paddingVertical: spacing.xxs,
+    borderRadius: radius.round, // Apple HIG: fully rounded badge
     zIndex: 2,
   },
   videoBadgeText: {
-    color: '#FFFFFF',
+    color: colors.primaryText,
     fontFamily: 'bold',
     fontSize: 10,
-    marginLeft: 4,
+    marginLeft: spacing.xxs,
   },
 });
   
