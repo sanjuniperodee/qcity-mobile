@@ -3,7 +3,8 @@ import { View, TextInput, TouchableOpacity, Text, Dimensions, ActivityIndicator 
 import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
-import { colors } from '../theme/tokens';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
+import { StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { parseApiError } from '../utils/apiError';
 
@@ -68,30 +69,30 @@ export default function ResetPasswordScreen() {
   };
 
   return (
-    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
-      <Container style={{ alignItems:'center' }}>
-        <Text style={{ fontSize:20, marginBottom:6 }}>Сброс пароля</Text>
-        <Text style={{ color:colors.textMuted, marginBottom:16 }}>
+    <View style={styles.container}>
+      <Container style={styles.content}>
+        <Text style={styles.title}>Сброс пароля</Text>
+        <Text style={styles.subtitle}>
           {type === 'phone' ? 'Введите код из SMS' : 'Введите код из email'}
         </Text>
-        {generalError ? <Text style={{ color: 'red', marginBottom: 10 }}>{generalError}</Text> : null}
-        <View style={{ width: '100%' }}>
+        {generalError ? <Text style={styles.errorText}>{generalError}</Text> : null}
+        <View style={styles.inputContainer}>
           <FormField
             value={code}
             onChangeText={setCode}
             placeholder={type === 'phone' ? 'Код из SMS' : 'Код из email'}
             keyboardType="numeric"
           />
-          {codeError ? <Text style={{ color: 'red', marginTop: 8 }}>{codeError}</Text> : null}
+          {codeError ? <Text style={styles.fieldError}>{codeError}</Text> : null}
         </View>
-        <View style={{ width: '100%', marginTop: 12 }}>
+        <View style={styles.inputContainer}>
           <FormField
             value={newPassword}
             onChangeText={setNewPassword}
             placeholder="Новый пароль"
             secureTextEntry
           />
-          {passwordError ? <Text style={{ color: 'red', marginTop: 8 }}>{passwordError}</Text> : null}
+          {passwordError ? <Text style={styles.fieldError}>{passwordError}</Text> : null}
         </View>
         <Button fullWidth onPress={handleResetPassword}>
           {isLoading ? '...' : 'Сменить пароль'}
@@ -100,3 +101,48 @@ export default function ResetPasswordScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+  },
+  content: {
+    alignItems: 'center',
+    width: '90%',
+    maxWidth: 480,
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: 'bold',
+    marginBottom: spacing.sm,
+    color: colors.text,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 15,
+    fontFamily: 'regular',
+    color: colors.textMuted,
+    marginBottom: spacing.lg,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    marginTop: spacing.md,
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: colors.error,
+    marginBottom: spacing.sm,
+    textAlign: 'center',
+  },
+  fieldError: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: colors.error,
+    marginTop: spacing.xs,
+  },
+});

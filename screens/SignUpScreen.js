@@ -4,7 +4,7 @@ import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
 import Spacer from '../components/ui/Spacer';
-import { spacing, colors } from '../theme/tokens';
+import { spacing, colors, radius, shadows } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import {useTranslation} from 'react-i18next'
@@ -161,16 +161,24 @@ export const SignUpScreen = () => {
                     <Text style={styles.logoSubtext}>City</Text>
                 </LinearGradient>
             </View>
-            <Text style={{ fontFamily: 'bold',fontSize: isDesktop ? 18 : 25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
-            <Text style={{ fontFamily: 'regular',fontSize: isDesktop ? 14 : 15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
+            <Text style={[styles.title, { fontSize: isDesktop ? 24 : 28 }]}>{t('register.register_of_acc')}</Text>
+            <Text style={[styles.subtitle, { fontSize: isDesktop ? 14 : 15 }]}>{t('register.create_acc')}</Text>
 
             {/* Toggle Email/Phone */}
-            <View style={{marginTop:30, flexDirection:'row', columnGap:10}}>
-                <TouchableOpacity onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', backgroundColor: method==='email' ? colors.mutedBg : colors.bg }}>
-                    <Text style={{ color: colors.primary }}>{t('auth.email')}</Text>
+            <View style={styles.toggleContainer}>
+                <TouchableOpacity 
+                    onPress={() => { setMethod('email'); setLogin(''); setPhoneDigits(''); }} 
+                    style={[styles.toggleButton, method === 'email' && styles.toggleButtonActive]}
+                    activeOpacity={0.7}
+                >
+                    <Text style={[styles.toggleText, method === 'email' && styles.toggleTextActive]}>{t('auth.email')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setMethod('phone'); setLogin('+7 (7'); setPhoneDigits(''); }} style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', backgroundColor: method==='phone' ? colors.mutedBg : colors.bg }}>
-                    <Text style={{ color: colors.primary }}>{t('auth.phone')}</Text>
+                <TouchableOpacity 
+                    onPress={() => { setMethod('phone'); setLogin('+7 (7'); setPhoneDigits(''); }} 
+                    style={[styles.toggleButton, method === 'phone' && styles.toggleButtonActive]}
+                    activeOpacity={0.7}
+                >
+                    <Text style={[styles.toggleText, method === 'phone' && styles.toggleTextActive]}>{t('auth.phone')}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -207,30 +215,22 @@ export const SignUpScreen = () => {
                     />
                 </View>
             </View>
-            <View style={{marginTop:20,justifyContent:'center', width: '100%'}}>
-                <View>
-                    {loginError ? <Text style={{color: 'red'}}>{loginError}</Text> : null}
-                </View>
-                <View style={{marginBottom:20}}>
-                    <View style={{marginTop:10}}>
-                        {passwordError ? <Text style={{color: 'red'}}>{passwordError}</Text> : null}
-                    </View>
-                    <View style={{marginTop:10}}>
-                        {password2Error ? <Text style={{color: 'red'}}>{password2Error}</Text> : null}
-                    </View>
-                </View>
+            <View style={styles.errorsContainer}>
+                {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
+                {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+                {password2Error ? <Text style={styles.errorText}>{password2Error}</Text> : null}
+            </View>
                 <Button size={isDesktop ? 'xs' : 'md'} fullWidth onPress={handleRegistration}>
                     {t('continue')}
                 </Button>
                 <Spacer size={spacing.sm} />
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Login', { prefill: method==='phone' ? normalizeKzPhone(`+77${phoneDigits}`) : login })}
-                    style={{alignItems:'center', marginTop:14}}
+                    style={styles.linkContainer}
                     activeOpacity={0.7}
                 >
-                    <Text style={{ color:colors.textMuted }}>{t('login.already_have_account')} <Text style={{ color:colors.primary }}>{t('login.login_link')}</Text></Text>
+                    <Text style={styles.linkText}>{t('login.already_have_account')} <Text style={styles.linkTextAccent}>{t('login.login_link')}</Text></Text>
                 </TouchableOpacity>
-            </View>
             </View>
         </Container>
         </ScrollView>
@@ -243,28 +243,99 @@ export const SignUpScreen = () => {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+      marginBottom: spacing.xl,
     },
     logoGradient: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 12,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.lg,
       flexDirection: 'row',
       alignItems: 'baseline',
+      ...shadows.md,
     },
     logoText: {
       fontSize: 22,
       fontFamily: 'bold',
-      color: '#FFFFFF',
+      color: colors.primaryText,
       lineHeight: 24,
       letterSpacing: 0.5,
     },
     logoSubtext: {
       fontSize: 18,
       fontFamily: 'medium',
-      color: '#FFFFFF',
+      color: colors.primaryText,
       lineHeight: 20,
       letterSpacing: 0.3,
-      marginLeft: 4,
+      marginLeft: spacing.xxs,
       opacity: 0.95,
+    },
+    title: {
+      fontFamily: 'bold',
+      textAlign: 'center',
+      marginTop: spacing.lg,
+      color: colors.text,
+    },
+    subtitle: {
+      fontFamily: 'regular',
+      color: colors.textMuted,
+      maxWidth: 320,
+      lineHeight: 21,
+      marginTop: spacing.sm,
+      textAlign: 'center',
+    },
+    toggleContainer: {
+      marginTop: spacing.xl,
+      flexDirection: 'row',
+      gap: spacing.sm,
+      width: '100%',
+    },
+    toggleButton: {
+      flex: 1,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      borderRadius: radius.md,
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 44,
+    },
+    toggleButtonActive: {
+      borderColor: colors.primary,
+      backgroundColor: colors.mutedBg,
+    },
+    toggleText: {
+      fontSize: 15,
+      fontFamily: 'medium',
+      color: colors.textSecondary,
+    },
+    toggleTextActive: {
+      color: colors.primary,
+      fontFamily: 'semibold',
+    },
+    linkContainer: {
+      alignItems: 'center',
+      marginTop: spacing.md,
+    },
+    linkText: {
+      fontSize: 15,
+      fontFamily: 'regular',
+      color: colors.textMuted,
+    },
+    linkTextAccent: {
+      color: colors.primary,
+      fontFamily: 'semibold',
+    },
+    errorsContainer: {
+      marginTop: spacing.md,
+      marginBottom: spacing.md,
+      width: '100%',
+    },
+    errorText: {
+      fontSize: 14,
+      fontFamily: 'regular',
+      color: colors.error,
+      marginTop: spacing.xs,
     },
   });

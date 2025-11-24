@@ -3,7 +3,8 @@ import { View, TextInput, TouchableOpacity, Text, Dimensions } from 'react-nativ
 import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
-import { colors } from '../theme/tokens';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
+import { StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { parseApiError } from '../utils/apiError';
 import { useTranslation } from 'react-i18next';
@@ -42,11 +43,11 @@ export default function PhoneOtpScreen() {
   };
 
   return (
-    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
-      <Container style={{ alignItems:'center' }}>
-        <Text style={{ fontSize:20, marginBottom:20 }}>Подтверждение телефона</Text>
-        <Text style={{ marginBottom:10, color:colors.textMuted }}>Код отправлен на {phone}</Text>
-        <View style={{ width: '100%' }}>
+    <View style={styles.container}>
+      <Container style={styles.content}>
+        <Text style={styles.title}>Подтверждение телефона</Text>
+        <Text style={styles.subtitle}>Код отправлен на {phone}</Text>
+        <View style={styles.inputContainer}>
           <FormField
             value={code}
             onChangeText={setCode}
@@ -54,11 +55,50 @@ export default function PhoneOtpScreen() {
             keyboardType="numeric"
           />
         </View>
-        {error ? <Text style={{ color: 'red', marginTop: 10 }}>{error}</Text> : null}
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <Button fullWidth onPress={handleConfirm}>Продолжить</Button>
       </Container>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+  },
+  content: {
+    alignItems: 'center',
+    width: '90%',
+    maxWidth: 480,
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: 'bold',
+    marginBottom: spacing.md,
+    color: colors.text,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 15,
+    fontFamily: 'regular',
+    color: colors.textMuted,
+    marginBottom: spacing.lg,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: spacing.sm,
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: colors.error,
+    marginTop: spacing.xs,
+    marginBottom: spacing.xs,
+  },
+});
 
 

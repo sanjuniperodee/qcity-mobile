@@ -7,6 +7,9 @@ import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
 import { parseApiError } from '../utils/apiError';
 import { LinearGradient } from 'expo-linear-gradient';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
+import FormField from '../components/ui/FormField';
+import Button from '../components/ui/Button';
 
 export const ProfileRegistrationScreen = ({route}) => {
     const { login, password, type } = route.params;
@@ -17,8 +20,6 @@ export const ProfileRegistrationScreen = ({route}) => {
     const [generalError, setGeneralError] = useState('');
     const navigation = useNavigation();
 
-    const { width } = Dimensions.get('window');
-    
     const [nameError, setNameError] = useState('');
     const [imageError, setImageError] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -168,10 +169,10 @@ export const ProfileRegistrationScreen = ({route}) => {
           </View>
       </Modal>
        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:80}}>
+        <View style={styles.container}>
             <View style={styles.logoContainer}>
                 <LinearGradient
-                    colors={['#F3B127', '#F26D1D']}
+                    colors={[colors.primaryLight, colors.primary]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={styles.logoGradient}
@@ -180,38 +181,38 @@ export const ProfileRegistrationScreen = ({route}) => {
                     <Text style={styles.logoSubtext}>City</Text>
                 </LinearGradient>
             </View>
-            <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
-            <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:255,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
+            <Text style={styles.title}>{t('register.register_of_acc')}</Text>
+            <Text style={styles.subtitle}>{t('register.create_acc')}</Text>
 
-
-            <TouchableOpacity style={{marginTop:40}} onPress={pickImage}>
+            <TouchableOpacity style={styles.imageContainer} onPress={pickImage} activeOpacity={0.7}>
                 {image ? (
-                    <Image source={{ uri: image }} style={{ width: 110, height: 110, borderRadius:15,borderWidth:1,borderColor:'#D6D6D6' }} />
+                    <Image source={{ uri: image }} style={styles.profileImage} />
                 ) : (
-                    <View style={{ width: 110, height: 110, backgroundColor: '#F7F8F9', borderRadius: 15,borderWidth:1,borderColor:'#D6D6D6', justifyContent: 'center', alignItems: 'center' }}>
-                        <Image style={{height:25,width:25,marginTop:20}} source={require('../assets/plus.jpg')} />
-                        <Text style={{ fontFamily:'regular',fontSize:14,color:'#96949D',marginTop:10, }}>{t('register.profile_pic')}</Text>
+                    <View style={styles.imagePlaceholder}>
+                        <Image style={styles.plusIcon} source={require('../assets/plus.jpg')} />
+                        <Text style={styles.imagePlaceholderText}>{t('register.profile_pic')}</Text>
                     </View>
                 )}
             </TouchableOpacity>
 
-            <View style={{marginTop:40}}>
-                <TextInput
-                    style={{width:width - 40,paddingHorizontal:10,height:50,borderWidth:1,borderRadius:10,borderColor:'#D6D6D6',fontSize:16}}
+            <View style={styles.inputContainer}>
+                <FormField
                     onChangeText={onChangeName}
                     value={name}
                     placeholder={t('register.write_name')}
                 />
             </View>
 
-            { nameError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{nameError}</Text> : null }
-            { imageError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{imageError}</Text> : null }
-            { emailError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{emailError}</Text> : null }
-            { generalError ? <Text style={{ color: 'red', marginTop: 15,alignSelf:'flex-start' }}>{generalError}</Text> : null }
-            <View style={{marginTop:20,justifyContent:'center'}}>
-                <TouchableOpacity onPress={handleRegistration} style={{paddingVertical:15,width:width - 40,backgroundColor:'#F09235',borderRadius:10,alignItems:'center'}}>
-                    <Text style={{color:'#FFF',fontSize:16,}}>{t('continue')}</Text>
-                </TouchableOpacity>
+            <View style={styles.errorsContainer}>
+                {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
+                {imageError ? <Text style={styles.errorText}>{imageError}</Text> : null}
+                {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+                {generalError ? <Text style={styles.errorText}>{generalError}</Text> : null}
+            </View>
+            <View style={styles.buttonContainer}>
+                <Button fullWidth onPress={handleRegistration}>
+                    {t('continue')}
+                </Button>
             </View>
         </View>
         </ScrollView>
@@ -222,64 +223,129 @@ export const ProfileRegistrationScreen = ({route}) => {
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
       alignItems: 'center',
+      width: '90%',
+      marginHorizontal: '5%',
+      marginTop: 80,
     },
     centeredView: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: colors.overlay,
     },
     modalView: {
       margin: 20,
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 35,
-      paddingTop:50,
+      backgroundColor: colors.surface,
+      borderRadius: radius.xl,
+      padding: spacing.xxl,
+      paddingTop: spacing.xxxl,
       alignItems: 'center',
-      shadowColor: '#666',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
+      ...shadows.xl,
     },
     modalText: {
-      marginTop: 25,
-      fontFamily:'medium',
-      fontSize:16,
+      marginTop: spacing.lg,
+      fontFamily: 'medium',
+      fontSize: 16,
       textAlign: 'center',
+      color: colors.text,
     },
     logoContainer: {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+      marginBottom: spacing.xl,
     },
     logoGradient: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 12,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.lg,
       flexDirection: 'row',
       alignItems: 'baseline',
+      ...shadows.md,
     },
     logoText: {
       fontSize: 22,
       fontFamily: 'bold',
-      color: '#FFFFFF',
+      color: colors.primaryText,
       lineHeight: 24,
       letterSpacing: 0.5,
     },
     logoSubtext: {
       fontSize: 18,
       fontFamily: 'medium',
-      color: '#FFFFFF',
+      color: colors.primaryText,
       lineHeight: 20,
       letterSpacing: 0.3,
-      marginLeft: 4,
+      marginLeft: spacing.xxs,
       opacity: 0.95,
+    },
+    title: {
+      fontFamily: 'bold',
+      fontSize: 28,
+      textAlign: 'center',
+      marginTop: spacing.lg,
+      color: colors.text,
+    },
+    subtitle: {
+      fontFamily: 'regular',
+      fontSize: 15,
+      color: colors.textMuted,
+      width: 280,
+      lineHeight: 21,
+      marginTop: spacing.sm,
+      textAlign: 'center',
+    },
+    imageContainer: {
+      marginTop: spacing.xl,
+    },
+    profileImage: {
+      width: 110,
+      height: 110,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    imagePlaceholder: {
+      width: 110,
+      height: 110,
+      backgroundColor: colors.surfaceSecondary,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    plusIcon: {
+      height: 25,
+      width: 25,
+      marginTop: spacing.sm,
+    },
+    imagePlaceholderText: {
+      fontFamily: 'regular',
+      fontSize: 14,
+      color: colors.textMuted,
+      marginTop: spacing.xs,
+    },
+    inputContainer: {
+      marginTop: spacing.xl,
+      width: '100%',
+    },
+    errorsContainer: {
+      marginTop: spacing.md,
+      width: '100%',
+      alignSelf: 'flex-start',
+    },
+    errorText: {
+      fontSize: 14,
+      fontFamily: 'regular',
+      color: colors.error,
+      marginTop: spacing.xs,
+    },
+    buttonContainer: {
+      marginTop: spacing.lg,
+      justifyContent: 'center',
+      width: '100%',
     },
   });
   

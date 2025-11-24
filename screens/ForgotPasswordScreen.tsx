@@ -3,10 +3,11 @@ import { View, TextInput, TouchableOpacity, Text, Dimensions } from 'react-nativ
 import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
-import { colors } from '../theme/tokens';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { parseApiError } from '../utils/apiError';
+import { StyleSheet } from 'react-native';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -112,18 +113,26 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
-      <Container style={{ alignItems:'center' }}>
-        <Text style={{ fontSize:20, marginBottom:20 }}>Восстановление пароля</Text>
-        <View style={{marginBottom:10, flexDirection:'row'}}>
-          <TouchableOpacity onPress={() => { setMethod('email'); setEmail(''); setPhoneDigits(''); }} style={{ marginRight:10, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='email' ? colors.primary : '#D6D6D6', borderRadius:8, backgroundColor: method==='email' ? colors.mutedBg : '#FFF' }}>
-            <Text style={{ color:colors.primary }}>Почта</Text>
+    <View style={styles.container}>
+      <Container style={styles.content}>
+        <Text style={styles.title}>Восстановление пароля</Text>
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity 
+            onPress={() => { setMethod('email'); setEmail(''); setPhoneDigits(''); }} 
+            style={[styles.toggleButton, method === 'email' && styles.toggleButtonActive]}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.toggleText, method === 'email' && styles.toggleTextActive]}>Почта</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { setMethod('phone'); setEmail('+7 (7'); setPhoneDigits(''); }} style={{ paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor: method==='phone' ? colors.primary : '#D6D6D6', borderRadius:8, backgroundColor: method==='phone' ? colors.mutedBg : '#FFF' }}>
-            <Text style={{ color:colors.primary }}>Телефон</Text>
+          <TouchableOpacity 
+            onPress={() => { setMethod('phone'); setEmail('+7 (7'); setPhoneDigits(''); }} 
+            style={[styles.toggleButton, method === 'phone' && styles.toggleButtonActive]}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.toggleText, method === 'phone' && styles.toggleTextActive]}>Телефон</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ width: '100%' }}>
+        <View style={styles.inputContainer}>
           <FormField
             value={email}
             onChangeText={(v) => method==='phone' ? handlePhoneChange(v) : setEmail(v)}
@@ -133,7 +142,7 @@ export default function ForgotPasswordScreen() {
             selection={method==='phone' ? { start: (email || '+7 (7').length, end: (email || '+7 (7').length } as any : undefined}
           />
         </View>
-        {error ? <Text style={{ color: 'red', marginTop: 10 }}>{error}</Text> : null}
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <Button fullWidth onPress={handleRequestCode}>
           Отправить код
         </Button>
@@ -141,3 +150,66 @@ export default function ForgotPasswordScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+  },
+  content: {
+    alignItems: 'center',
+    width: '90%',
+    maxWidth: 480,
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: 'bold',
+    marginBottom: spacing.xl,
+    color: colors.text,
+    textAlign: 'center',
+  },
+  toggleContainer: {
+    marginBottom: spacing.md,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    width: '100%',
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
+  },
+  toggleButtonActive: {
+    borderColor: colors.primary,
+    backgroundColor: colors.mutedBg,
+  },
+  toggleText: {
+    fontSize: 15,
+    fontFamily: 'medium',
+    color: colors.textSecondary,
+  },
+  toggleTextActive: {
+    color: colors.primary,
+    fontFamily: 'semibold',
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: spacing.sm,
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'regular',
+    color: colors.error,
+    marginTop: spacing.xs,
+    marginBottom: spacing.xs,
+  },
+});
