@@ -18,11 +18,12 @@ type Props = {
   iconRight?: React.ReactNode;
 };
 
+// Apple HIG: Minimum touch target is 44x44 points
 const sizeToMinHeight: Record<ButtonSize, number> = {
-  xs: 36,
-  sm: 40,
-  md: 48,
-  lg: 56,
+  xs: 36, // Compact - only for special cases
+  sm: 44, // Apple HIG minimum
+  md: 50, // Standard
+  lg: 56, // Large
 };
 
 export function Button({
@@ -71,19 +72,21 @@ export function Button({
 const styles = StyleSheet.create({
   base: {
     paddingHorizontal: spacing.lg,
-    borderRadius: radius.md,
+    borderRadius: radius.lg, // Apple HIG: more rounded buttons
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     gap: spacing.sm,
+    // Apple HIG: subtle shadow for depth
+    ...shadows.sm,
   },
   primary: {
     backgroundColor: colors.primary,
   },
   secondary: {
-    backgroundColor: colors.mutedBg,
+    backgroundColor: colors.bgSecondary,
     borderWidth: 1,
-    borderColor: colors.primary,
+    borderColor: colors.border,
   },
   ghost: {
     backgroundColor: 'transparent',

@@ -39,14 +39,16 @@ export default function CategoryTile({ icon, label, onPress, style, height = Pla
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: colors.mutedBg,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
+    backgroundColor: colors.surface, // Apple HIG: clean surface
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    borderWidth: 0, // Apple HIG: use shadow instead
+    borderColor: 'transparent',
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    paddingVertical: spacing.md,
     alignItems: 'center',
     justifyContent: 'center',
+    // Apple HIG: subtle shadow for depth
+    ...shadows.md,
   },
   iconWrap: {
     height: Platform.select({ web: 28, default: 32 }) as number,
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
   },
   label: {
     textAlign: 'center',
-    color: colors.text,
+    color: colors.text, // Apple HIG: primary text color
     fontFamily: 'medium',
     width: '100%',
     paddingHorizontal: spacing.xs,

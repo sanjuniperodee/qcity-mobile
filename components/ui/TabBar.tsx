@@ -23,22 +23,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.bg,
+    borderTopWidth: 0.5, // Apple HIG: subtle separator
+    borderTopColor: colors.separator, // Apple HIG: system separator color
+    backgroundColor: colors.bg, // Apple HIG: system background
     paddingTop: spacing.sm,
+    // Apple HIG: subtle shadow above tab bar
+    ...shadows.sm,
   },
   item: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    minHeight: 44, // Apple HIG: minimum touch target
   },
   label: {
-    color: colors.textMuted,
+    color: colors.textTertiary, // Apple HIG: tertiary text for inactive
+    fontSize: 12, // Apple HIG: tab bar labels are smaller
+    fontFamily: 'medium',
   },
   focused: {
-    color: colors.primary,
+    color: colors.primary, // Apple HIG: primary color for active tab
   },
 });
 

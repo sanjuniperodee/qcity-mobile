@@ -9,13 +9,15 @@ type Props = {
   style?: ViewStyle;
 };
 
-export default function IconButton({ children, onPress, size = 40, style }: Props) {
+// Apple HIG: Minimum touch target is 44x44 points
+export default function IconButton({ children, onPress, size = 44, style }: Props) {
+  const minSize = Math.max(size, 44); // Ensure minimum touch target
   return (
     <TouchableOpacity
       hitSlop={hitSlop}
-      activeOpacity={0.7}
+      activeOpacity={0.6} // Apple HIG: standard active opacity
       onPress={onPress}
-      style={[styles.base, { width: size, height: size, borderRadius: size / 2 }, style]}
+      style={[styles.base, { width: minSize, height: minSize, borderRadius: radius.round }, style]}
     >
       {children}
     </TouchableOpacity>
@@ -24,11 +26,11 @@ export default function IconButton({ children, onPress, size = 40, style }: Prop
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: colors.mutedBg,
+    backgroundColor: colors.bgSecondary, // Apple HIG: subtle background
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
+    // Apple HIG: subtle shadow for depth
+    ...shadows.sm,
   },
 });
 

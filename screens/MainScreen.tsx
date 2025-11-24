@@ -508,30 +508,61 @@ export const HomeScreen = () => {
   );
 };
 
-const ORANGE = '#F09235';
-const LIGHT_ORANGE = '#FFF9F5'; // фон плиток
+import { colors, spacing, radius, shadows } from '../theme/tokens';
+
+const ORANGE = colors.primary;
+const LIGHT_ORANGE = colors.mutedBg; // фон плиток
 
 const styles = StyleSheet.create({
-  centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
-  modalView: {
-    margin: 20, backgroundColor: '#fff', borderRadius: 16, width: '90%', maxHeight: '60%',
-    paddingVertical: 24, alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15, shadowRadius: 8, elevation: 5,
+  centeredView: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: colors.overlay // Apple HIG: system overlay color
   },
-  cityButton: { paddingVertical: 16, marginVertical: 6, paddingHorizontal: 10, borderRadius: 12, width: '100%', backgroundColor: '#F1F2F4' },
-  activeCityButton: { backgroundColor: ORANGE + '22' },
-  cityText: { textAlign: 'center', fontSize: 15, fontFamily: 'medium', color: '#333' },
-  cityTextActive: { textAlign: 'center', fontFamily: 'medium', fontSize: 15, color: ORANGE },
+  modalView: {
+    margin: spacing.xl, 
+    backgroundColor: colors.surface, 
+    borderRadius: radius.xl, // Apple HIG: larger radius for modals
+    width: '90%', 
+    maxHeight: '60%',
+    paddingVertical: spacing.lg, 
+    alignItems: 'center', 
+    ...shadows.xl, // Apple HIG: stronger shadow for modals
+  },
+  cityButton: { 
+    paddingVertical: spacing.md, 
+    marginVertical: spacing.xs, 
+    paddingHorizontal: spacing.sm, 
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    width: '100%', 
+    backgroundColor: colors.bgSecondary // Apple HIG: system secondary background
+  },
+  activeCityButton: { 
+    backgroundColor: colors.mutedBg // Apple HIG: use semantic color
+  },
+  cityText: { 
+    textAlign: 'center', 
+    fontSize: 15, 
+    fontFamily: 'medium', 
+    color: colors.text // Apple HIG: primary text color
+  },
+  cityTextActive: { 
+    textAlign: 'center', 
+    fontFamily: 'medium', 
+    fontSize: 15, 
+    color: colors.primary // Apple HIG: primary color for active state
+  },
 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 12,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    paddingHorizontal: spacing.lg, // Apple HIG: consistent spacing
+    paddingBottom: spacing.sm,
+    backgroundColor: colors.bg, // Apple HIG: system background
+    borderBottomWidth: 0.5, // Apple HIG: subtle separator
+    borderBottomColor: colors.separator, // Apple HIG: system separator
   },
   logoContainer: {
     flexDirection: 'column',
@@ -539,94 +570,109 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logoGradient: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
     flexDirection: 'row',
     alignItems: 'baseline',
+    ...shadows.sm, // Apple HIG: subtle depth
   },
   logoText: {
     fontSize: 22,
     fontFamily: 'bold',
-    color: '#FFFFFF',
+    color: colors.primaryText,
     lineHeight: 24,
     letterSpacing: 0.5,
   },
   logoSubtext: {
     fontSize: 18,
     fontFamily: 'medium',
-    color: '#FFFFFF',
+    color: colors.primaryText,
     lineHeight: 20,
     letterSpacing: 0.3,
-    marginLeft: 4,
+    marginLeft: spacing.xxs,
     opacity: 0.95,
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.xs, // Apple HIG: consistent spacing
   },
   headerUser: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    backgroundColor: '#F7F8F9',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    backgroundColor: colors.bgSecondary, // Apple HIG: system secondary background
+    borderWidth: 0, // Apple HIG: use shadow instead
+    borderColor: 'transparent',
     maxWidth: 150,
+    minHeight: 44, // Apple HIG: minimum touch target
+    ...shadows.sm, // Apple HIG: subtle depth
   },
   headerUserText: {
     fontSize: 14,
-    marginLeft: 6,
+    marginLeft: spacing.xs,
     fontFamily: 'medium',
-    color: '#1A1A1A',
+    color: colors.text, // Apple HIG: primary text color
     flex: 1,
   },
   headerGeo: {
-    padding: 10,
-    borderRadius: 12,
-    backgroundColor: '#F7F8F9',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
+    padding: spacing.sm,
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    backgroundColor: colors.bgSecondary, // Apple HIG: system secondary background
+    borderWidth: 0, // Apple HIG: use shadow instead
+    borderColor: 'transparent',
+    minWidth: 44, // Apple HIG: minimum touch target
+    minHeight: 44,
+    ...shadows.sm, // Apple HIG: subtle depth
   },
 
   searchBar: {
     width: '95%',
     alignSelf: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#E0E0E0',
-    height: 52,
-    borderRadius: 16,
-    marginTop: 12,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    backgroundColor: colors.surface, // Apple HIG: system surface
+    borderWidth: 0, // Apple HIG: use shadow instead
+    borderColor: 'transparent',
+    height: 50, // Apple HIG: comfortable height
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    marginTop: spacing.sm,
+    marginBottom: spacing.md,
+    ...shadows.md, // Apple HIG: subtle shadow for depth
   },
   searchBarContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: spacing.md, // Apple HIG: consistent spacing
     height: '100%',
   },
   searchPlaceholder: {
-    marginLeft: 12,
+    marginLeft: spacing.sm,
     fontSize: 16,
     fontFamily: 'regular',
-    color: '#999',
+    color: colors.textPlaceholder, // Apple HIG: system placeholder color
     flex: 1,
   },
 
   storyChip: {
-    height: 120, width: SCREEN_WIDTH * 0.29, borderRadius: 16, backgroundColor: LIGHT_ORANGE,
-    marginRight: 12, justifyContent: 'flex-start',
+    height: 120, 
+    width: SCREEN_WIDTH * 0.29, 
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    backgroundColor: LIGHT_ORANGE,
+    marginRight: spacing.sm, 
+    justifyContent: 'flex-start',
+    ...shadows.md, // Apple HIG: subtle depth
   },  
-  storyImg: { width: '100%', height: '100%', borderRadius: 14,borderWidth: 2, borderColor: ORANGE, marginBottom: 6, resizeMode: 'cover' },
+  storyImg: { 
+    width: '100%', 
+    height: '100%', 
+    borderRadius: radius.md,
+    borderWidth: 2, 
+    borderColor: ORANGE, 
+    marginBottom: spacing.xs, 
+    resizeMode: 'cover' 
+  },
 
   sectionRow: {
     width: '95%',
@@ -634,13 +680,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 24,
-    marginBottom: 16,
+    marginTop: spacing.lg, // Apple HIG: consistent spacing
+    marginBottom: spacing.md,
   },
   sectionTitle: {
     fontFamily: 'bold',
     fontSize: 22,
-    color: '#1A1A1A',
+    color: colors.text, // Apple HIG: primary text color
   },
   recommendationsHeader: {
     width: '95%',
@@ -648,31 +694,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 24,
-    marginBottom: 16,
+    marginTop: spacing.lg, // Apple HIG: consistent spacing
+    marginBottom: spacing.md,
   },
   recommendationsTitle: {
     fontFamily: 'bold',
     fontSize: 22,
-    color: '#1A1A1A',
+    color: colors.text, // Apple HIG: primary text color
     flex: 1,
   },
   cityChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    backgroundColor: '#FFF8F0',
-    borderWidth: 1.5,
-    borderColor: '#FFE5CC',
-    height: 40,
+    gap: spacing.xs, // Apple HIG: consistent spacing
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.lg, // Apple HIG: consistent rounding
+    backgroundColor: colors.mutedBg, // Apple HIG: semantic color
+    borderWidth: 0, // Apple HIG: use shadow instead
+    borderColor: 'transparent',
+    minHeight: 44, // Apple HIG: minimum touch target
+    ...shadows.sm, // Apple HIG: subtle depth
   },
   cityChipText: {
     fontSize: 14,
     fontFamily: 'medium',
-    color: '#E65100',
+    color: colors.primary, // Apple HIG: primary color
     maxWidth: 140,
   },
 });

@@ -20,11 +20,11 @@ export default function Card({ children, style, padded = true }: Props) {
 const styles = StyleSheet.create({
   base: {
     backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: radius.lg, // Apple HIG: more rounded cards
+    borderWidth: 0, // Apple HIG: use shadow instead of border for depth
+    borderColor: 'transparent',
     overflow: 'hidden',
-    ...shadows.soft,
+    ...shadows.md, // Apple HIG: subtle shadow for depth
   },
   padded: {
     padding: spacing.md,
