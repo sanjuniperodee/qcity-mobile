@@ -21,6 +21,7 @@ import { setCity } from '../actions/locationActions';
 import * as Updates from 'expo-updates';
 import { cities } from '../constants/cities';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
 
 // ========= helpers =========
 const arraysEqual = (a: Array<any>, b: Array<any>) => {
@@ -507,8 +508,6 @@ export const HomeScreen = () => {
     </>
   );
 };
-
-import { colors, spacing, radius, shadows } from '../theme/tokens';
 
 const ORANGE = colors.primary;
 const LIGHT_ORANGE = colors.mutedBg; // фон плиток
