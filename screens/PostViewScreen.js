@@ -20,6 +20,7 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useResponsive } from '../hooks/useResponsive';
+import { colors, spacing, radius, shadows } from '../theme/tokens';
 
 import { useGetPostByIdQuery, useGetPostListQuery, useAddToFavouritesMutation, useRemoveFromFavouritesMutation, useListFavouritesQuery } from '../api';
 import { ProductCard } from '../components/ProductCard';
@@ -216,8 +217,8 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
       contentContainerStyle={styles.scrollContent}
     >
           {!data ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#F09235" />
+          <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
           ) : (
         <View style={styles.content}>
@@ -234,11 +235,11 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                 <Text style={styles.title}>{data?.title}</Text>
                 {data?.categories?.name && (
                   <View style={styles.categoryBadge}>
-                    <Ionicons name="folder-outline" size={14} color="#F09235" />
+                    <Ionicons name="folder-outline" size={14} color={colors.primary} />
                     <Text style={styles.categoryText}>{data.categories.name}</Text>
                     {data?.subcategory && (
                       <>
-                        <Ionicons name="chevron-forward" size={12} color="#999" style={{ marginHorizontal: 4 }} />
+                        <Ionicons name="chevron-forward" size={12} color={colors.textMuted} style={{ marginHorizontal: spacing.xxs }} />
                       <TouchableOpacity onPress={() => navigation.navigate('postsByCategory', { id: data?.categories?.id })}>
                           <Text style={styles.subcategoryText}>{data.subcategory}</Text>
                       </TouchableOpacity>
@@ -249,7 +250,7 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
               </View>
               <View style={styles.actionsRow}>
                 <View style={styles.viewsSection}>
-                  <MaterialCommunityIcons name="eye-outline" size={18} color="#999" />
+                  <MaterialCommunityIcons name="eye-outline" size={18} color={colors.textMuted} />
                   <Text style={styles.viewsText}>{data?.views || 0}</Text>
                 </View>
                     <TouchableOpacity
@@ -257,8 +258,8 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   style={[
                     styles.favoriteButton,
                     {
-                      backgroundColor: isFavourite ? '#FFEBEE' : '#F7F8F9',
-                      borderColor: isFavourite ? '#F44336' : '#E0E0E0',
+                      backgroundColor: isFavourite ? colors.errorBg : colors.surfaceSecondary,
+                      borderColor: isFavourite ? colors.error : colors.border,
                     }
                   ]}
                   activeOpacity={0.7}
@@ -266,7 +267,7 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   <Ionicons
                     name={isFavourite ? 'heart' : 'heart-outline'}
                     size={22}
-                    color={isFavourite ? '#F44336' : '#999'}
+                    color={isFavourite ? colors.error : colors.textMuted}
                   />
                     </TouchableOpacity>
                   </View>
@@ -289,7 +290,7 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   activeOpacity={0.7}
                 >
                   <LinearGradient
-                    colors={['#F3B127', '#F26D1D']}
+                    colors={[colors.primaryLight, colors.primary]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={styles.phoneButtonGradient}
@@ -320,12 +321,12 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   <Text style={styles.sellerLabel}>Продавец</Text>
                   <Text style={styles.sellerName}>{data?.author?.username || 'Пользователь'}</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color="#999" />
+                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
                 </TouchableOpacity>
 
               {data?.geolocation && (
                 <View style={styles.locationCard}>
-                  <Ionicons name="location-outline" size={20} color="#F09235" />
+                  <Ionicons name="location-outline" size={20} color={colors.primary} />
                   <View style={styles.locationInfo}>
                     <Text style={styles.locationText}>{data.geolocation}</Text>
                     {data?.adress && (
@@ -561,7 +562,7 @@ function HeaderIcon(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.bg,
   },
   scrollContent: {
     paddingTop: 0,
@@ -570,10 +571,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 100,
+    paddingVertical: spacing.xxxl * 2,
   },
   content: {
-    paddingBottom: 100,
+    paddingBottom: spacing.xxxl * 2,
   },
   sliderContainer: {
     marginBottom: 0,
@@ -582,121 +583,125 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   mainContent: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
   },
   headerSection: {
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   titleSection: {
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: spacing.sm,
   },
   favoriteButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 1,
+    width: 48,
+    height: 48,
+    borderRadius: radius.round,
+    borderWidth: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
+    ...shadows.sm,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontFamily: 'bold',
-    color: '#1A1A1A',
-    lineHeight: 32,
-    marginBottom: 8,
+    color: colors.text,
+    lineHeight: 36,
+    marginBottom: spacing.xs,
+    letterSpacing: 0.3,
   },
   categoryBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
+    marginTop: spacing.xs,
   },
   categoryText: {
-    fontSize: 14,
-    fontFamily: 'medium',
-    color: '#F09235',
-    marginLeft: 4,
+    fontSize: 15,
+    fontFamily: 'semibold',
+    color: colors.primary,
+    marginLeft: spacing.xs,
   },
   subcategoryText: {
     fontSize: 14,
     fontFamily: 'medium',
-    color: '#666',
+    color: colors.textSecondary,
   },
   viewsSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    gap: spacing.xs,
   },
   viewsText: {
     fontSize: 14,
     fontFamily: 'medium',
-    color: '#666',
-    marginLeft: 6,
+    color: colors.textMuted,
   },
   priceSection: {
-    marginBottom: 24,
-    paddingBottom: 20,
+    marginBottom: spacing.xl,
+    paddingBottom: spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.separator,
   },
   price: {
-    fontSize: 32,
+    fontSize: 36,
     fontFamily: 'bold',
-    color: '#1A1A1A',
+    color: colors.primary,
+    letterSpacing: 0.5,
   },
   contactSection: {
-    marginBottom: 24,
+    marginBottom: spacing.xl,
   },
   phoneButton: {
-    marginBottom: 12,
-    borderRadius: 12,
+    marginBottom: spacing.md,
+    borderRadius: radius.lg,
     overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    ...shadows.md,
   },
   phoneButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
   },
   phoneButtonText: {
     fontSize: 18,
     fontFamily: 'bold',
-    color: '#FFFFFF',
-    marginLeft: 10,
+    color: colors.primaryText,
+    marginLeft: spacing.sm,
     flex: 1,
+    letterSpacing: 0.3,
   },
   phoneButtonHint: {
     fontSize: 12,
     fontFamily: 'regular',
-    color: '#FFFFFF',
-    opacity: 0.8,
+    color: colors.primaryText,
+    opacity: 0.9,
   },
   sellerCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F7F8F9',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: colors.surfaceSecondary,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   sellerAvatar: {
     width: 56,
     height: 56,
-    borderRadius: 28,
-    marginRight: 12,
+    borderRadius: radius.round,
+    marginRight: spacing.md,
+    borderWidth: 2,
+    borderColor: colors.borderLight,
   },
   sellerInfo: {
     flex: 1,
@@ -704,126 +709,132 @@ const styles = StyleSheet.create({
   sellerLabel: {
     fontSize: 12,
     fontFamily: 'regular',
-    color: '#999',
-    marginBottom: 4,
+    color: colors.textMuted,
+    marginBottom: spacing.xxs,
   },
   sellerName: {
     fontSize: 16,
-    fontFamily: 'bold',
-    color: '#1A1A1A',
+    fontFamily: 'semibold',
+    color: colors.text,
   },
   locationCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF8F0',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: colors.mutedBg,
+    borderRadius: radius.lg,
+    padding: spacing.md,
     borderWidth: 1,
-    borderColor: '#FFE5CC',
+    borderColor: colors.primaryLight,
+    ...shadows.sm,
   },
   locationInfo: {
-    marginLeft: 12,
+    marginLeft: spacing.md,
     flex: 1,
   },
   locationText: {
-    fontSize: 14,
-    fontFamily: 'medium',
-    color: '#1A1A1A',
-    marginBottom: 4,
+    fontSize: 15,
+    fontFamily: 'semibold',
+    color: colors.text,
+    marginBottom: spacing.xxs,
   },
   addressText: {
     fontSize: 13,
     fontFamily: 'regular',
-    color: '#666',
+    color: colors.textSecondary,
   },
   socialSection: {
-    marginBottom: 24,
+    marginBottom: spacing.xl,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: 'bold',
-    color: '#1A1A1A',
-    marginBottom: 16,
+    color: colors.text,
+    marginBottom: spacing.md,
+    letterSpacing: 0.3,
   },
   authPrompt: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF8F0',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 16,
+    backgroundColor: colors.mutedBg,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: '#FFE5CC',
+    borderColor: colors.primaryLight,
+    ...shadows.sm,
   },
   authPromptText: {
     fontSize: 14,
     fontFamily: 'medium',
-    color: '#E65100',
-    marginLeft: 10,
+    color: colors.primaryDark,
+    marginLeft: spacing.sm,
     flex: 1,
   },
   socialGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: spacing.md,
   },
   descriptionSection: {
-    marginBottom: 24,
-    paddingBottom: 20,
+    marginBottom: spacing.xl,
+    paddingBottom: spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.separator,
   },
   descriptionText: {
     fontSize: 16,
     fontFamily: 'regular',
-    color: '#333',
+    color: colors.text,
     lineHeight: 24,
+    letterSpacing: 0.2,
   },
   specsSection: {
-    marginBottom: 24,
-    paddingBottom: 20,
+    marginBottom: spacing.xl,
+    paddingBottom: spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.separator,
   },
   specsList: {
-    gap: 16,
+    gap: spacing.md,
   },
   specItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
+    borderBottomColor: colors.borderLight,
   },
   specLabel: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'regular',
-    color: '#666',
+    color: colors.textSecondary,
     flex: 1,
   },
   specValue: {
-    fontSize: 14,
-    fontFamily: 'medium',
-    color: '#1A1A1A',
+    fontSize: 15,
+    fontFamily: 'semibold',
+    color: colors.text,
     flex: 1,
     textAlign: 'right',
   },
   adminInfoSection: {
-    backgroundColor: '#F7F8F9',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
+    backgroundColor: colors.surfaceSecondary,
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    marginBottom: spacing.xl,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
+    ...shadows.md,
   },
   adminInfoTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: 'bold',
-    color: '#1A1A1A',
-    marginBottom: 16,
+    color: colors.text,
+    marginBottom: spacing.md,
+    letterSpacing: 0.3,
   },
   adminInfoList: {
-    gap: 12,
+    gap: spacing.md,
   },
   adminInfoItem: {
     flexDirection: 'row',
@@ -831,71 +842,73 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   adminInfoLabel: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'regular',
-    color: '#666',
+    color: colors.textSecondary,
   },
   adminInfoValue: {
-    fontSize: 14,
-    fontFamily: 'medium',
-    color: '#1A1A1A',
+    fontSize: 15,
+    fontFamily: 'semibold',
+    color: colors.text,
   },
   statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.round,
   },
   statusText: {
     fontSize: 12,
-    fontFamily: 'medium',
+    fontFamily: 'semibold',
   },
   rejectionReasonBox: {
-    marginTop: 12,
-    paddingTop: 16,
+    marginTop: spacing.md,
+    paddingTop: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.separator,
   },
   rejectionReasonLabel: {
     fontSize: 14,
     fontFamily: 'medium',
-    color: '#666',
-    marginBottom: 8,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
   },
   rejectionReasonText: {
     fontSize: 14,
     fontFamily: 'regular',
-    color: '#F44336',
+    color: colors.error,
     lineHeight: 20,
   },
   messageSection: {
-    marginBottom: 24,
+    marginBottom: spacing.xl,
   },
   authCard: {
-    backgroundColor: '#FFF8F0',
-    borderRadius: 16,
-    padding: 24,
+    backgroundColor: colors.mutedBg,
+    borderRadius: radius.xl,
+    padding: spacing.xl,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#FFE5CC',
+    borderColor: colors.primaryLight,
+    ...shadows.md,
   },
   authCardText: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'regular',
-    color: '#E65100',
+    color: colors.primaryDark,
     textAlign: 'center',
-    marginTop: 12,
-    marginBottom: 16,
+    marginTop: spacing.md,
+    marginBottom: spacing.md,
   },
   authButton: {
-    backgroundColor: '#F09235',
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    backgroundColor: colors.primary,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
+    ...shadows.sm,
   },
   authButtonText: {
     fontSize: 16,
-    fontFamily: 'medium',
-    color: '#FFFFFF',
+    fontFamily: 'semibold',
+    color: colors.primaryText,
   },
   messageInputContainer: {
     position: 'relative',
@@ -903,30 +916,27 @@ const styles = StyleSheet.create({
   messageInput: {
     width: '100%',
     minHeight: 120,
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
     paddingBottom: 60,
-    borderWidth: 1,
-    borderRadius: 12,
-    borderColor: '#E0E0E0',
+    borderWidth: 1.5,
+    borderRadius: radius.lg,
+    borderColor: colors.border,
     fontSize: 16, // Минимум 16px для предотвращения зума на iOS
     fontFamily: 'regular',
-    color: '#1A1A1A',
-    backgroundColor: '#FAFAFA',
+    color: colors.text,
+    backgroundColor: colors.surface,
+    ...shadows.sm,
   },
   sendButton: {
     position: 'absolute',
-    bottom: 12,
-    right: 12,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    bottom: spacing.sm,
+    right: spacing.sm,
+    width: 48,
+    height: 48,
+    borderRadius: radius.round,
     overflow: 'hidden',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    ...shadows.md,
   },
   sendButtonGradient: {
     width: '100%',
@@ -935,7 +945,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   similarSection: {
-    marginBottom: 24,
+    marginBottom: spacing.xl,
   },
   similarGrid: {
     marginTop: 12,
