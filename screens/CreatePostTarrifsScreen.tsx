@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, Image, Text, Alert, Platform } from 'react-native';
+import { ScrollView, TouchableOpacity, Image, Text, Alert, Platform, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useSetFreeTariffMutation } from '../api';
 import Purchases, {
@@ -8,6 +8,7 @@ import Purchases, {
   PurchasesPackage,
   PURCHASES_ERROR_CODE,
 } from "react-native-purchases";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const CreatePostTarrifsScreen = ({route}) => {
   const [offerings, setOfferings] = useState<PurchasesOfferings | null>(null);
@@ -88,7 +89,17 @@ export const CreatePostTarrifsScreen = ({route}) => {
 
   return (
     <ScrollView style={{alignSelf:'center',marginTop:0,width:'90%'}}>
-      <Image style={{width:200,height:80,alignSelf:'center',marginTop:30,resizeMode:'contain'}} source={require('../assets/logo.jpg')} />
+      <View style={styles.logoContainer}>
+        <LinearGradient
+          colors={['#F3B127', '#F26D1D']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.logoGradient}
+        >
+          <Text style={styles.logoText}>Qorgau</Text>
+          <Text style={styles.logoSubtext}>City</Text>
+        </LinearGradient>
+      </View>
       <Text style={{fontSize:24,fontFamily:'medium',textAlign:'center',marginTop:20}}>Выберите тариф</Text>
       {Platform.OS !== 'web' && offerings?.current?.availablePackages.map((pkg) => (
         <TouchableOpacity 
@@ -129,3 +140,35 @@ export const CreatePostTarrifsScreen = ({route}) => {
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  logoContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
+  logoGradient: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  logoText: {
+    fontSize: 22,
+    fontFamily: 'bold',
+    color: '#FFFFFF',
+    lineHeight: 24,
+    letterSpacing: 0.5,
+  },
+  logoSubtext: {
+    fontSize: 18,
+    fontFamily: 'medium',
+    color: '#FFFFFF',
+    lineHeight: 20,
+    letterSpacing: 0.3,
+    marginLeft: 4,
+    opacity: 0.95,
+  },
+});

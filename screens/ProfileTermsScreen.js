@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, StyleSheet, TextInput,  TouchableOpacity, FlatList, ScrollView, Image, Text } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 
@@ -8,7 +9,17 @@ export const ProfileTermsScreen = () => {
   return (
     <ScrollView>
       <View style={{width:'90%',alignSelf:'center'}}>
-        <Image style={{height:40,alignSelf:'center',marginTop:20,resizeMode:'contain'}} source={require('../assets/logo.png')}/>
+        <View style={styles.logoContainer}>
+          <LinearGradient
+            colors={['#F3B127', '#F26D1D']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.logoGradient}
+          >
+            <Text style={styles.logoText}>Qorgau</Text>
+            <Text style={styles.logoSubtext}>City</Text>
+          </LinearGradient>
+        </View>
         <Text style={{fontFamily:'regular',fontSize:14,lineHeight:17,marginTop:20}}>Условия пользования веб-сайтом/мобильным приложением
 
 Общие положения
@@ -34,3 +45,35 @@ export const ProfileTermsScreen = () => {
     </ScrollView>
   );
   }
+
+  const styles = StyleSheet.create({
+    logoContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 20,
+    },
+    logoGradient: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 10,
+      flexDirection: 'row',
+      alignItems: 'baseline',
+    },
+    logoText: {
+      fontSize: 16,
+      fontFamily: 'bold',
+      color: '#FFFFFF',
+      lineHeight: 18,
+      letterSpacing: 0.5,
+    },
+    logoSubtext: {
+      fontSize: 14,
+      fontFamily: 'medium',
+      color: '#FFFFFF',
+      lineHeight: 16,
+      letterSpacing: 0.3,
+      marginLeft: 3,
+      opacity: 0.95,
+    },
+  });

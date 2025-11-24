@@ -6,6 +6,7 @@ import { loginSuccess } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
 import { parseApiError } from '../utils/apiError';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const ProfileRegistrationScreen = ({route}) => {
     const { login, password, type } = route.params;
@@ -168,7 +169,17 @@ export const ProfileRegistrationScreen = ({route}) => {
       </Modal>
        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={{alignItems:'center',width:'90%',marginHorizontal:'5%',marginTop:80}}>
-            <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
+            <View style={styles.logoContainer}>
+                <LinearGradient
+                    colors={['#F3B127', '#F26D1D']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.logoGradient}
+                >
+                    <Text style={styles.logoText}>Qorgau</Text>
+                    <Text style={styles.logoSubtext}>City</Text>
+                </LinearGradient>
+            </View>
             <Text style={{ fontFamily: 'bold',fontSize:25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
             <Text style={{ fontFamily: 'regular',fontSize:15,color:"#96949D",width:255,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
 
@@ -241,6 +252,34 @@ export const ProfileRegistrationScreen = ({route}) => {
       fontFamily:'medium',
       fontSize:16,
       textAlign: 'center',
+    },
+    logoContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logoGradient: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 12,
+      flexDirection: 'row',
+      alignItems: 'baseline',
+    },
+    logoText: {
+      fontSize: 22,
+      fontFamily: 'bold',
+      color: '#FFFFFF',
+      lineHeight: 24,
+      letterSpacing: 0.5,
+    },
+    logoSubtext: {
+      fontSize: 18,
+      fontFamily: 'medium',
+      color: '#FFFFFF',
+      lineHeight: 20,
+      letterSpacing: 0.3,
+      marginLeft: 4,
+      opacity: 0.95,
     },
   });
   

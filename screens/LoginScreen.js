@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import {useTranslation} from 'react-i18next'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { parseApiError } from '../utils/apiError';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const LoginScreen = () => {
     const navigation = useNavigation();
@@ -195,7 +196,17 @@ export const LoginScreen = () => {
             <ScrollView contentContainerStyle={{ flex: 1 }}>
                 <Container style={{ alignItems: 'center', marginTop: 80 }}>
                     <View style={{ width: '100%', maxWidth: isDesktop ? 480 : undefined, alignItems: 'center' }}>
-                    <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
+                    <View style={styles.logoContainer}>
+                        <LinearGradient
+                            colors={['#F3B127', '#F26D1D']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.logoGradient}
+                        >
+                            <Text style={styles.logoText}>Qorgau</Text>
+                            <Text style={styles.logoSubtext}>City</Text>
+                        </LinearGradient>
+                    </View>
                     <Text style={{ fontFamily: 'bold',fontSize:isDesktop ? 18 : 25, textAlign:'center',marginTop:20}} >{t('login.login_to_acc')}</Text>
                     <Text style={{ fontFamily: 'regular',fontSize:isDesktop ? 14 : 15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:20, textAlign:'center' }} ></Text>
                     {/* Toggle Email/Phone */}
@@ -288,6 +299,34 @@ export const LoginScreen = () => {
       fontFamily:'medium',
       fontSize:16,
       textAlign: 'center',
+    },
+    logoContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logoGradient: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 12,
+      flexDirection: 'row',
+      alignItems: 'baseline',
+    },
+    logoText: {
+      fontSize: 22,
+      fontFamily: 'bold',
+      color: '#FFFFFF',
+      lineHeight: 24,
+      letterSpacing: 0.5,
+    },
+    logoSubtext: {
+      fontSize: 18,
+      fontFamily: 'medium',
+      color: '#FFFFFF',
+      lineHeight: 20,
+      letterSpacing: 0.3,
+      marginLeft: 4,
+      opacity: 0.95,
     },
   });
   

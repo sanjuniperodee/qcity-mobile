@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, TextInput,  TouchableOpacity, ScrollView, KeyboardAvoidingView,Platform,RefreshControl, Dimensions, Image, Text } from 'react-native';
+import { View, TextInput,  TouchableOpacity, ScrollView, KeyboardAvoidingView,Platform,RefreshControl, Dimensions, Image, Text, StyleSheet } from 'react-native';
 import Container from '../components/ui/Container';
 import Button from '../components/ui/Button';
 import FormField from '../components/ui/FormField';
@@ -8,6 +8,7 @@ import { spacing, colors } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import {useTranslation} from 'react-i18next'
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const SignUpScreen = () => {
     const navigation = useNavigation()
@@ -149,7 +150,17 @@ export const SignUpScreen = () => {
          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Container style={{ alignItems:'center', marginTop:80 }}>
             <View style={{ width:'100%', maxWidth: isDesktop ? 480 : undefined, alignItems:'center' }}>
-            <Image style={{height:90,width:180,objectFit:'contain'}} source={require('../assets/logo.jpg')}/>
+            <View style={styles.logoContainer}>
+                <LinearGradient
+                    colors={['#F3B127', '#F26D1D']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.logoGradient}
+                >
+                    <Text style={styles.logoText}>Qorgau</Text>
+                    <Text style={styles.logoSubtext}>City</Text>
+                </LinearGradient>
+            </View>
             <Text style={{ fontFamily: 'bold',fontSize: isDesktop ? 18 : 25, textAlign:'center',marginTop:20}} >{t('register.register_of_acc')}</Text>
             <Text style={{ fontFamily: 'regular',fontSize: isDesktop ? 14 : 15,color:colors.textMuted, maxWidth: 320,lineHeight:21,marginTop:10, textAlign:'center' }} >{t('register.create_acc')}</Text>
 
@@ -226,3 +237,34 @@ export const SignUpScreen = () => {
     </KeyboardAvoidingView>
     );
   }
+
+  const styles = StyleSheet.create({
+    logoContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logoGradient: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 12,
+      flexDirection: 'row',
+      alignItems: 'baseline',
+    },
+    logoText: {
+      fontSize: 22,
+      fontFamily: 'bold',
+      color: '#FFFFFF',
+      lineHeight: 24,
+      letterSpacing: 0.5,
+    },
+    logoSubtext: {
+      fontSize: 18,
+      fontFamily: 'medium',
+      color: '#FFFFFF',
+      lineHeight: 20,
+      letterSpacing: 0.3,
+      marginLeft: 4,
+      opacity: 0.95,
+    },
+  });

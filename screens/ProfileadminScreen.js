@@ -36,10 +36,17 @@ export const ProfileadminScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <Image 
-        style={styles.logo} 
-        source={require('../assets/profileLogo.png')}
-      />
+      <View style={styles.logoContainer}>
+        <LinearGradient
+          colors={['#F3B127', '#F26D1D']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.logoGradient}
+        >
+          <Text style={styles.logoText}>Qorgau</Text>
+          <Text style={styles.logoSubtext}>City</Text>
+        </LinearGradient>
+      </View>
 
       {/* Статистика */}
       <View style={styles.statsSection}>
@@ -200,12 +207,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#F44336',
   },
-  logo: {
-    alignSelf: 'center',
-    width: '100%',
-    height: 30,
-    resizeMode: 'contain',
+  logoContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 30,
+  },
+  logoGradient: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  logoText: {
+    fontSize: 16,
+    fontFamily: 'bold',
+    color: '#FFFFFF',
+    lineHeight: 18,
+    letterSpacing: 0.5,
+  },
+  logoSubtext: {
+    fontSize: 14,
+    fontFamily: 'medium',
+    color: '#FFFFFF',
+    lineHeight: 16,
+    letterSpacing: 0.3,
+    marginLeft: 3,
+    opacity: 0.95,
   },
   section: {
     marginBottom: 30,

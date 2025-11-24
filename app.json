@@ -26,6 +26,7 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
+        "NSCameraUsageDescription": "Qorgau Marketplace needs access to your camera to take photos for your product listings. For example, when creating a new post, you can take a photo of your item directly in the app to add it to your listing.",
         "NSPhotoLibraryUsageDescription": "This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.",
         "NSPhotoLibraryAddUsageDescription": "This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.",
         "NSLocationWhenInUseUsageDescription": "We use the location to display posts in your city and for a better experience with the map",
