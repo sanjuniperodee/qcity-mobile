@@ -123,8 +123,11 @@ export const HomeScreen = () => {
 
   const selectedCity = useSelector((state: any) => state.city.selectedCity, shallowEqual);
   const allKazakhstanText = t('location.all_kazakhstan');
+  // Варианты "Весь Казахстан" на всех языках
+  const allKazakhstanVariants = ['Весь Казахстан', 'Бүкіл Қазақстан', 'All Kazakhstan'];
   const effectiveCity = selectedCity || allKazakhstanText;
-  const isAllKazakhstan = effectiveCity === allKazakhstanText;
+  // Проверяем, является ли выбранный город одним из вариантов "Весь Казахстан" на любом языке
+  const isAllKazakhstan = !selectedCity || allKazakhstanVariants.includes(effectiveCity) || effectiveCity === allKazakhstanText;
   
   // Сброс данных при смене города
   useEffect(() => {

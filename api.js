@@ -53,6 +53,13 @@ export const api = createApi({
     }),
     getPostListCity: builder.query({
       query: ({ page, limit, city }) => {
+        // Если city равен "Весь Казахстан" на любом языке, не передаем параметр city
+        const allKazakhstanVariants = ['Весь Казахстан', 'Бүкіл Қазақстан', 'All Kazakhstan'];
+        const isAllKazakhstan = city && allKazakhstanVariants.includes(city);
+        
+        if (isAllKazakhstan || !city) {
+          return `posts_city/?page=${page}&limit=${limit}`;
+        }
         return `posts_city/?page=${page}&limit=${limit}&city=${encodeURIComponent(city)}`;
       },
       keepUnusedDataFor: 30,
