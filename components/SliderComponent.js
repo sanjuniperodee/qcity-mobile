@@ -268,9 +268,12 @@ export const SliderComponent = ({ data }) => {
               src={videoUri}
               controls
               playsInline
+              controlsList="nodownload noplaybackrate"
               preload="metadata"
               style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000000' }}
-            />
+            >
+              <source src={videoUri} type="video/mp4" />
+            </video>
           ) : (
             <Video
               isMuted={false}

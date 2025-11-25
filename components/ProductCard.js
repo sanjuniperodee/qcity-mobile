@@ -1,5 +1,5 @@
 import React, { useRef,useState,useEffect } from 'react';
-import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity,ActivityIndicator, StyleSheet, TouchableWithoutFeedback, Platform } from 'react-native';
 import { colors, spacing, radius, shadows } from '../theme/tokens';
 import { useNavigation } from '@react-navigation/native';
 import { Video, InterruptionModeAndroid, InterruptionModeIOS, ResizeMode } from 'expo-av';
@@ -7,6 +7,16 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAddToFavouritesMutation, useRemoveFromFavouritesMutation,useListFavouritesQuery } from '../api';
+
+const buildAssetUri = (value) => {
+  if (!value) return null;
+  const raw = value.startsWith('http') ? value : `https://market.qorgau-city.kz${value}`;
+  try {
+    return encodeURI(raw);
+  } catch {
+    return raw.replace(/\s/g, '%20');
+  }
+};
 
 export const ProductCard = (props) => {
   const navigation = useNavigation()
@@ -147,28 +157,43 @@ export const ProductCard = (props) => {
                   <Ionicons name="videocam" size={14} color="#FFFFFF" />
                   <Text style={styles.videoBadgeText}>ВИДЕО</Text>
                 </View>
-                {/* Обертка для видео с pointerEvents="none" чтобы предотвратить нажатие на видео */}
-                <View style={{ width: '100%', height: '100%', pointerEvents: 'none' }}>
-                  <Video
-                    ref={video}
-                    playsInSilentModeIOS={allowAutoPreview ? true : false}
-                    allowsRecordingIOS={false}
-                    allowsExternalPlayback={false}
-                    interruptionModeIOS={InterruptionModeIOS.DoNotMix}
-                    interruptionModeAndroid={InterruptionModeAndroid.DoNotMix}
-                    shouldDuckAndroid={true}
-                    staysActiveInBackground={false}
-                    style={{ width: '100%', height: '100%' }}
-                    source={{
-                      uri: `https://market.qorgau-city.kz${props.media[0].image}`,
-                    }}
-                    volume={0}
-                    resizeMode={ResizeMode.CONTAIN}
-                    useNativeControls={allowAutoPreview ? false : false}
-                    isLooping={allowAutoPreview ? true : false}
-                    isMuted={true}
-                    shouldPlay={shouldPlayVideo}
-                  />
+                {/* Обертка для видео */}
+                <View style={{ width: '100%', height: '100%' }}>
+                  {Platform.OS === 'web' ? (
+                    <video
+                      key={`${buildAssetUri(props.media[0].image)}-${props.id}`}
+                      src={buildAssetUri(props.media[0].image)}
+                      controls
+                      playsInline
+                      muted
+                      controlsList="nodownload noplaybackrate"
+                      preload="metadata"
+                      style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000000' }}
+                    >
+                      <source src={buildAssetUri(props.media[0].image)} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <Video
+                      ref={video}
+                      playsInSilentModeIOS={allowAutoPreview ? true : false}
+                      allowsRecordingIOS={false}
+                      allowsExternalPlayback={false}
+                      interruptionModeIOS={InterruptionModeIOS.DoNotMix}
+                      interruptionModeAndroid={InterruptionModeAndroid.DoNotMix}
+                      shouldDuckAndroid={true}
+                      staysActiveInBackground={false}
+                      style={{ width: '100%', height: '100%' }}
+                      source={{
+                        uri: buildAssetUri(props.media[0].image),
+                      }}
+                      volume={0}
+                      resizeMode={ResizeMode.CONTAIN}
+                      useNativeControls={!allowAutoPreview}
+                      isLooping={allowAutoPreview ? true : false}
+                      isMuted={true}
+                      shouldPlay={shouldPlayVideo}
+                    />
+                  )}
                 </View>
               </View>
             :
