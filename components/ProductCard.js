@@ -196,12 +196,19 @@ export const ProductCard = (props) => {
                   {Platform.OS === 'web' ? (
                     <video
                       key={`${buildAssetUri(props.media[0].image)}-${props.id}`}
-                      ref={video}
+                      ref={(el) => {
+                        if (el) {
+                          el.setAttribute('playsinline', 'true');
+                          el.setAttribute('webkit-playsinline', 'true');
+                          el.muted = true;
+                          video.current = el;
+                        }
+                      }}
                       src={buildAssetUri(props.media[0].image)}
                       controls
                       playsInline
                       preload="metadata"
-                      controlsList="nodownload"
+                      muted
                       style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000000' }}
                       onPlay={() => setIsPlaying(true)}
                       onPause={() => setIsPlaying(false)}

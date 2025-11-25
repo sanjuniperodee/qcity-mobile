@@ -27,6 +27,15 @@ export const SliderComponent = ({ data }) => {
   const { isWeb } = useResponsive();
   const insets = useSafeAreaInsets();
   const videoRefs = useRef({});
+  const attachWebVideoRef = (index) => (el) => {
+    if (el) {
+      el.setAttribute('playsinline', 'true');
+      el.setAttribute('webkit-playsinline', 'true');
+      el.muted = true; // необходимая инициализация для iOS Safari
+      videoRefs.current[index] = el;
+    }
+  };
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageViewerVisible, setImageViewerVisible] = useState(false);
   const [playingVideos, setPlayingVideos] = useState({});
@@ -287,16 +296,12 @@ export const SliderComponent = ({ data }) => {
           {Platform.OS === 'web' ? (
             <video
               key={`${videoUri}-${index}`}
-              ref={(el) => {
-                if (el) {
-                  videoRefs.current[index] = el;
-                }
-              }}
+              ref={attachWebVideoRef(index)}
               src={videoUri}
               controls
               playsInline
               preload="metadata"
-              controlsList="nodownload"
+              muted
               style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000000' }}
               onPlay={() => setPlayingVideos(prev => ({ ...prev, [index]: true }))}
               onPause={() => setPlayingVideos(prev => ({ ...prev, [index]: false }))}
