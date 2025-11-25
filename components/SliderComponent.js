@@ -114,6 +114,21 @@ export const SliderComponent = ({ data }) => {
     const videoRef = videoRefs.current[index];
     if (!videoRef) return;
 
+    if (Platform.OS === 'web') {
+      try {
+        if (videoRef.paused) {
+          await videoRef.play();
+          setPlayingVideos(prev => ({ ...prev, [index]: true }));
+        } else {
+          videoRef.pause();
+          setPlayingVideos(prev => ({ ...prev, [index]: false }));
+        }
+      } catch (error) {
+        console.log('HTML video play error:', error);
+      }
+      return;
+    }
+
     try {
       const status = await videoRef.getStatusAsync();
       if (status.isPlaying) {
@@ -129,6 +144,7 @@ export const SliderComponent = ({ data }) => {
   };
 
   const handlePlaybackStatusUpdate = (index, status) => {
+    if (Platform.OS === 'web') return;
     if (status.isLoaded) {
       setPlayingVideos(prev => ({
         ...prev,
@@ -138,6 +154,7 @@ export const SliderComponent = ({ data }) => {
   };
 
   const handleVideoLoad = async (index, status) => {
+    if (Platform.OS === 'web') return;
     // Убеждаемся, что видео загружено и готово к воспроизведению
     const videoRef = videoRefs.current[index];
     if (videoRef) {
@@ -172,10 +189,15 @@ export const SliderComponent = ({ data }) => {
       const stopPromises = videoRefsArray.map(async (videoRef) => {
         if (videoRef) {
           try {
-            const status = await videoRef.getStatusAsync();
-            if (status.isLoaded && status.isPlaying) {
-              await videoRef.pauseAsync();
-              await videoRef.setPositionAsync(0);
+            if (Platform.OS === 'web') {
+              videoRef.pause();
+              videoRef.currentTime = 0;
+            } else {
+              const status = await videoRef.getStatusAsync();
+              if (status.isLoaded && status.isPlaying) {
+                await videoRef.pauseAsync();
+                await videoRef.setPositionAsync(0);
+              }
             }
           } catch (error) {
             console.log('Error stopping video:', error);
@@ -265,12 +287,19 @@ export const SliderComponent = ({ data }) => {
           {Platform.OS === 'web' ? (
             <video
               key={`${videoUri}-${index}`}
+              ref={(el) => {
+                if (el) {
+                  videoRefs.current[index] = el;
+                }
+              }}
               src={videoUri}
               controls
               playsInline
-              controlsList="nodownload noplaybackrate"
               preload="metadata"
+              controlsList="nodownload"
               style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000000' }}
+              onPlay={() => setPlayingVideos(prev => ({ ...prev, [index]: true }))}
+              onPause={() => setPlayingVideos(prev => ({ ...prev, [index]: false }))}
             >
               <source src={videoUri} type="video/mp4" />
             </video>

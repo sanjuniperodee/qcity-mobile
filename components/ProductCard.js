@@ -25,6 +25,7 @@ export const ProductCard = (props) => {
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
   const [isFavourite, setIsFavourite] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [addToFavourites, { isLoading: isAdding }] = useAddToFavouritesMutation();
   const [removeFromFavourites, { isLoading: isRemoving }] = useRemoveFromFavouritesMutation();
   
@@ -86,6 +87,39 @@ export const ProductCard = (props) => {
     } else {
       await addToFavourites(props.id);
       setIsFavourite(true);
+    }
+  };
+
+  const handleVideoPress = async () => {
+    if (!props.media?.[0]?.image || !video.current) return;
+
+    if (Platform.OS === 'web') {
+      const htmlVideo = video.current;
+      try {
+        if (htmlVideo.paused) {
+          await htmlVideo.play();
+          setIsPlaying(true);
+        } else {
+          htmlVideo.pause();
+          setIsPlaying(false);
+        }
+      } catch (error) {
+        console.log('HTML video play error:', error);
+      }
+      return;
+    }
+
+    try {
+      const status = await video.current.getStatusAsync();
+      if (status.isLoaded && status.isPlaying) {
+        await video.current.pauseAsync();
+        setIsPlaying(false);
+      } else {
+        await video.current.playAsync();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.log('Video play error:', error);
     }
   };
 
@@ -162,13 +196,15 @@ export const ProductCard = (props) => {
                   {Platform.OS === 'web' ? (
                     <video
                       key={`${buildAssetUri(props.media[0].image)}-${props.id}`}
+                      ref={video}
                       src={buildAssetUri(props.media[0].image)}
                       controls
                       playsInline
-                      muted
-                      controlsList="nodownload noplaybackrate"
                       preload="metadata"
+                      controlsList="nodownload"
                       style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000000' }}
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
                     >
                       <source src={buildAssetUri(props.media[0].image)} type="video/mp4" />
                     </video>
@@ -192,9 +228,28 @@ export const ProductCard = (props) => {
                       isLooping={allowAutoPreview ? true : false}
                       isMuted={true}
                       shouldPlay={shouldPlayVideo}
+                      onPlaybackStatusUpdate={(status) => {
+                        if (status.isLoaded) {
+                          setIsPlaying(status.isPlaying || false);
+                        }
+                      }}
                     />
                   )}
                 </View>
+                {!isPlaying && (
+                  <TouchableOpacity
+                    style={styles.playButton}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleVideoPress();
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.playButtonCircle}>
+                      <Ionicons name="play" size={34} color="#FFFFFF" />
+                    </View>
+                  </TouchableOpacity>
+                )}
               </View>
             :
             <View style={styles.mediaContainer}>
@@ -436,6 +491,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.bgSecondary,
+  },
+  playButton: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 3,
+  },
+  playButtonCircle: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
 });
   
