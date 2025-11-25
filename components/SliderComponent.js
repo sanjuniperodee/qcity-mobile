@@ -8,6 +8,19 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useResponsive } from '../hooks/useResponsive';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+const buildAssetUri = (value) => {
+  if (!value) {
+    return null;
+  }
+  const raw = value.startsWith('http') ? value : `https://market.qorgau-city.kz${value}`;
+  // iOS не воспроизводит видео с пробелами/кириллицей без кодирования
+  try {
+    return encodeURI(raw);
+  } catch {
+    return raw.replace(/\s/g, '%20');
+  }
+};
+
 export const SliderComponent = ({ data }) => {
   const navigation = useNavigation();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -85,7 +98,7 @@ export const SliderComponent = ({ data }) => {
     
     data.forEach((item, index) => {
       if (item.type === 'image' && item.image) {
-        const imageUri = item.image.startsWith('http') ? item.image : `https://market.qorgau-city.kz${item.image}`;
+        const imageUri = buildAssetUri(item.image);
         getImageDimensions(imageUri, index);
       }
     });
@@ -215,8 +228,8 @@ export const SliderComponent = ({ data }) => {
     const calculatedHeight = itemWidth / aspectRatio;
     const itemHeight = Math.min(calculatedHeight, sliderDimensions.maxHeight);
     
-    if (item.type === 'image') {
-      const imageUri = item.image.startsWith('http') ? item.image : `https://market.qorgau-city.kz${item.image}`;
+      if (item.type === 'image') {
+        const imageUri = buildAssetUri(item.image);
       return (
         <TouchableOpacity 
           key={index} 
@@ -233,7 +246,10 @@ export const SliderComponent = ({ data }) => {
       );
     } else if (item.type === 'video') {
       const isPlaying = playingVideos[index];
-      const videoUri = item.image.startsWith('http') ? item.image : `https://market.qorgau-city.kz${item.image}`;
+      const videoUri = buildAssetUri(item.image);
+      if (!videoUri) {
+        return null;
+      }
       return (
         <View 
           key={index} 
@@ -317,7 +333,9 @@ export const SliderComponent = ({ data }) => {
         />
       </View>
       <ImageViewing
-        images={data.filter(item => item.type === 'image').map(item => ({ uri: item.image }))}
+        images={data
+          .filter(item => item.type === 'image')
+          .map(item => ({ uri: buildAssetUri(item.image) }))}
         imageIndex={currentImageIndex}
         visible={isImageViewerVisible}
         onRequestClose={() => setImageViewerVisible(false)}

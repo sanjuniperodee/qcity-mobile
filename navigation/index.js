@@ -24,84 +24,82 @@ export default function Navigation() {
       prefixes: ['https://www.qcity.kz', 'qcity://'],
       config: {
         screens: {
-          root: {
+          HomeTab: {
+            path: '',
             screens: {
-              BottomTabNavigation: {
-                screens: {
-                  // Главная вкладка (MainStackNavigator) - корневой путь
-                  HomeTab: {
-                    screens: {
-                      Home: '',
-                      ViewPost: 'post/:id',
-                      ViewUser: 'user/:username',
-                      ResultsSearchScreen: 'search/results',
-                      SearchScreen: 'search',
-                      GetPostsByCity: 'city/:city',
-                      GetPostsByCategory: 'category/:id',
-                      QorgauAi: 'ai',
-                    },
-                  },
-                  // Избранные
-                  FeedTab: {
-                    screens: {
-                      Home: 'favourites',
-                    },
-                  },
-                  // Создание поста
-                  CreateTab: {
-                    screens: {
-                      CreatePostCategory: 'create',
-                      CreatePost: 'create/details',
-                      PostTariffs: 'create/tariffs',
-                      Pay: 'create/pay',
-                      PostCreated: 'create/success',
-                    },
-                  },
-                  // Сообщения
-                  MessagesTab: {
-                    screens: {
-                      Messages: 'messages',
-                      MessagesDm: 'messages/:username',
-                    },
-                  },
-                  // Профиль
-                  ProfileTab: {
-                    screens: {
-                      Profile: 'profile',
-                      Policy: 'profile/policy',
-                      Terms: 'profile/terms',
-                      about: 'profile/about',
-                      tariffs: 'profile/tariffs',
-                      active: 'profile/active',
-                      edit: 'profile/edit/:postId?',
-                      approve: 'profile/approve',
-                      Favourite: 'profile/favourites',
-                      notactive: 'profile/not-active',
-                      notpayed: 'profile/not-paid',
-                      deleted: 'profile/deleted',
-                      admin: 'profile/admin',
-                      adminApproved: 'profile/admin/approved',
-                      adminRejected: 'profile/admin/rejected',
-                      adminUsers: 'profile/admin/users',
-                      ProfileSettings: 'profile/settings',
-                      PostTariffs: 'profile/tariffs/select',
-                      Pay: 'profile/pay',
-                    },
-                  },
-                },
+              Home: {
+                path: '',
+                exact: true,
               },
+              ViewPost: 'post/:id',
+              ViewUser: 'user/:username',
+              ResultsSearchScreen: 'search/results',
+              SearchScreen: 'search',
+              GetPostsByCity: 'city/:city',
+              GetPostsByCategory: 'category/:id',
+              QorgauAi: 'ai',
+            },
+          },
+          // Избранные
+          FeedTab: {
+            path: 'favourites',
+            screens: {
+              Home: '',
+            },
+          },
+          // Создание поста
+          CreateTab: {
+            path: 'create',
+            screens: {
+              CreatePostCategory: '',
+              CreatePost: 'details',
+              PostTariffs: 'tariffs',
+              Pay: 'pay',
+              PostCreated: 'success',
+            },
+          },
+          MessagesTab: {
+            path: 'messages',
+            screens: {
+              Messages: '',
+              MessagesDm: ':username',
+            },
+          },
+          ProfileTab: {
+            path: 'profile',
+            screens: {
+              Profile: '',
+              Policy: 'policy',
+              Terms: 'terms',
+              about: 'about',
+              tariffs: 'tariffs',
+              active: 'active',
+              edit: 'edit/:postId?',
+              approve: 'approve',
+              Favourite: 'favourites',
+              notactive: 'not-active',
+              notpayed: 'not-paid',
+              deleted: 'deleted',
+              admin: 'admin',
+              adminApproved: 'admin/approved',
+              adminRejected: 'admin/rejected',
+              adminUsers: 'admin/users',
+              ProfileSettings: 'settings',
+              PostTariffs: 'tariffs/select',
+              Pay: 'pay',
             },
           },
           Auth: {
+            path: 'auth',
             screens: {
-              SelectLanguage: 'auth/lang',
-              LoginOrRegistration: 'auth',
-              Login: 'auth/login',
-              Signup: 'auth/signup',
-              PhoneOtp: 'auth/otp',
-              Profile: 'auth/profile',
-              ForgotPassword: 'auth/forgot',
-              ResetPassword: 'auth/reset',
+              SelectLanguage: 'lang',
+              LoginOrRegistration: '',
+              Login: 'login',
+              Signup: 'signup',
+              PhoneOtp: 'otp',
+              Profile: 'profile',
+              ForgotPassword: 'forgot',
+              ResetPassword: 'reset',
             },
           },
         },
