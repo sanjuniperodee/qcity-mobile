@@ -262,31 +262,42 @@ export const SliderComponent = ({ data }) => {
             }
           ]}
         >
-          <Video
-            isMuted={false}
-            volume={1.0}
-            ref={(ref) => {
-              if (ref) {
-                videoRefs.current[index] = ref;
-              }
-            }}
-            source={{ uri: videoUri }}
-            style={styles.video}
-            resizeMode={ResizeMode.CONTAIN}
-            useNativeControls={true}
-            isLooping={false}
-            playsInSilentModeIOS={true}
-            playsInline={true}
-            allowsExternalPlayback={false}
-            shouldPlay={false}
-            onPlaybackStatusUpdate={(status) => {
-              handlePlaybackStatusUpdate(index, status);
-              // Получаем размеры при первой загрузке
-              if (status.isLoaded && status.naturalSize && !aspectRatios[index]) {
-                handleVideoLoad(index, status);
-              }
-            }}
-          />
+          {Platform.OS === 'web' ? (
+            <video
+              key={`${videoUri}-${index}`}
+              src={videoUri}
+              controls
+              playsInline
+              preload="metadata"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000000' }}
+            />
+          ) : (
+            <Video
+              isMuted={false}
+              volume={1.0}
+              ref={(ref) => {
+                if (ref) {
+                  videoRefs.current[index] = ref;
+                }
+              }}
+              source={{ uri: videoUri }}
+              style={styles.video}
+              resizeMode={ResizeMode.CONTAIN}
+              useNativeControls={true}
+              isLooping={false}
+              playsInSilentModeIOS={true}
+              playsInline={true}
+              allowsExternalPlayback={false}
+              shouldPlay={false}
+              onPlaybackStatusUpdate={(status) => {
+                handlePlaybackStatusUpdate(index, status);
+                // Получаем размеры при первой загрузке
+                if (status.isLoaded && status.naturalSize && !aspectRatios[index]) {
+                  handleVideoLoad(index, status);
+                }
+              }}
+            />
+          )}
           {/* Визуальный индикатор видео */}
           <View style={styles.videoBadge} pointerEvents="none">
             <Ionicons name="videocam" size={16} color="#FFFFFF" />
