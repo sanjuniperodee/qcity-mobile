@@ -9,6 +9,7 @@ import { GetPostsByCategoryScreen } from '../screens/GetPostsByCategoryScreen';
 import { SearchScreen } from '../screens/SearchScreen';
 import { GetPostsByCityScreen } from '../screens/GetPostsByCityScreen';
 import { QorgauAiScreen } from '../screens/QorgauAiScreen';
+import { SupportScreen } from '../screens/SupportScreen';
 
 import BackButton from '../components/ui/BackButton';
 
@@ -85,6 +86,10 @@ export default function MainStackNavigator({ route, navigation }) {
                 name='QorgauAi' 
                 component={QorgauAiScreen}
                 options={() => ({ headerTitle: 'Qorgau AI' })}/>
+            <Main.Screen 
+                name='Support' 
+                component={SupportScreen}
+                options={() => ({ headerTitle: 'Поддержка' })}/>
         
         </Main.Navigator>
     )

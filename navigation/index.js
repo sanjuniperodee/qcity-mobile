@@ -38,6 +38,7 @@ export default function Navigation() {
               GetPostsByCity: 'city/:city',
               GetPostsByCategory: 'category/:id',
               QorgauAi: 'ai',
+              Support: 'support',
             },
           },
           // Избранные

@@ -51,7 +51,7 @@
       <true/>
     </dict>
     <key>NSCameraUsageDescription</key>
-    <string>Qorgau Marketplace needs access to your camera to take photos for your product listings. For example, when creating a new post, you can take a photo of your item directly in the app to add it to your listing.</string>
+    <string>Qorgau Marketplace uses your camera to capture photos of items you want to sell or services you want to offer. When you create a new listing, you can take photos directly in the app to showcase your product. For example, if you're selling a bicycle, you can take multiple photos of the bicycle from different angles to help buyers see the condition and details of the item. These photos are uploaded to your listing and displayed to potential buyers in the marketplace.</string>
     <key>NSFaceIDUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
