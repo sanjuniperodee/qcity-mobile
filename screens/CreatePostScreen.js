@@ -647,7 +647,6 @@ export const CreatePostScreen = () => {
 
           <Text style={{ fontFamily: 'medium', fontSize: 18, marginTop: 20 }}>{t('description.header')}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-            <Text style={{ fontFamily: 'regular', fontSize: 14 }}>{t('description.min_length_instruction')}</Text>
             <Text style={{ color: '#96949D' }}>{content.length}/9000</Text>
           </View>
           <TextInput
