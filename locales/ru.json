@@ -205,7 +205,7 @@
       "header": "Описание",
       "min_length_instruction": "Введите не менее 40 символов",
       "length_display": "{content.length}/9000",
-      "placeholder": "Подробно описывайте ваш товар или услугу"
+      "placeholder": "Подробно опишите ваше объявление"
     },
     "common": {
     "error": "Ошибка",
