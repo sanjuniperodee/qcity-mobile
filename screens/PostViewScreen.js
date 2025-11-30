@@ -39,7 +39,7 @@ export const PostViewScreen = ({ route }) => {
 
   const [message, onChangeMessage] = useState('');
   const { id, viewMode, fromScreen } = route.params || {};
-  
+
   // Определяем режим просмотра: admin/moderator - режим просмотра для админа/модерации
   const isAdminView = viewMode === 'admin' || (fromScreen && ['Admin', 'Moderation', 'Rejected'].includes(fromScreen));
 
@@ -64,8 +64,8 @@ export const PostViewScreen = ({ route }) => {
   const normalisedFavs = Array.isArray(userFavourites)
     ? userFavourites
     : Array.isArray(userFavourites?.results)
-    ? userFavourites.results
-    : [];
+      ? userFavourites.results
+      : [];
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -103,23 +103,10 @@ export const PostViewScreen = ({ route }) => {
   };
 
   const makeCall = (number) => {
-    let phoneNumber = Platform.OS === 'android' ? `tel:${number}` : `telprompt:${number}`;
-    Linking.canOpenURL(phoneNumber)
-      .then((supported) => {
-        if (!supported) {
-          Alert.alert('Телефонный номер не доступен');
-        } else {
-          return Linking.openURL(phoneNumber).catch((err) => {
-            // Обработка отмены - не вызываем навигацию
-            console.log('Call cancelled or failed:', err);
-            // Просто игнорируем ошибку, остаемся на странице
-          });
-        }
-      })
-      .catch((err) => {
-        // Обработка ошибок без навигации
-        console.warn('Cannot open phone URL:', err);
-      });
+    const phoneNumber = `tel:${number}`;
+    Linking.openURL(phoneNumber).catch((err) => {
+      console.log('Error opening phone URL:', err);
+    });
   };
 
   const maskPhone = (phone) => {
@@ -160,9 +147,9 @@ export const PostViewScreen = ({ route }) => {
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
-      
+
       const result = await response.json();
-      
+
       // Навигация в чат после успешного создания connection
       if (result.connection_id) {
         navigation.navigate('MessagesTab', {
@@ -216,15 +203,15 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollContent}
     >
-          {!data ? (
-          <View style={styles.loadingContainer}>
+      {!data ? (
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
-          ) : (
+      ) : (
         <View style={styles.content}>
           {/* Галерея изображений */}
           <View style={styles.sliderContainer}>
-              <SliderComponent data={data?.images} />
+            <SliderComponent data={data?.images} />
           </View>
 
           {/* Основная информация */}
@@ -240,9 +227,9 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                     {data?.subcategory && (
                       <>
                         <Ionicons name="chevron-forward" size={12} color={colors.textMuted} style={{ marginHorizontal: spacing.xxs }} />
-                      <TouchableOpacity onPress={() => navigation.navigate('postsByCategory', { id: data?.categories?.id })}>
+                        <TouchableOpacity onPress={() => navigation.navigate('postsByCategory', { id: data?.categories?.id })}>
                           <Text style={styles.subcategoryText}>{data.subcategory}</Text>
-                      </TouchableOpacity>
+                        </TouchableOpacity>
                       </>
                     )}
                   </View>
@@ -253,7 +240,7 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   <MaterialCommunityIcons name="eye-outline" size={18} color={colors.textMuted} />
                   <Text style={styles.viewsText}>{data?.views || 0}</Text>
                 </View>
-                    <TouchableOpacity
+                <TouchableOpacity
                   onPress={toggleFavourite}
                   style={[
                     styles.favoriteButton,
@@ -269,9 +256,9 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                     size={22}
                     color={isFavourite ? colors.error : colors.textMuted}
                   />
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                </TouchableOpacity>
+              </View>
+            </View>
 
             {/* Цена */}
             <View style={styles.priceSection}>
@@ -308,21 +295,21 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                 onPress={() => navigation.navigate('ViewUser', { username: data?.author?.username })}
                 style={styles.sellerCard}
                 activeOpacity={0.7}
-                >
-                  <Image
+              >
+                <Image
                   style={styles.sellerAvatar}
-                    source={
-                      data?.author?.profile_image
-                        ? { uri: `https://market.qorgau-city.kz${data.author.profile_image}` }
-                        : require('../assets/profilePurple.png')
-                    }
-                  />
+                  source={
+                    data?.author?.profile_image
+                      ? { uri: `https://market.qorgau-city.kz${data.author.profile_image}` }
+                      : require('../assets/profilePurple.png')
+                  }
+                />
                 <View style={styles.sellerInfo}>
                   <Text style={styles.sellerLabel}>Продавец</Text>
                   <Text style={styles.sellerName}>{data?.author?.username || 'Пользователь'}</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-                </TouchableOpacity>
+              </TouchableOpacity>
 
               {data?.geolocation && (
                 <View style={styles.locationCard}>
@@ -335,81 +322,81 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                   </View>
                 </View>
               )}
-                </View>
+            </View>
 
             {/* Социальные сети */}
-                {(data?.telegram ||
-                  data?.site ||
-                  data?.insta ||
-                  data?.facebook ||
-                  data?.phone_whatsapp ||
-                  data?.twogis) && (
-              <View style={styles.socialSection}>
-                <Text style={styles.sectionTitle}>Контакты</Text>
-                {!isAuthenticated && (
-                      <TouchableOpacity
-                        onPress={() => ensureAuthOrGo()}
-                    style={styles.authPrompt}
-                  >
-                    <Ionicons name="lock-closed-outline" size={18} color="#F09235" />
-                    <Text style={styles.authPromptText}>
-                      Войдите, чтобы увидеть полные контакты
-                        </Text>
-                      </TouchableOpacity>
-                )}
-                <View style={styles.socialGrid}>
-                      {data?.telegram && (
-                        <Social
-                          url={isAuthenticated ? data.telegram : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.telegram)}
-                          image={require('../assets/telegram.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.site && (
-                        <Social
-                          url={isAuthenticated ? data.site : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.site)}
-                          image={require('../assets/site.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.insta && (
-                        <Social
-                          url={isAuthenticated ? data.insta : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.insta)}
-                          image={require('../assets/insta.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.facebook && (
-                        <Social
-                          url={isAuthenticated ? data.facebook : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.facebook)}
-                          image={require('../assets/facebook.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.phone_whatsapp && (
-                        <Social
-                          url={isAuthenticated ? data.phone_whatsapp : undefined}
-                          label={isAuthenticated ? undefined : maskPhone(data.phone_whatsapp)}
-                          whatsapp
-                          image={require('../assets/whatsapp.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                      {data?.twogis && (
-                        <Social
-                          url={isAuthenticated ? data.twogis : undefined}
-                          label={isAuthenticated ? undefined : maskedLinkLabel(data.twogis)}
-                          image={require('../assets/2gis.png')}
-                          onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
-                        />
-                      )}
-                    </View>
+            {(data?.telegram ||
+              data?.site ||
+              data?.insta ||
+              data?.facebook ||
+              data?.phone_whatsapp ||
+              data?.twogis) && (
+                <View style={styles.socialSection}>
+                  <Text style={styles.sectionTitle}>Контакты</Text>
+                  {!isAuthenticated && (
+                    <TouchableOpacity
+                      onPress={() => ensureAuthOrGo()}
+                      style={styles.authPrompt}
+                    >
+                      <Ionicons name="lock-closed-outline" size={18} color="#F09235" />
+                      <Text style={styles.authPromptText}>
+                        Войдите, чтобы увидеть полные контакты
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  <View style={styles.socialGrid}>
+                    {data?.telegram && (
+                      <Social
+                        url={isAuthenticated ? data.telegram : undefined}
+                        label={isAuthenticated ? undefined : maskedLinkLabel(data.telegram)}
+                        image={require('../assets/telegram.png')}
+                        onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                      />
+                    )}
+                    {data?.site && (
+                      <Social
+                        url={isAuthenticated ? data.site : undefined}
+                        label={isAuthenticated ? undefined : maskedLinkLabel(data.site)}
+                        image={require('../assets/site.png')}
+                        onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                      />
+                    )}
+                    {data?.insta && (
+                      <Social
+                        url={isAuthenticated ? data.insta : undefined}
+                        label={isAuthenticated ? undefined : maskedLinkLabel(data.insta)}
+                        image={require('../assets/insta.png')}
+                        onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                      />
+                    )}
+                    {data?.facebook && (
+                      <Social
+                        url={isAuthenticated ? data.facebook : undefined}
+                        label={isAuthenticated ? undefined : maskedLinkLabel(data.facebook)}
+                        image={require('../assets/facebook.png')}
+                        onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                      />
+                    )}
+                    {data?.phone_whatsapp && (
+                      <Social
+                        url={isAuthenticated ? data.phone_whatsapp : undefined}
+                        label={isAuthenticated ? undefined : maskPhone(data.phone_whatsapp)}
+                        whatsapp
+                        image={require('../assets/whatsapp.png')}
+                        onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                      />
+                    )}
+                    {data?.twogis && (
+                      <Social
+                        url={isAuthenticated ? data.twogis : undefined}
+                        label={isAuthenticated ? undefined : maskedLinkLabel(data.twogis)}
+                        image={require('../assets/2gis.png')}
+                        onPress={() => (!isAuthenticated ? ensureAuthOrGo() : undefined)}
+                      />
+                    )}
                   </View>
-                )}
+                </View>
+              )}
 
             {/* Описание */}
             {data?.content && (
@@ -485,29 +472,29 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
             {!isAdminView && data?.author?.username && auth?.user?.username && data.author.username !== auth.user.username && (
               <View style={styles.messageSection}>
                 <Text style={styles.sectionTitle}>Написать продавцу</Text>
-                    {!isAuthenticated ? (
+                {!isAuthenticated ? (
                   <View style={styles.authCard}>
                     <Ionicons name="chatbubble-outline" size={24} color="#F09235" />
                     <Text style={styles.authCardText}>
                       Чтобы отправить сообщение продавцу, войдите в аккаунт
-                        </Text>
-                        <TouchableOpacity
-                          onPress={ensureAuthOrGo}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={ensureAuthOrGo}
                       style={styles.authButton}
                       activeOpacity={0.8}
-                        >
+                    >
                       <Text style={styles.authButtonText}>Войти</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ) : (
+                    </TouchableOpacity>
+                  </View>
+                ) : (
                   <View style={styles.messageInputContainer}>
-                        <TextInput
+                    <TextInput
                       style={styles.messageInput}
-                          onChangeText={onChangeMessage}
-                          numberOfLines={4}
-                          multiline={true}
-                          value={message}
-                          placeholder="Здравствуйте! Я интересуюсь вашим товаром/услугой. Могу я узнать больше о нем? Есть ли возможность договориться о встрече и проверить качество на месте?"
+                      onChangeText={onChangeMessage}
+                      numberOfLines={4}
+                      multiline={true}
+                      value={message}
+                      placeholder="Здравствуйте! Я интересуюсь вашим товаром/услугой. Могу я узнать больше о нем? Есть ли возможность договориться о встрече и проверить качество на месте?"
                       placeholderTextColor="#999"
                     />
                     <TouchableOpacity
@@ -523,10 +510,10 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                       >
                         <Ionicons name="send" size={20} color="#FFFFFF" />
                       </LinearGradient>
-                        </TouchableOpacity>
-                      </View>
-                    )}
+                    </TouchableOpacity>
                   </View>
+                )}
+              </View>
             )}
 
             {/* Похожие объявления - показываем только в обычном режиме просмотра */}
@@ -542,11 +529,11 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                     />
                   </View>
                 )}
-                  </View>
-                )}
               </View>
-            </View>
-          )}
+            )}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };
