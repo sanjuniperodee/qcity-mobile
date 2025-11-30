@@ -35,6 +35,7 @@ export const CreatePostScreen = () => {
   const [cardImage, setCardImage] = useState(null);
   const [category, setCategory] = useState(null);
   const [globalCategory, setGlobalCategory] = useState(null);
+  const [customSubcategory, setCustomSubcategory] = useState('');
 
   const user = useSelector(state => state.auth.token);
   const userId = useSelector(state => state.auth.user.id);
@@ -103,7 +104,7 @@ export const CreatePostScreen = () => {
       const hasValue = !!field.value?.trim();
       if (!hasValue) {
         if (!firstErrorField) firstErrorField = field;
-        
+
         if (field.name === 'Телефон') {
           setPhoneError(true);
         }
@@ -278,26 +279,26 @@ export const CreatePostScreen = () => {
         // Валидация длительности видео (максимум 35 секунд)
         const videoDuration = asset.duration || 0;
         const maxDurationSeconds = 35;
-        
+
         // expo-image-picker обычно возвращает duration в миллисекундах для видео
         // Но на разных платформах может быть по-разному
         // Проверяем: если duration > 1000, предполагаем миллисекунды, иначе секунды
         const videoDurationSeconds = videoDuration > 1000 ? videoDuration / 1000 : videoDuration;
-        
+
         if (videoDurationSeconds > maxDurationSeconds) {
           Alert.alert(
             t('video.too_long_title', { defaultValue: 'Видео слишком длинное' }),
-            t('video.too_long_message', { 
-              defaultValue: 'Видео дольше 35 секунд. Обрежьте видео до 35 секунд или меньше.' 
-            }) + '\n\n' + 
-            t('video.too_long_message_kz', { 
-              defaultValue: 'Бейне 35 секундтен ұзын. Видеоны 35 секундке дейін қысқартыңыз.' 
+            t('video.too_long_message', {
+              defaultValue: 'Видео дольше 35 секунд. Обрежьте видео до 35 секунд или меньше.'
+            }) + '\n\n' +
+            t('video.too_long_message_kz', {
+              defaultValue: 'Бейне 35 секундтен ұзын. Видеоны 35 секундке дейін қысқартыңыз.'
             }),
             [{ text: t('common.ok', { defaultValue: 'OK' }) }]
           );
           return;
         }
-        
+
         const videoToAdd = { uri: asset.uri, type: 'video', fileName };
         setImages((prev) => [...prev, videoToAdd]);
         video.current?.playAsync();
@@ -363,6 +364,7 @@ export const CreatePostScreen = () => {
     formData.append('category_id', categoryIdParam);
     formData.append('global_category', globalCategory);
     formData.append('subcategory_id', category.id);
+    formData.append('custom_subcategory', customSubcategory);
     formData.append('extra_fields', JSON.stringify(extraFields));
     formData.append('geolocation', city);
     formData.append('cost', cost);
@@ -578,6 +580,26 @@ export const CreatePostScreen = () => {
               })}
             </View>
             : null}
+
+          {(category?.name === 'Прочее' || category?.name === 'Другое') && (
+            <View style={{ marginTop: 10 }}>
+              <Text style={styles.sectionTitle}>Введите название категории</Text>
+              <TextInput
+                style={{
+                  width: '100%',
+                  paddingHorizontal: 10,
+                  height: 50,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  borderColor: '#c4c4c4',
+                  backgroundColor: '#F7F8F9',
+                  fontSize: 16
+                }}
+                value={customSubcategory}
+                onChangeText={setCustomSubcategory}
+              />
+            </View>
+          )}
 
           {(categoryIdParam === 1 || categoryIdParam === 2) && (
             <CreateDropdown
@@ -857,9 +879,9 @@ export const CreatePostScreen = () => {
             </View>
           </View>
 
-          <Button 
-            onPress={sendPostRequest} 
-            disabled={loading} 
+          <Button
+            onPress={sendPostRequest}
+            disabled={loading}
             fullWidth
             style={styles.submitButton}
           >
@@ -873,110 +895,110 @@ export const CreatePostScreen = () => {
 
 
 const styles = StyleSheet.create({
-    profileButton: {
-      width: '100%',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      backgroundColor: colors.surfaceSecondary,
-      borderRadius: radius.lg,
-      borderColor: colors.border,
-      borderWidth: 1.5,
-      paddingHorizontal: spacing.md,
-      paddingVertical: spacing.md,
-      ...shadows.sm,
-    },
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    centeredView: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: colors.overlay,
-    },
-    modalView: {
-      margin: spacing.lg,
-      backgroundColor: colors.surface,
-      borderRadius: radius.xl,
-      padding: spacing.xxl,
-      paddingTop: spacing.xxxl,
-      alignItems: 'center',
-      ...shadows.xl,
-    },
-    modalText: {
-      marginTop: spacing.lg,
-      fontFamily: 'medium',
-      fontSize: 18,
-      textAlign: 'center',
-      color: colors.text,
-    },
-    sectionTitle: {
-      fontFamily: 'semibold',
-      fontSize: 18,
-      marginTop: spacing.lg,
-      marginBottom: spacing.sm,
-      color: colors.text,
-    },
-    sectionSubtitle: {
-      fontFamily: 'regular',
-      fontSize: 14,
-      opacity: 0.6,
-      color: colors.textSecondary,
-    },
-    inputField: {
-      width: '100%',
-      paddingHorizontal: spacing.md,
-      height: 50,
-      borderWidth: 1.5,
-      borderRadius: radius.lg,
-      borderColor: colors.border,
-      backgroundColor: colors.surfaceSecondary,
-      fontSize: 16, // Минимум 16px для предотвращения зума на iOS
-      fontFamily: 'regular',
-      color: colors.text,
-    },
-    inputFieldError: {
-      borderColor: colors.error,
-    },
-    dropdownContainer: {
-      backgroundColor: colors.surfaceSecondary,
-      borderRadius: radius.md,
-      marginTop: -2,
-      borderColor: colors.border,
-      borderWidth: 1.5,
-      paddingVertical: spacing.sm,
-      ...shadows.sm,
-    },
-    dropdownItem: {
-      width: '100%',
-      paddingVertical: spacing.sm,
-      paddingHorizontal: spacing.md,
-    },
-    dropdownItemText: {
-      color: colors.textMuted,
-      fontSize: 14,
-      fontFamily: 'regular',
-    },
-    errorText: {
-      color: colors.error,
-      fontSize: 14,
-      fontFamily: 'regular',
-      marginTop: spacing.sm,
-    },
-    submitButton: {
-      borderRadius: radius.lg,
-      overflow: 'hidden',
-      marginBottom: spacing.lg,
-      marginTop: spacing.xl,
-      ...shadows.md,
-    },
-    submitButtonText: {
-      color: colors.primaryText,
-      fontSize: 16,
-      fontFamily: 'semibold',
-    },
-  });
-  
-  
+  profileButton: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: colors.surfaceSecondary,
+    borderRadius: radius.lg,
+    borderColor: colors.border,
+    borderWidth: 1.5,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    ...shadows.sm,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.overlay,
+  },
+  modalView: {
+    margin: spacing.lg,
+    backgroundColor: colors.surface,
+    borderRadius: radius.xl,
+    padding: spacing.xxl,
+    paddingTop: spacing.xxxl,
+    alignItems: 'center',
+    ...shadows.xl,
+  },
+  modalText: {
+    marginTop: spacing.lg,
+    fontFamily: 'medium',
+    fontSize: 18,
+    textAlign: 'center',
+    color: colors.text,
+  },
+  sectionTitle: {
+    fontFamily: 'semibold',
+    fontSize: 18,
+    marginTop: spacing.lg,
+    marginBottom: spacing.sm,
+    color: colors.text,
+  },
+  sectionSubtitle: {
+    fontFamily: 'regular',
+    fontSize: 14,
+    opacity: 0.6,
+    color: colors.textSecondary,
+  },
+  inputField: {
+    width: '100%',
+    paddingHorizontal: spacing.md,
+    height: 50,
+    borderWidth: 1.5,
+    borderRadius: radius.lg,
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceSecondary,
+    fontSize: 16, // Минимум 16px для предотвращения зума на iOS
+    fontFamily: 'regular',
+    color: colors.text,
+  },
+  inputFieldError: {
+    borderColor: colors.error,
+  },
+  dropdownContainer: {
+    backgroundColor: colors.surfaceSecondary,
+    borderRadius: radius.md,
+    marginTop: -2,
+    borderColor: colors.border,
+    borderWidth: 1.5,
+    paddingVertical: spacing.sm,
+    ...shadows.sm,
+  },
+  dropdownItem: {
+    width: '100%',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+  },
+  dropdownItemText: {
+    color: colors.textMuted,
+    fontSize: 14,
+    fontFamily: 'regular',
+  },
+  errorText: {
+    color: colors.error,
+    fontSize: 14,
+    fontFamily: 'regular',
+    marginTop: spacing.sm,
+  },
+  submitButton: {
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    marginBottom: spacing.lg,
+    marginTop: spacing.xl,
+    ...shadows.md,
+  },
+  submitButtonText: {
+    color: colors.primaryText,
+    fontSize: 16,
+    fontFamily: 'semibold',
+  },
+});
+
+

@@ -228,7 +228,7 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                       <>
                         <Ionicons name="chevron-forward" size={12} color={colors.textMuted} style={{ marginHorizontal: spacing.xxs }} />
                         <TouchableOpacity onPress={() => navigation.navigate('postsByCategory', { id: data?.categories?.id })}>
-                          <Text style={styles.subcategoryText}>{data.subcategory}</Text>
+                          <Text style={styles.subcategoryText}>{data?.custom_subcategory || data.subcategory}</Text>
                         </TouchableOpacity>
                       </>
                     )}
@@ -456,6 +456,12 @@ https://apps.apple.com/kg/app/qorgau-marketplace/id1665878596`;
                     <View style={styles.adminInfoItem}>
                       <Text style={styles.adminInfoLabel}>Тариф:</Text>
                       <Text style={styles.adminInfoValue}>{data.tariff.name || 'Не указан'}</Text>
+                    </View>
+                  )}
+                  {data?.custom_subcategory && (
+                    <View style={styles.adminInfoItem}>
+                      <Text style={styles.adminInfoLabel}>Своя категория:</Text>
+                      <Text style={styles.adminInfoValue}>{data.custom_subcategory}</Text>
                     </View>
                   )}
                   {data?.rejection_reason && (
