@@ -322,13 +322,101 @@ export const HomeScreen = () => {
     [t]
   );
 
+  // Stories - скрыты, если содержат placeholder контент (текст "объявление?" на изображениях)
+  // Раскомментируйте, когда будут готовы финальные изображения без placeholder текста
   const stories = useMemo(
     () => [
-      { id: '1', title: t('stories.create'),    preview: require('../assets/create.jpg'), slides: [{ id: '2-1', image: require('../assets/create1.jpg') }, { id: '2-2', image: require('../assets/create2.jpg') }, { id: '2-3', image: require('../assets/create3.jpg') }, { id: '2-4', image: require('../assets/create4.jpg') }, { id: '2-5', image: require('../assets/create5.jpg') }, { id: '2-6', image: require('../assets/create6.jpg') }] },
-      { id: '2', title: t('stories.edit'),      preview: require('../assets/edit.jpg'),   slides: [{ id: '3-1', image: require('../assets/edit2.jpg') }, { id: '3-2', image: require('../assets/edit2.jpg') }, { id: '3-3', image: require('../assets/edit3.jpg') }, { id: '3-4', image: require('../assets/edit4.jpg') }] },
-      { id: '3', title: t('stories.security'),  preview: require('../assets/safe.jpg'),   slides: [{ id: '4-1', image: require('../assets/secure1.jpg') }, { id: '4-2', image: require('../assets/secure2.jpg') }, { id: '4-3', image: require('../assets/secure3.jpg') }] },
+      // Временно скрыты stories с placeholder контентом на изображениях
+      // { id: '1', title: t('stories.create'),    preview: require('../assets/create.jpg'), slides: [{ id: '2-1', image: require('../assets/create1.jpg') }, { id: '2-2', image: require('../assets/create2.jpg') }, { id: '2-3', image: require('../assets/create3.jpg') }, { id: '2-4', image: require('../assets/create4.jpg') }, { id: '2-5', image: require('../assets/create5.jpg') }, { id: '2-6', image: require('../assets/create6.jpg') }] },
+      // { id: '2', title: t('stories.edit'),      preview: require('../assets/edit.jpg'),   slides: [{ id: '3-1', image: require('../assets/edit2.jpg') }, { id: '3-2', image: require('../assets/edit2.jpg') }, { id: '3-3', image: require('../assets/edit3.jpg') }, { id: '3-4', image: require('../assets/edit4.jpg') }] },
+      // { id: '3', title: t('stories.security'),  preview: require('../assets/safe.jpg'),   slides: [{ id: '4-1', image: require('../assets/secure1.jpg') }, { id: '4-2', image: require('../assets/secure2.jpg') }, { id: '4-3', image: require('../assets/secure3.jpg') }] },
     ],
     [t]
+  );
+
+  // Fallback объявления для отображения, когда нет данных с бэкенда
+  const fallbackPosts = useMemo(
+    () => [
+      {
+        id: -1,
+        title: 'Огнетушитель порошковый ОП-5, новый, сертифицирован',
+        cost: '15000',
+        geolocation: selectedCity || 'Алматы',
+        images: [{ image: '/media/defaults/post.png', type: 'image' }],
+        extra_fields: ['Новое', 'Сертификат'],
+        date: new Date().toISOString().split('T')[0],
+        tariff: 0,
+        condition: 'Новое',
+        mortage: 'Нет',
+        delivery: 'Да',
+      },
+      {
+        id: -2,
+        title: 'Пожарная сигнализация для офиса, установка и обслуживание',
+        cost: '45000',
+        geolocation: selectedCity || 'Алматы',
+        images: [{ image: '/media/defaults/post.png', type: 'image' }],
+        extra_fields: ['Услуга', 'Установка'],
+        date: new Date().toISOString().split('T')[0],
+        tariff: 1,
+        condition: 'Услуга',
+        mortage: 'Нет',
+        delivery: 'Да',
+      },
+      {
+        id: -3,
+        title: 'Обучение по пожарной безопасности, выезд на объект',
+        cost: '25000',
+        geolocation: selectedCity || 'Алматы',
+        images: [{ image: '/media/defaults/post.png', type: 'image' }],
+        extra_fields: ['Обучение', 'Выезд'],
+        date: new Date().toISOString().split('T')[0],
+        tariff: 0,
+        condition: 'Услуга',
+        mortage: 'Нет',
+        delivery: 'Да',
+      },
+      {
+        id: -4,
+        title: 'Пожарный рукав 20м, б/у, хорошее состояние',
+        cost: '8000',
+        geolocation: selectedCity || 'Алматы',
+        images: [{ image: '/media/defaults/post.png', type: 'image' }],
+        extra_fields: ['Б/у', 'Хорошее'],
+        date: new Date().toISOString().split('T')[0],
+        tariff: 0,
+        condition: 'Б/у',
+        mortage: 'Нет',
+        delivery: 'Да',
+      },
+      {
+        id: -5,
+        title: 'Система пожаротушения для склада, проектирование и монтаж',
+        cost: '350000',
+        geolocation: selectedCity || 'Алматы',
+        images: [{ image: '/media/defaults/post.png', type: 'image' }],
+        extra_fields: ['Услуга', 'Проектирование'],
+        date: new Date().toISOString().split('T')[0],
+        tariff: 2,
+        condition: 'Услуга',
+        mortage: 'Да',
+        delivery: 'Да',
+      },
+      {
+        id: -6,
+        title: 'Пожарные краны и рукава, комплект для здания',
+        cost: '120000',
+        geolocation: selectedCity || 'Алматы',
+        images: [{ image: '/media/defaults/post.png', type: 'image' }],
+        extra_fields: ['Новое', 'Комплект'],
+        date: new Date().toISOString().split('T')[0],
+        tariff: 0,
+        condition: 'Новое',
+        mortage: 'Нет',
+        delivery: 'Да',
+      },
+    ],
+    [selectedCity]
   );
 
   // === HEADER
@@ -405,23 +493,27 @@ export const HomeScreen = () => {
           </View>
         </TouchableOpacity>
 
-        {/* «Сторис»-чипы */}
-        <FlatList
-          data={stories}
-          horizontal
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{  paddingTop: 6, paddingHorizontal: 10 }}
-          showsHorizontalScrollIndicator={false}
-          decelerationRate="fast"
-          snapToInterval={Math.round(SCREEN_WIDTH * 0.29) + 12}
-          getItemLayout={(_, index) => ({ length: Math.round(SCREEN_WIDTH * 0.29) + 12, offset: (Math.round(SCREEN_WIDTH * 0.29) + 12) * index, index })}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleOpenStory(item)} style={styles.storyChip} activeOpacity={0.9}>
-              <Image source={item.preview} style={styles.storyImg} />
-            </TouchableOpacity>
-          )}
-        />
-        <StoriesInstructions visible={modalVisible} onClose={() => setModalVisible(false)} story={selectedStory} />
+        {/* «Сторис»-чипы - показываем только если есть stories без placeholder контента */}
+        {stories && stories.length > 0 && (
+          <>
+            <FlatList
+              data={stories}
+              horizontal
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{  paddingTop: 6, paddingHorizontal: 10 }}
+              showsHorizontalScrollIndicator={false}
+              decelerationRate="fast"
+              snapToInterval={Math.round(SCREEN_WIDTH * 0.29) + 12}
+              getItemLayout={(_, index) => ({ length: Math.round(SCREEN_WIDTH * 0.29) + 12, offset: (Math.round(SCREEN_WIDTH * 0.29) + 12) * index, index })}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleOpenStory(item)} style={styles.storyChip} activeOpacity={0.9}>
+                  <Image source={item.preview} style={styles.storyImg} />
+                </TouchableOpacity>
+              )}
+            />
+            <StoriesInstructions visible={modalVisible} onClose={() => setModalVisible(false)} story={selectedStory} />
+          </>
+        )}
 
         {/* Categories */}
         <View style={styles.sectionRow}>
@@ -479,11 +571,20 @@ export const HomeScreen = () => {
       <UpdateWatcher />
 
       <ResponsiveProductGrid
-        data={posts}
+        data={
+          // Показываем реальные посты, если они есть
+          posts.length > 0 
+            ? posts 
+            // Показываем fallback посты только если загрузка завершена и нет данных
+            : (!isLoading && firstLoaded && posts.length === 0 
+                ? fallbackPosts 
+                : [])
+        }
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
         ListEmptyComponent={
-          isLoading ? null : (
+          // Показываем "Нет объявлений" только если загрузка завершена и нет fallback постов
+          isLoading || (!firstLoaded) ? null : (
             <View style={{ padding: 40, alignItems: 'center' }}>
               <Text>{t('main.no_listings')}</Text>
             </View>

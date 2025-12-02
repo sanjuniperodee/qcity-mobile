@@ -51,23 +51,23 @@
       <true/>
     </dict>
     <key>NSCameraUsageDescription</key>
-    <string>Qorgau Marketplace uses your camera to capture photos of items you want to sell or services you want to offer. When you create a new listing, you can take photos directly in the app to showcase your product. For example, if you're selling a bicycle, you can take multiple photos of the bicycle from different angles to help buyers see the condition and details of the item. These photos are uploaded to your listing and displayed to potential buyers in the marketplace.</string>
+    <string>Qorgau Marketplace использует камеру для съемки фотографий товаров, которые вы хотите продать, или услуг, которые вы хотите предложить. При создании нового объявления вы можете сделать фотографии прямо в приложении, чтобы показать свой товар. Например, если вы продаете велосипед, вы можете сделать несколько фотографий велосипеда с разных ракурсов, чтобы покупатели могли увидеть состояние и детали товара. Эти фотографии загружаются в ваше объявление и отображаются потенциальным покупателям в маркетплейсе.</string>
     <key>NSFaceIDUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
+    <string>Qorgau Marketplace использует Face ID для безопасной аутентификации и защиты вашего аккаунта.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your location</string>
+    <string>Qorgau Marketplace использует геолокацию для отображения объявлений в вашем городе и для улучшения работы с картой.</string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>We use the location to display posts in your city and for a better experience with the map</string>
+    <string>Qorgau Marketplace использует геолокацию для отображения объявлений в вашем городе и для улучшения работы с картой.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We use the location to display posts in your city and for a better experience with the map</string>
+    <string>Qorgau Marketplace использует геолокацию для отображения объявлений в вашем городе и для улучшения работы с картой.</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+    <string>Qorgau Marketplace использует микрофон для записи аудио при создании видеопрезентаций товаров в ваших объявлениях.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.</string>
+    <string>Приложение использует вашу библиотеку фотографий, чтобы вы могли выбирать фотографии для загрузки и улучшать свой профиль и публиковать объявления с фотографиями.</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.</string>
+    <string>Приложение использует вашу библиотеку фотографий, чтобы вы могли выбирать фотографии для загрузки и улучшать свой профиль и публиковать объявления с фотографиями.</string>
     <key>NSPrivacyAccessedAPICategoryDiskSpace</key>
-    <string>Our application uses the disk space access API to optimize the storage of data required for operation.</string>
+    <string>Наше приложение использует API доступа к дисковому пространству для оптимизации хранения данных, необходимых для работы.</string>
     <key>NSPrivacyAccessedAPIType</key>
     <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
     <key>NSPrivacyAccessedAPITypes</key>

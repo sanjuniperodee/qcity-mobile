@@ -124,6 +124,10 @@ export const ProductCard = (props) => {
   };
 
   const handleCardPress = () => {
+    // Fallback объявления имеют отрицательные id - не открываем их
+    if (props.id < 0) {
+      return;
+    }
     navigation.push('ViewPost', { id: props.id });
   };
   

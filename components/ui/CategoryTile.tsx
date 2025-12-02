@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   labelWrap: {
-    minHeight: 42, // резерв под 3 строки на небольших экранах
+    minHeight: Platform.select({ web: 38, default: 42 }), // резерв под 2-3 строки
     width: '100%',
     justifyContent: 'center',
   },

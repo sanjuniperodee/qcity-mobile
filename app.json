@@ -26,12 +26,12 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        "NSCameraUsageDescription": "Qorgau Marketplace uses your camera to capture photos of items you want to sell or services you want to offer. When you create a new listing, you can take photos directly in the app to showcase your product. For example, if you're selling a bicycle, you can take multiple photos of the bicycle from different angles to help buyers see the condition and details of the item. These photos are uploaded to your listing and displayed to potential buyers in the marketplace.",
-        "NSPhotoLibraryUsageDescription": "This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.",
-        "NSPhotoLibraryAddUsageDescription": "This app uses your photo library to let you choose photos to upload and enhance your profile and post posts with photos.",
-        "NSLocationWhenInUseUsageDescription": "We use the location to display posts in your city and for a better experience with the map",
-        "NSLocationAlwaysUsageDescription": "We use the location to display posts in your city and for a better experience with the map",
-        "NSPrivacyAccessedAPICategoryDiskSpace": "Our application uses the disk space access API to optimize the storage of data required for operation.",
+        "NSCameraUsageDescription": "Qorgau Marketplace использует камеру для съемки фотографий товаров, которые вы хотите продать, или услуг, которые вы хотите предложить. При создании нового объявления вы можете сделать фотографии прямо в приложении, чтобы показать свой товар. Например, если вы продаете велосипед, вы можете сделать несколько фотографий велосипеда с разных ракурсов, чтобы покупатели могли увидеть состояние и детали товара. Эти фотографии загружаются в ваше объявление и отображаются потенциальным покупателям в маркетплейсе.",
+        "NSPhotoLibraryUsageDescription": "Приложение использует вашу библиотеку фотографий, чтобы вы могли выбирать фотографии для загрузки и улучшать свой профиль и публиковать объявления с фотографиями.",
+        "NSPhotoLibraryAddUsageDescription": "Приложение использует вашу библиотеку фотографий, чтобы вы могли выбирать фотографии для загрузки и улучшать свой профиль и публиковать объявления с фотографиями.",
+        "NSLocationWhenInUseUsageDescription": "Мы используем геолокацию для отображения объявлений в вашем городе и для улучшения работы с картой.",
+        "NSLocationAlwaysUsageDescription": "Мы используем геолокацию для отображения объявлений в вашем городе и для улучшения работы с картой.",
+        "NSPrivacyAccessedAPICategoryDiskSpace": "Наше приложение использует API доступа к дисковому пространству для оптимизации хранения данных, необходимых для работы.",
         "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
         "NSPrivacyAccessedAPITypes": [
           {
