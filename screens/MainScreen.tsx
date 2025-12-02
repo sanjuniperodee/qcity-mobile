@@ -203,6 +203,17 @@ export const HomeScreen = () => {
      typeof error.data.detail === 'string' && error.data.detail.includes('Неправильная страница'))
   );
 
+  // Проверка на серверные ошибки (500, 502, 503, 504 и т.д.)
+  const isServerError = error && (
+    ('status' in error && (
+      error.status === 500 || // Internal Server Error
+      error.status === 502 || // Bad Gateway
+      error.status === 503 || // Service Unavailable
+      error.status === 504 || // Gateway Timeout
+      error.status === 'FETCH_ERROR' // Network error
+    ))
+  );
+
   // Обновление данных при смене языка
   const prevLanguageRef = useRef(currentLanguage);
   useEffect(() => {
@@ -244,11 +255,24 @@ export const HomeScreen = () => {
 
   // ========= приём данных =========
   useEffect(() => {
+    // Если была серверная ошибка на первой странице, показываем fallback
+    if (isServerError && page === 1 && !firstLoaded) {
+      setFirstLoaded(true);
+      setPosts([]); // Очищаем посты, чтобы показать fallback
+      return;
+    }
+
     // Если была 404 ошибка, не обрабатываем данные
     if (is404Error && page > 1) {
       // Откатываем страницу назад, если получили 404
       setPage((p) => Math.max(1, p - 1));
       setHasReachedEnd(true); // Устанавливаем флаг, что достигли конца
+      return;
+    }
+    
+    // Если была серверная ошибка на последующих страницах, просто не загружаем больше
+    if (isServerError && page > 1) {
+      setHasReachedEnd(true);
       return;
     }
     
@@ -575,8 +599,10 @@ export const HomeScreen = () => {
           // Показываем реальные посты, если они есть
           posts.length > 0 
             ? posts 
-            // Показываем fallback посты только если загрузка завершена и нет данных
-            : (!isLoading && firstLoaded && posts.length === 0 
+            // Показываем fallback посты если:
+            // 1. Загрузка завершена и нет данных
+            // 2. Или произошла серверная ошибка
+            : (!isLoading && firstLoaded && (posts.length === 0 || isServerError)
                 ? fallbackPosts 
                 : [])
         }
