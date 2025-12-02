@@ -259,6 +259,7 @@ export const HomeScreen = () => {
     if (isServerError && page === 1 && !firstLoaded) {
       setFirstLoaded(true);
       setPosts([]); // Очищаем посты, чтобы показать fallback
+      setHasReachedEnd(true); // Блокируем дальнейшую загрузку
       return;
     }
 
@@ -276,7 +277,18 @@ export const HomeScreen = () => {
       return;
     }
     
-    if (!data?.results) return;
+    // Если была серверная ошибка и уже есть посты, не обновляем их
+    if (isServerError && posts.length > 0) {
+      return;
+    }
+    
+    if (!data?.results) {
+      // Если нет данных и загрузка завершена, устанавливаем firstLoaded для показа fallback
+      if (!isLoading && !firstLoaded) {
+        setFirstLoaded(true);
+      }
+      return;
+    }
     
     // Если последняя страница вернула меньше элементов чем limit, значит это последняя страница
     if (data.results.length < limit && page > 1) {
@@ -301,12 +313,12 @@ export const HomeScreen = () => {
         return add.length ? [...prev, ...add] : prev;
       });
     }
-  }, [data, page, is404Error, limit]); // eslint-disable-line
+  }, [data, page, is404Error, isServerError, firstLoaded, limit]); // eslint-disable-line
 
   // ========= пагинация =========
   const hasMore = useMemo(() => {
-    // Если достигли конца (404 или последняя страница), значит больше постов нет
-    if (hasReachedEnd || is404Error) return false;
+    // Если достигли конца (404, серверная ошибка или последняя страница), значит больше постов нет
+    if (hasReachedEnd || is404Error || isServerError) return false;
     
     const total = data?.total;
     if (typeof total === 'number') return posts.length < total;
@@ -320,13 +332,13 @@ export const HomeScreen = () => {
     // - еще не загрузили первую страницу
     // - идет загрузка
     // - нет больше данных
-    // - была 404 ошибка
+    // - была 404 или серверная ошибка
     // - уже достигли конца
-    if (!firstLoaded || isLoading || !hasMore || is404Error || hasReachedEnd) {
+    if (!firstLoaded || isLoading || !hasMore || is404Error || isServerError || hasReachedEnd) {
       return;
     }
     setPage((p) => p + 1);
-  }, [firstLoaded, isLoading, hasMore, is404Error, hasReachedEnd]);
+  }, [firstLoaded, isLoading, hasMore, is404Error, isServerError, hasReachedEnd]);
 
   // Throttle для предотвращения частых вызовов при скролле
   const loadMoreItems = useMemo(() => throttle(loadMoreItemsRaw, 1000), [loadMoreItemsRaw]);
